@@ -422,7 +422,7 @@
 		84CCB8001778F094004B8FD2 /* YKUIButtonViewTest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YKUIButtonViewTest.h; sourceTree = "<group>"; };
 		84CCB8011778F954004B8FD2 /* YKUIButtonViewTest_DefaultTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YKUIButtonViewTest_DefaultTest.m; sourceTree = "<group>"; };
 		84CCB8031778F9B6004B8FD2 /* YKUIButtonViewTest_Borders.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YKUIButtonViewTest_Borders.m; sourceTree = "<group>"; };
-		84EB1E7B177133FD00479F80 /* Tests.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tests.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		84EB1E7B177133FD00479F80 /* YelpKitTests.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = YelpKitTests.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		84EB1E81177133FE00479F80 /* Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Tests-Info.plist"; sourceTree = "<group>"; };
 		84EB1E83177133FE00479F80 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		84EB1E87177133FE00479F80 /* Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Tests-Prefix.pch"; sourceTree = "<group>"; };
@@ -516,7 +516,7 @@
 			children = (
 				005592E8140B0085001E9C43 /* libYelpKit.a */,
 				00DB563915BE198600E247FA /* YelpKitCatalog.app */,
-				84EB1E7B177133FD00479F80 /* Tests.app */,
+				84EB1E7B177133FD00479F80 /* YelpKitTests.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1005,6 +1005,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 84EB1E96177133FE00479F80 /* Build configuration list for PBXNativeTarget "Tests" */;
 			buildPhases = (
+				84CCB8051778FE2C004B8FD2 /* Prepare UI Tests */,
 				84EB1E77177133FD00479F80 /* Sources */,
 				84EB1E78177133FD00479F80 /* Frameworks */,
 				84EB1E79177133FD00479F80 /* Resources */,
@@ -1018,7 +1019,7 @@
 			);
 			name = Tests;
 			productName = Tests;
-			productReference = 84EB1E7B177133FD00479F80 /* Tests.app */;
+			productReference = 84EB1E7B177133FD00479F80 /* YelpKitTests.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -1145,6 +1146,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		84CCB8051778FE2C004B8FD2 /* Prepare UI Tests */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Prepare UI Tests";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = ./tools/prepare_ui_tests;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		005592E4140B0085001E9C43 /* Sources */ = {
@@ -1441,7 +1459,7 @@
 				INFOPLIST_FILE = "Tests/Tests-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/Libraries/GHUnit\"";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = YelpKitTests;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
@@ -1468,7 +1486,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/Libraries/GHUnit\"";
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = YelpKitTests;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
