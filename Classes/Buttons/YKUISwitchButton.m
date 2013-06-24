@@ -27,7 +27,7 @@
   [_switchControl release];
   
   _button.titleInsets = UIEdgeInsetsMake(10, 10, 10, _switchControl.frame.size.width - 10);
-  _button.titleAlignment = UITextAlignmentLeft;
+  _button.titleAlignment = NSTextAlignmentLeft;
   _button.targetDisabled = YES;
   [_button addTarget:self action:@selector(_didTouchUpInside)];
 }

@@ -502,7 +502,7 @@
 
     case YKUIButtonStyleBasicCellDisclosure:
       button.titleFont = [UIFont systemFontOfSize:16];
-      button.titleAlignment = UITextAlignmentLeft;
+      button.titleAlignment = NSTextAlignmentLeft;
       button.titleColor = [UIColor blackColor];
       button.titleInsets = UIEdgeInsetsZero;
       button.insets = UIEdgeInsetsMake(0, 10, 0, 0);

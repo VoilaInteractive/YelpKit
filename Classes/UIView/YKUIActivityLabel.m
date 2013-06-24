@@ -43,7 +43,7 @@
     _textLabel.textColor = [UIColor colorWithWhite:0.25 alpha:1.0];
     _textLabel.backgroundColor = [UIColor clearColor];
     _textLabel.contentMode = UIViewContentModeCenter;
-    _textLabel.textAlignment = UITextAlignmentLeft;
+    _textLabel.textAlignment = NSTextAlignmentLeft;
     [self addSubview:_textLabel];
     [_textLabel release];
     
@@ -185,7 +185,7 @@
     _detailLabel.backgroundColor = self.backgroundColor;
     _detailLabel.font = [UIFont systemFontOfSize:14.0];
     _detailLabel.textColor = [UIColor colorWithWhite:0.45 alpha:1.0];
-    _detailLabel.textAlignment = UITextAlignmentCenter;
+    _detailLabel.textAlignment = NSTextAlignmentCenter;
     _detailLabel.contentMode = UIViewContentModeCenter;
     [self addSubview:_detailLabel];
     [_detailLabel release];

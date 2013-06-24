@@ -123,7 +123,7 @@
     _titleLabel.adjustsFontSizeToFitWidth = YES;
     _titleLabel.shadowColor = [UIColor darkGrayColor];
     _titleLabel.textColor = [UIColor whiteColor];
-    _titleLabel.textAlignment = UITextAlignmentCenter;
+    _titleLabel.textAlignment = NSTextAlignmentCenter;
     _titleLabel.opaque = NO;
     _titleLabel.contentMode = UIViewContentModeCenter;
     _titleLabel.backgroundColor = [UIColor clearColor];

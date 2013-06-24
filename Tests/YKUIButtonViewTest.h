@@ -37,7 +37,7 @@
   YKUIListView *_disabledListView;
 }
 
-- (YKUIButton *)button;
+- (YKUIButton *)buttonPressed:(BOOL)pressed enabled:(BOOL)enabled;
 - (YKUIButton *)buttonWithIcon:(BOOL)icon accessoryImage:(BOOL)accessoryImage alignment:(NSTextAlignment)alignment titleInsets:(UIEdgeInsets)titleInsets pressed:(BOOL)pressed enabled:(BOOL)enabled;
 
 @end

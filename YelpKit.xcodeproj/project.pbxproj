@@ -161,6 +161,7 @@
 		84CCB7FF1778F04B004B8FD2 /* YKUIButtonViewTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 84CCB7FE1778F04B004B8FD2 /* YKUIButtonViewTest.m */; };
 		84CCB8021778F954004B8FD2 /* YKUIButtonViewTest_DefaultTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 84CCB8011778F954004B8FD2 /* YKUIButtonViewTest_DefaultTest.m */; };
 		84CCB8041778F9B6004B8FD2 /* YKUIButtonViewTest_Borders.m in Sources */ = {isa = PBXBuildFile; fileRef = 84CCB8031778F9B6004B8FD2 /* YKUIButtonViewTest_Borders.m */; };
+		84CCB80717790260004B8FD2 /* YKUIButtonViewTest_SecondaryText.m in Sources */ = {isa = PBXBuildFile; fileRef = 84CCB80617790260004B8FD2 /* YKUIButtonViewTest_SecondaryText.m */; };
 		84EB1E7C177133FE00479F80 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00DB563B15BE198600E247FA /* UIKit.framework */; };
 		84EB1E7D177133FE00479F80 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 005592EB140B0085001E9C43 /* Foundation.framework */; };
 		84EB1E7E177133FE00479F80 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00D575761457C62A00DE6487 /* CoreGraphics.framework */; };
@@ -422,6 +423,7 @@
 		84CCB8001778F094004B8FD2 /* YKUIButtonViewTest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YKUIButtonViewTest.h; sourceTree = "<group>"; };
 		84CCB8011778F954004B8FD2 /* YKUIButtonViewTest_DefaultTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YKUIButtonViewTest_DefaultTest.m; sourceTree = "<group>"; };
 		84CCB8031778F9B6004B8FD2 /* YKUIButtonViewTest_Borders.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YKUIButtonViewTest_Borders.m; sourceTree = "<group>"; };
+		84CCB80617790260004B8FD2 /* YKUIButtonViewTest_SecondaryText.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YKUIButtonViewTest_SecondaryText.m; sourceTree = "<group>"; };
 		84EB1E7B177133FD00479F80 /* YelpKitTests.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = YelpKitTests.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		84EB1E81177133FE00479F80 /* Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Tests-Info.plist"; sourceTree = "<group>"; };
 		84EB1E83177133FE00479F80 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -860,6 +862,7 @@
 				84CCB8011778F954004B8FD2 /* YKUIButtonViewTest_DefaultTest.m */,
 				84CCB7FA1778EFDD004B8FD2 /* YKUIButtonViewTest_CategoryButtons.m */,
 				84CCB8031778F9B6004B8FD2 /* YKUIButtonViewTest_Borders.m */,
+				84CCB80617790260004B8FD2 /* YKUIButtonViewTest_SecondaryText.m */,
 				84EB1E80177133FE00479F80 /* Supporting Files */,
 			);
 			path = Tests;
@@ -1255,6 +1258,7 @@
 				84CCB7FF1778F04B004B8FD2 /* YKUIButtonViewTest.m in Sources */,
 				84CCB8021778F954004B8FD2 /* YKUIButtonViewTest_DefaultTest.m in Sources */,
 				84CCB8041778F9B6004B8FD2 /* YKUIButtonViewTest_Borders.m in Sources */,
+				84CCB80717790260004B8FD2 /* YKUIButtonViewTest_SecondaryText.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

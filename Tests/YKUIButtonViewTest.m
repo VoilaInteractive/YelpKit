@@ -56,7 +56,7 @@
   [super tearDown];
 }
 
-- (YKUIButton *)button {
+- (YKUIButton *)buttonPressed:(BOOL)pressed enabled:(BOOL)enabled {
   YKUIButton *button = [[YKUIButton alloc] init];
   button.title = @"Button";
   button.titleColor = [UIColor darkGrayColor];
@@ -76,6 +76,8 @@
   button.disabledTitleColor = [UIColor colorWithWhite:0.5f alpha:1.0f];
   button.disabledBorderColor = [UIColor colorWithWhite:216.0f/255.0f alpha:1.0f];
   [button setTarget:self action:@selector(_buttonSelected:)];
+  button.selected = pressed;
+  button.enabled = enabled;
   return [button autorelease];
 }
 
@@ -97,7 +99,7 @@
 }
 
 - (YKUIButton *)buttonWithIcon:(BOOL)icon accessoryImage:(BOOL)accessoryImage alignment:(NSTextAlignment)alignment titleInsets:(UIEdgeInsets)titleInsets pressed:(BOOL)pressed enabled:(BOOL)enabled {
-  YKUIButton *button = [self button];
+  YKUIButton *button = [self buttonPressed:pressed enabled:enabled];
   NSMutableString *buttonTitle = [NSMutableString stringWithFormat:@"Button (%@ alignment", [self _stringFromAlignment:alignment]];
   if (icon) {
     [buttonTitle appendString:@", icon"];
@@ -110,8 +112,6 @@
   }
   [buttonTitle appendString:@")"];
   button.title = buttonTitle;
-  button.selected = pressed;
-  button.enabled = enabled;
   button.titleInsets = titleInsets;
   return button;
 }

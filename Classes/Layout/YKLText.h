@@ -35,7 +35,7 @@
   UIFont *_font;
   UIColor *_textColor;
   UILineBreakMode _lineBreakMode;
-  UITextAlignment _textAlignment;
+  NSTextAlignment _textAlignment;
   
   CGSize _constrainedToSize;
   
@@ -55,7 +55,7 @@
 @property (retain, nonatomic) NSString *text;
 @property (retain, nonatomic) UIColor *textColor;
 @property (assign, nonatomic) UILineBreakMode lineBreakMode;
-@property (assign, nonatomic) UITextAlignment textAlignment;
+@property (assign, nonatomic) NSTextAlignment textAlignment;
 
 /*!
  Constrained to size.
@@ -64,12 +64,12 @@
  */
 @property (assign, nonatomic) CGSize constrainedToSize;
 
-- (id)initWithText:(NSString *)text font:(UIFont *)font textColor:(UIColor *)textColor lineBreakMode:(UILineBreakMode)lineBreakMode textAligment:(UITextAlignment)textAlignment;
+- (id)initWithText:(NSString *)text font:(UIFont *)font textColor:(UIColor *)textColor lineBreakMode:(UILineBreakMode)lineBreakMode textAligment:(NSTextAlignment)textAlignment;
 
 + (YKLText *)text:(NSString *)text font:(UIFont *)font;
 + (YKLText *)text:(NSString *)text font:(UIFont *)font textColor:(UIColor *)textColor;
 + (YKLText *)text:(NSString *)text font:(UIFont *)font textColor:(UIColor *)textColor lineBreakMode:(UILineBreakMode)lineBreakMode;
-+ (YKLText *)text:(NSString *)text font:(UIFont *)font textColor:(UIColor *)textColor lineBreakMode:(UILineBreakMode)lineBreakMode textAligment:(UITextAlignment)textAlignment;
++ (YKLText *)text:(NSString *)text font:(UIFont *)font textColor:(UIColor *)textColor lineBreakMode:(UILineBreakMode)lineBreakMode textAligment:(NSTextAlignment)textAlignment;
 
 /*!
  Set image. The image is drawn on the left side of the text by default.

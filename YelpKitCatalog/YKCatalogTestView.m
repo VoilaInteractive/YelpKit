@@ -16,7 +16,7 @@
   self.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1.0];
   _button = [[YKUIButton alloc] init];
   _button.titleFont = [UIFont boldSystemFontOfSize:32];
-  _button.titleAlignment = UITextAlignmentCenter;
+  _button.titleAlignment = NSTextAlignmentCenter;
   _button.borderColor = [UIColor grayColor];
   _button.borderWidth = 5.0;
   _button.borderStyle = YKUIBorderStyleNormal;

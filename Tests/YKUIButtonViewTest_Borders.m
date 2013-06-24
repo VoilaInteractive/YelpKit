@@ -51,13 +51,11 @@
 }
 
 - (YKUIButton *)_buttonWithBorderStyle:(YKUIBorderStyle)borderStyle pressed:(BOOL)pressed enabled:(BOOL)enabled {
-  YKUIButton *button = [self button];
+  YKUIButton *button = [self buttonPressed:pressed enabled:enabled];
   button.title = [NSString stringWithFormat:@"Button (%@)", [self _stringFromBorderStyle:borderStyle]];
   button.borderStyle = borderStyle;
   button.cornerRadius = 6.0f;
   button.borderWidth = 1.0f;
-  button.selected = pressed;
-  button.enabled = enabled;
   return button;
 }
 

@@ -82,7 +82,7 @@
 - (UILabel *)label {
   if (!_label) {
     _label = [[UILabel alloc] init];
-    _label.textAlignment = UITextAlignmentCenter;
+    _label.textAlignment = NSTextAlignmentCenter;
     _label.backgroundColor = [UIColor clearColor];
     _label.contentMode = UIViewContentModeCenter;
     _label.numberOfLines = 0;
