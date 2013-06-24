@@ -392,15 +392,13 @@
   self.cornerRadius = cornerRadius;  
 }
 
-- (void)setIconImage:(UIImage *)iconImage {
-  [_iconImageView release];
-  _iconImageView = [[YKUIImageView alloc] initWithImage:iconImage];
-  _iconImageView.contentMode = UIViewContentModeScaleToFill;
-  _iconImageView.backgroundColor = [UIColor clearColor];
-}
-
-- (UIImage *)iconImage {
-  return _iconImageView.image;
+- (YKUIImageView *)iconImageView {
+  if (!_iconImageView) {
+    _iconImageView = [[YKUIImageView alloc] init];
+    _iconImageView.contentMode = UIViewContentModeScaleToFill;
+    _iconImageView.backgroundColor = [UIColor clearColor];
+  }
+  return _iconImageView;
 }
 
 - (UIColor *)textColorForState:(UIControlState)state {
@@ -485,7 +483,7 @@
 
   UIColor *titleShadowColor = _titleShadowColor;
   CGSize titleShadowOffset = _titleShadowOffset;
-  UIImage *icon = _iconImageView.image;
+  UIImage *icon = _iconImage;
   UIImage *accessoryImage = _accessoryImage;
 
   if (isDisabled) {
@@ -525,6 +523,8 @@
     if (!CGSizeEqualToSize(_selectedTitleShadowOffset, CGSizeZero)) titleShadowOffset = _selectedTitleShadowOffset;
     else if (!CGSizeEqualToSize(_highlightedTitleShadowOffset, CGSizeZero)) titleShadowOffset = _highlightedTitleShadowOffset;
   }
+  
+  self.iconImageView.image = icon;
 
   // Set a sensible default
   if (borderShadowColor && borderShadowBlur == 0) borderShadowBlur = 3;
