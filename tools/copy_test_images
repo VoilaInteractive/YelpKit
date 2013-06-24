@@ -1,0 +1,61 @@
+#!/bin/sh
+#
+# Script to copy approved images from GHViewTestCases back to the project
+#
+# This script should be run at the command line after approving
+# any UI changes from the simulator.
+#
+# To specify a custom simulator dir use SIMULATOR_DIR=~/iPhoneSimulator.
+# The default is /Users/$USER/Library/Application Support/iPhone Simulator.
+#
+# Created by John Boiles on 10/19/10.
+#
+#  Copyright 2010 Yelp. All rights reserved.
+#
+#  Permission is hereby granted, free of charge, to any person
+#  obtaining a copy of this software and associated documentation
+#  files (the "Software"), to deal in the Software without
+#  restriction, including without limitation the rights to use,
+#  copy, modify, merge, publish, distribute, sublicense, and/or sell
+#  copies of the Software, and to permit persons to whom the
+#  Software is furnished to do so, subject to the following
+#  conditions:
+#
+#  The above copyright notice and this permission notice shall be
+#  included in all copies or substantial portions of the Software.
+#
+#  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+#  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+#  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+#  NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+#  HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+#  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+#  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+#  OTHER DEALINGS IN THE SOFTWARE.
+#
+
+TEST_APP_NAME="YelpKitTests"
+UI_TEST_IMAGES_DIR="$PWD/TestImages"
+
+if [ "$SIMULATOR_DIR" == "" ]; then
+  SIMULATOR_DIR="/Users/$USER/Library/Application Support/iPhone Simulator"
+fi
+
+# Find the most recent simulator install of the app
+SIM_INSTANCE_DIR=`find "$SIMULATOR_DIR" -type d -name "$TEST_APP_NAME.app" -print0 | xargs -0 ls -td | head -1`
+# Find the location of the documents for the app
+SIM_DOCUMENTS_DIR=`dirname "$SIM_INSTANCE_DIR"`/Documents/TestImages
+echo "Found simulator documents dir at $SIM_DOCUMENTS_DIR"
+
+# Create the images directory if not already created
+mkdir -p "$UI_TEST_IMAGES_DIR"
+
+if [[ -d "$SIM_DOCUMENTS_DIR" && $(ls -1A "$SIM_DOCUMENTS_DIR") ]]; then
+	echo "Found the following files:"
+	ls "$SIM_DOCUMENTS_DIR"/*.png
+	# Copy any saved images from the app's documents to the test images folder
+	echo "Saving images to $UI_TEST_IMAGES_DIR"
+	cp "$SIM_DOCUMENTS_DIR"/*.png "$UI_TEST_IMAGES_DIR"
+else
+	echo "No saved test images found"
+fi
