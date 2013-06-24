@@ -151,6 +151,16 @@
 		477B982C16E683F60010BEE6 /* NSDate+YKUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 477B982A16E683F60010BEE6 /* NSDate+YKUtils.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6E6DC674156450F400D95455 /* YKImageMemoryCache.h in Headers */ = {isa = PBXBuildFile; fileRef = 6E6DC672156450F400D95455 /* YKImageMemoryCache.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6E6DC675156450F400D95455 /* YKImageMemoryCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E6DC673156450F400D95455 /* YKImageMemoryCache.m */; };
+		84CCB7E41778C229004B8FD2 /* button_accessory_image.png in Resources */ = {isa = PBXBuildFile; fileRef = 00A4D93215CB27BE0035E64B /* button_accessory_image.png */; };
+		84CCB7E51778C229004B8FD2 /* button_accessory_image@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 00A4D93315CB27BE0035E64B /* button_accessory_image@2x.png */; };
+		84CCB7E61778C229004B8FD2 /* button_accessory_image_selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 00A4D93415CB27BE0035E64B /* button_accessory_image_selected.png */; };
+		84CCB7E71778C229004B8FD2 /* button_accessory_image_selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 00A4D93515CB27BE0035E64B /* button_accessory_image_selected@2x.png */; };
+		84CCB7E81778C229004B8FD2 /* button_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 00A4D93615CB27BE0035E64B /* button_icon.png */; };
+		84CCB7E91778C229004B8FD2 /* button_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 00A4D93715CB27BE0035E64B /* button_icon@2x.png */; };
+		84CCB7FB1778EFDD004B8FD2 /* YKUIButtonViewTest_CategoryButtons.m in Sources */ = {isa = PBXBuildFile; fileRef = 84CCB7FA1778EFDD004B8FD2 /* YKUIButtonViewTest_CategoryButtons.m */; };
+		84CCB7FF1778F04B004B8FD2 /* YKUIButtonViewTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 84CCB7FE1778F04B004B8FD2 /* YKUIButtonViewTest.m */; };
+		84CCB8021778F954004B8FD2 /* YKUIButtonViewTest_DefaultTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 84CCB8011778F954004B8FD2 /* YKUIButtonViewTest_DefaultTest.m */; };
+		84CCB8041778F9B6004B8FD2 /* YKUIButtonViewTest_Borders.m in Sources */ = {isa = PBXBuildFile; fileRef = 84CCB8031778F9B6004B8FD2 /* YKUIButtonViewTest_Borders.m */; };
 		84EB1E7C177133FE00479F80 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00DB563B15BE198600E247FA /* UIKit.framework */; };
 		84EB1E7D177133FE00479F80 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 005592EB140B0085001E9C43 /* Foundation.framework */; };
 		84EB1E7E177133FE00479F80 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00D575761457C62A00DE6487 /* CoreGraphics.framework */; };
@@ -164,7 +174,6 @@
 		84EB1EB2177137B700479F80 /* YKApplicationTestRunner.m in Sources */ = {isa = PBXBuildFile; fileRef = 84EB1EB1177137B600479F80 /* YKApplicationTestRunner.m */; };
 		84EB1EB5177137E100479F80 /* YKUITestApplicationDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 84EB1EB4177137E100479F80 /* YKUITestApplicationDelegate.m */; };
 		84EB1EB81772256100479F80 /* YKViewTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 84EB1EB71772256000479F80 /* YKViewTestCase.m */; };
-		84EB1EBB177225A000479F80 /* YKUIButtonViewTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 84EB1EBA1772259F00479F80 /* YKUIButtonViewTest.m */; };
 		84EB1EBF1772266600479F80 /* libYelpKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 005592E8140B0085001E9C43 /* libYelpKit.a */; };
 /* End PBXBuildFile section */
 
@@ -408,6 +417,11 @@
 		477B982A16E683F60010BEE6 /* NSDate+YKUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+YKUtils.h"; sourceTree = "<group>"; };
 		6E6DC672156450F400D95455 /* YKImageMemoryCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YKImageMemoryCache.h; sourceTree = "<group>"; };
 		6E6DC673156450F400D95455 /* YKImageMemoryCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YKImageMemoryCache.m; sourceTree = "<group>"; };
+		84CCB7FA1778EFDD004B8FD2 /* YKUIButtonViewTest_CategoryButtons.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YKUIButtonViewTest_CategoryButtons.m; sourceTree = "<group>"; };
+		84CCB7FE1778F04B004B8FD2 /* YKUIButtonViewTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YKUIButtonViewTest.m; sourceTree = "<group>"; };
+		84CCB8001778F094004B8FD2 /* YKUIButtonViewTest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YKUIButtonViewTest.h; sourceTree = "<group>"; };
+		84CCB8011778F954004B8FD2 /* YKUIButtonViewTest_DefaultTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YKUIButtonViewTest_DefaultTest.m; sourceTree = "<group>"; };
+		84CCB8031778F9B6004B8FD2 /* YKUIButtonViewTest_Borders.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YKUIButtonViewTest_Borders.m; sourceTree = "<group>"; };
 		84EB1E7B177133FD00479F80 /* Tests.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tests.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		84EB1E81177133FE00479F80 /* Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Tests-Info.plist"; sourceTree = "<group>"; };
 		84EB1E83177133FE00479F80 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -423,7 +437,6 @@
 		84EB1EB4177137E100479F80 /* YKUITestApplicationDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YKUITestApplicationDelegate.m; sourceTree = "<group>"; };
 		84EB1EB61772256000479F80 /* YKViewTestCase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YKViewTestCase.h; sourceTree = "<group>"; };
 		84EB1EB71772256000479F80 /* YKViewTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YKViewTestCase.m; sourceTree = "<group>"; };
-		84EB1EBA1772259F00479F80 /* YKUIButtonViewTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YKUIButtonViewTest.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -842,7 +855,11 @@
 				84EB1EB4177137E100479F80 /* YKUITestApplicationDelegate.m */,
 				84EB1EB61772256000479F80 /* YKViewTestCase.h */,
 				84EB1EB71772256000479F80 /* YKViewTestCase.m */,
-				84EB1EBA1772259F00479F80 /* YKUIButtonViewTest.m */,
+				84CCB8001778F094004B8FD2 /* YKUIButtonViewTest.h */,
+				84CCB7FE1778F04B004B8FD2 /* YKUIButtonViewTest.m */,
+				84CCB8011778F954004B8FD2 /* YKUIButtonViewTest_DefaultTest.m */,
+				84CCB7FA1778EFDD004B8FD2 /* YKUIButtonViewTest_CategoryButtons.m */,
+				84CCB8031778F9B6004B8FD2 /* YKUIButtonViewTest_Borders.m */,
 				84EB1E80177133FE00479F80 /* Supporting Files */,
 			);
 			path = Tests;
@@ -1118,6 +1135,12 @@
 				84EB1E8C177133FE00479F80 /* Default.png in Resources */,
 				84EB1E8E177133FE00479F80 /* Default@2x.png in Resources */,
 				84EB1E90177133FE00479F80 /* Default-568h@2x.png in Resources */,
+				84CCB7E41778C229004B8FD2 /* button_accessory_image.png in Resources */,
+				84CCB7E51778C229004B8FD2 /* button_accessory_image@2x.png in Resources */,
+				84CCB7E61778C229004B8FD2 /* button_accessory_image_selected.png in Resources */,
+				84CCB7E71778C229004B8FD2 /* button_accessory_image_selected@2x.png in Resources */,
+				84CCB7E81778C229004B8FD2 /* button_icon.png in Resources */,
+				84CCB7E91778C229004B8FD2 /* button_icon@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1210,7 +1233,10 @@
 				84EB1EB2177137B700479F80 /* YKApplicationTestRunner.m in Sources */,
 				84EB1EB5177137E100479F80 /* YKUITestApplicationDelegate.m in Sources */,
 				84EB1EB81772256100479F80 /* YKViewTestCase.m in Sources */,
-				84EB1EBB177225A000479F80 /* YKUIButtonViewTest.m in Sources */,
+				84CCB7FB1778EFDD004B8FD2 /* YKUIButtonViewTest_CategoryButtons.m in Sources */,
+				84CCB7FF1778F04B004B8FD2 /* YKUIButtonViewTest.m in Sources */,
+				84CCB8021778F954004B8FD2 /* YKUIButtonViewTest_DefaultTest.m in Sources */,
+				84CCB8041778F9B6004B8FD2 /* YKUIButtonViewTest_Borders.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

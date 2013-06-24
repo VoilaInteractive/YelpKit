@@ -1,8 +1,8 @@
 //
-//  main.m
-//  Tests
+//  YKUIButtonViewTest.h
+//  YelpKit
 //
-//  Created by Allen Cheung on 6/18/13.
+//  Created by Allen Cheung on 6/24/13.
 //  Copyright (c) 2013 Yelp. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person
@@ -27,10 +27,17 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import <UIKit/UIKit.h>
+#import "YKViewTestCase.h"
+#import <YelpKit/YelpKit.h>
 
-int main(int argc, char *argv[]) {
-  @autoreleasepool {
-      return UIApplicationMain(argc, argv, @"YKApplicationTestRunner", @"YKUITestApplicationDelegate");
-  }
+@interface YKUIButtonViewTest : YKViewTestCase {
+  UIView *_superView;
+  YKUIListView *_listView;
+  YKUIListView *_pressedListView;
+  YKUIListView *_disabledListView;
 }
+
+- (YKUIButton *)button;
+- (YKUIButton *)buttonWithIcon:(BOOL)icon accessoryImage:(BOOL)accessoryImage alignment:(NSTextAlignment)alignment titleInsets:(UIEdgeInsets)titleInsets pressed:(BOOL)pressed enabled:(BOOL)enabled;
+
+@end
