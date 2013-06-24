@@ -2,8 +2,8 @@
 //  YKUIButtonViewTest.m
 //  YelpKit
 //
-//  Created by Allen Cheung on 6/19/13.
-//  Copyright (c) 2013 Yelp. All rights reserved.
+//  Created by Allen Cheung on 6/24/13.
+//  Copyright 2013 Yelp. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -27,31 +27,28 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "YKViewTestCase.h"
-#import <YelpKit/YelpKit.h>
-
-@interface YKUIButtonViewTest : YKViewTestCase {
-  UIView *_superView;
-  YKUIListView *_listView;
-  YKUIListView *_pressedListView;
-}
-@end
+#import "YKUIButtonViewTest.h"
 
 @implementation YKUIButtonViewTest
 
 - (void)setUp {
   [super setUp];
   _superView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 400)];
-  _listView = [[YKUIListView alloc] init];
+  
+  _listView = [[YKUIListView alloc] initWithFrame:CGRectMake(0, 0, 320, 100)];
   _listView.insets = UIEdgeInsetsMake(10, 10, 10, 10);
-  _listView.frame = CGRectMake(0, 0, 320, 100);
   [_superView addSubview:_listView];
   [_listView release];
-  _pressedListView = [[YKUIListView alloc] init];
+  
+  _pressedListView = [[YKUIListView alloc] initWithFrame:CGRectMake(0, 100, 320, 100)];
   _pressedListView.insets = UIEdgeInsetsMake(10, 10, 10, 10);
-  _pressedListView.frame = CGRectMake(0, 100, 320, 100);
   [_superView addSubview:_pressedListView];
   [_pressedListView release];
+  
+  _disabledListView = [[YKUIListView alloc] initWithFrame:CGRectMake(0, 200, 320, 100)];
+  _disabledListView.insets = UIEdgeInsetsMake(10, 10, 10, 10);
+  [_superView addSubview:_disabledListView];
+  [_disabledListView release];
 }
 
 - (void)tearDown {
@@ -59,7 +56,7 @@
   [super tearDown];
 }
 
-- (YKUIButton *)_button {
+- (YKUIButton *)button {
   YKUIButton *button = [[YKUIButton alloc] init];
   button.title = @"Button";
   button.titleColor = [UIColor darkGrayColor];
@@ -82,90 +79,41 @@
   return [button autorelease];
 }
 
-- (YKUIButton *)_buttonOnePressed:(BOOL)pressed {
-  YKUIButton *button = [self _button];
-  button.title = @"Button (icon, accessory, center, wrapping text)";
-  button.titleAlignment = NSTextAlignmentCenter;
-  button.titleInsets = UIEdgeInsetsMake(0, 10, 0, 0);
-  button.accessoryImage = [UIImage imageNamed:@"button_accessory_image.png"];
-  button.highlightedAccessoryImage = [UIImage imageNamed:@"button_accessory_image_selected.png"];
-  button.iconImage = [UIImage imageNamed:@"button_icon.png"];
+- (NSString *)_stringFromAlignment:(NSTextAlignment)alignment {
+  switch (alignment) {
+    case NSTextAlignmentCenter:
+      return @"center";
+    case NSTextAlignmentJustified:
+      return @"justified";
+    case NSTextAlignmentLeft:
+      return @"left";
+    case NSTextAlignmentNatural:
+      return @"natural";
+    case NSTextAlignmentRight:
+      return @"right";
+    default:
+      return @"";
+  }
+}
+
+- (YKUIButton *)buttonWithIcon:(BOOL)icon accessoryImage:(BOOL)accessoryImage alignment:(NSTextAlignment)alignment titleInsets:(UIEdgeInsets)titleInsets pressed:(BOOL)pressed enabled:(BOOL)enabled {
+  YKUIButton *button = [self button];
+  NSMutableString *buttonTitle = [NSMutableString stringWithFormat:@"Button (%@ alignment", [self _stringFromAlignment:alignment]];
+  if (icon) {
+    [buttonTitle appendString:@", icon"];
+    button.iconImage = [UIImage imageNamed:@"button_icon.png"];
+  }
+  if (accessoryImage) {
+    [buttonTitle appendString:@", accessory"];
+    button.accessoryImage = [UIImage imageNamed:@"button_accessory_image.png"];
+    button.highlightedAccessoryImage = [UIImage imageNamed:@"button_accessory_image_selected.png"];
+  }
+  [buttonTitle appendString:@")"];
+  button.title = buttonTitle;
   button.selected = pressed;
+  button.enabled = enabled;
+  button.titleInsets = titleInsets;
   return button;
-}
-
-- (void)testButtonOne {
-  [_listView addView:[self _buttonOnePressed:NO]];
-  [_pressedListView addView:[self _buttonOnePressed:YES]];
-  GHVerifyView(_superView);
-}
-
-- (YKUIButton *)_facebookButtonPressed:(BOOL)pressed {
-  YKUIButton *fbButton = [self _button];
-  fbButton.titleShadowColor = [UIColor colorWithWhite:0.2 alpha:0.5];
-  fbButton.titleShadowOffset = CGSizeMake(0, -1);
-  fbButton.title = @"Facebook";
-  fbButton.cornerRadius = 6.0;
-  fbButton.titleColor = [UIColor whiteColor];
-  fbButton.color = [UIColor colorWithRed:98.0f/255.0f green:120.0f/255.0f blue:170.0f/255.0f alpha:1.0];
-  fbButton.color2 = [UIColor colorWithRed:44.0f/255.0f green:70.0f/255.0f blue:126.0f/255.0f alpha:1.0];
-  fbButton.highlightedTitleColor = [UIColor whiteColor];
-  fbButton.highlightedColor = [UIColor colorWithRed:70.0f/255.0f green:92.0f/255.0f blue:138.0f/255.0f alpha:1.0];
-  fbButton.highlightedColor2 = [UIColor colorWithRed:44.0f/255.0f green:70.0f/255.0f blue:126.0f/255.0f alpha:1.0];
-  fbButton.disabledColor = [UIColor colorWithWhite:0.6 alpha:1.0];
-  fbButton.disabledColor2 = [UIColor colorWithWhite:0.7 alpha:1.0];
-  fbButton.disabledBorderColor = [UIColor grayColor];
-  fbButton.selected = pressed;
-  return fbButton;
-}
-
-- (void)testFacebookButton {
-  [_listView addView:[self _facebookButtonPressed:NO]];
-  [_pressedListView addView:[self _facebookButtonPressed:YES]];
-  GHVerifyView(_superView);
-}
-
-- (YKUIButton *)_inverseButtonPressed:(BOOL)pressed {
-  YKUIButton *inverseButton = [self _button];
-  inverseButton.titleShadowColor = [UIColor colorWithWhite:0.2 alpha:0.5];
-  inverseButton.titleShadowOffset = CGSizeMake(0, -1);
-  inverseButton.title = @"Inverse";
-  inverseButton.titleColor = [UIColor whiteColor];
-  inverseButton.color = [UIColor colorWithWhite:66.0f/255.0f alpha:1.0];
-  inverseButton.color2 = [UIColor colorWithWhite:35.0f/255.0f alpha:1.0];
-  inverseButton.borderColor = [UIColor colorWithWhite:48.0f/255.0f alpha:1.0];
-  inverseButton.highlightedColor = [UIColor colorWithWhite:30.0f/255.0f alpha:1.0];
-  inverseButton.highlightedColor2 = [UIColor colorWithWhite:34.0f/255.0f alpha:1.0];
-  inverseButton.selected = pressed;
-  return inverseButton;
-}
-
-- (void)testInverseButton {
-  [_listView addView:[self _inverseButtonPressed:NO]];
-  [_pressedListView addView:[self _inverseButtonPressed:YES]];
-  GHVerifyView(_superView);
-}
-
-- (YKUIButton *)_defaultButtonPressed:(BOOL)pressed {
-  YKUIButton *defaultButton = [self _button];
-  defaultButton.titleShadowColor = [UIColor colorWithWhite:1.0 alpha:0.5];
-  defaultButton.titleShadowOffset = CGSizeMake(0, -1);
-  defaultButton.title = @"Default";
-  defaultButton.titleColor = [UIColor colorWithWhite:51.0f/255.0f alpha:1.0];
-  defaultButton.color = [UIColor whiteColor];
-  defaultButton.color2 = [UIColor colorWithWhite:0.9 alpha:1.0];
-  defaultButton.titleColor = [UIColor colorWithWhite:51.0f/255.0f alpha:1.0];
-  defaultButton.borderColor = [UIColor colorWithWhite:184.0f/255.0f alpha:1.0];
-  defaultButton.highlightedColor = [UIColor colorWithWhite:203.0f/255.0f alpha:1.0];
-  defaultButton.highlightedColor2 = [UIColor colorWithWhite:230.0f/255.0f alpha:1.0];
-  defaultButton.selected = pressed;
-  return defaultButton;
-}
-
-- (void)testDefaultButton {
-  [_listView addView:[self _defaultButtonPressed:NO]];
-  [_pressedListView addView:[self _defaultButtonPressed:YES]];
-  GHVerifyView(_superView);
 }
 
 @end

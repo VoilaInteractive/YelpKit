@@ -1,9 +1,9 @@
 //
-//  main.m
-//  Tests
+//  YKUIButtonViewTest_DefaultTest.m
+//  YelpKit
 //
-//  Created by Allen Cheung on 6/18/13.
-//  Copyright (c) 2013 Yelp. All rights reserved.
+//  Created by Allen Cheung on 6/24/13.
+//  Copyright 2013 Yelp. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -27,10 +27,20 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import <UIKit/UIKit.h>
+#import "YKUIButtonViewTest.h"
 
-int main(int argc, char *argv[]) {
-  @autoreleasepool {
-      return UIApplicationMain(argc, argv, @"YKApplicationTestRunner", @"YKUITestApplicationDelegate");
-  }
+@interface YKUIButtonViewTest_DefaultTest : YKUIButtonViewTest
+@end
+
+
+@implementation YKUIButtonViewTest_DefaultTest
+
+- (void)testButtonWithIconAccessoryImageCenterAlignment {
+  UIEdgeInsets titleInsets = UIEdgeInsetsMake(0, 10, 0, 0);
+  [_listView addView:[self buttonWithIcon:YES accessoryImage:YES alignment:NSTextAlignmentCenter titleInsets:titleInsets pressed:NO enabled:YES]];
+  [_pressedListView addView:[self buttonWithIcon:YES accessoryImage:YES alignment:NSTextAlignmentCenter titleInsets:titleInsets pressed:YES enabled:YES]];
+  [_disabledListView addView:[self buttonWithIcon:YES accessoryImage:YES alignment:NSTextAlignmentCenter titleInsets:titleInsets pressed:NO enabled:NO]];
+  GHVerifyView(_superView);
 }
+
+@end
