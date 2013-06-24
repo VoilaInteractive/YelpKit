@@ -114,7 +114,9 @@ typedef enum {
   UIColor *_titleShadowColor;
   CGSize _titleShadowOffset;
   
+  UIImage *_iconImage;
   YKUIImageView *_iconImageView;
+  BOOL _externalIconImageView; // set to YES when a consumer of YKUIButton sets the iconImageView. This will cause us to start using that instead of an iconImageView that we've created.
   CGSize _iconImageSize;
   CGPoint _iconOrigin;
   
@@ -259,7 +261,6 @@ typedef enum {
 
 /*!
  Image (view) to display to the left of the text.
- Alternatively, you can set the image.
  */
 @property (retain, nonatomic) YKUIImageView *iconImageView;
 
@@ -284,8 +285,7 @@ typedef enum {
 @property (assign, nonatomic, getter=isTitleHidden) BOOL titleHidden;
 
 /*!
- Image to display to the left of the text.
- Alternatively, you can set the imageView.
+ Image to display to the left of the text when the button is not highlighted or selected.
  */
 @property (retain, nonatomic) UIImage *iconImage;
 

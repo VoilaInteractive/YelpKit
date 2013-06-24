@@ -392,15 +392,20 @@
   self.cornerRadius = cornerRadius;  
 }
 
-- (void)setIconImage:(UIImage *)iconImage {
+- (void)setIconImageView:(YKUIImageView *)iconImageView {
+  _externalIconImageView = !!(iconImageView);
+  [iconImageView retain];
   [_iconImageView release];
-  _iconImageView = [[YKUIImageView alloc] initWithImage:iconImage];
-  _iconImageView.contentMode = UIViewContentModeScaleToFill;
-  _iconImageView.backgroundColor = [UIColor clearColor];
+  _iconImageView = iconImageView;
 }
 
-- (UIImage *)iconImage {
-  return _iconImageView.image;
+- (YKUIImageView *)iconImageView {
+  if (!_iconImageView) {
+    _iconImageView = [[YKUIImageView alloc] init];
+    _iconImageView.contentMode = UIViewContentModeScaleToFill;
+    _iconImageView.backgroundColor = [UIColor clearColor];
+  }
+  return _iconImageView;
 }
 
 - (UIColor *)textColorForState:(UIControlState)state {
@@ -485,7 +490,7 @@
 
   UIColor *titleShadowColor = _titleShadowColor;
   CGSize titleShadowOffset = _titleShadowOffset;
-  UIImage *icon = _iconImageView.image;
+  UIImage *icon = _iconImage;
   UIImage *accessoryImage = _accessoryImage;
 
   if (isDisabled) {
@@ -526,7 +531,13 @@
     if (!CGSizeEqualToSize(_selectedTitleShadowOffset, CGSizeZero)) titleShadowOffset = _selectedTitleShadowOffset;
     else if (!CGSizeEqualToSize(_highlightedTitleShadowOffset, CGSizeZero)) titleShadowOffset = _highlightedTitleShadowOffset;
   }
-
+  
+  if (_externalIconImageView) {
+    icon = _iconImageView.image;
+  } else {
+    self.iconImageView.image = icon;
+  }
+  
   // Set a sensible default
   if (borderShadowColor && borderShadowBlur == 0) borderShadowBlur = 3;
 
@@ -631,7 +642,7 @@
         case YKUIButtonIconPositionTop: {
           CGPoint iconTop = YKCGPointToCenter(iconSize, size);
           [_iconImageView drawInRect:CGRectMake(iconTop.x, _insets.top, iconSize.width, iconSize.height)];
-          y = _insets.top + iconSize.height + titleInsets.top;
+          y = _insets.top + iconSize.height;
           break;
         }
         case YKUIButtonIconPositionCenter: {
@@ -639,7 +650,7 @@
           if (_iconOrigin.x != CGFLOAT_MAX) iconTop.x = _iconOrigin.x;
           if (_iconOrigin.y != CGFLOAT_MAX) iconTop.y = _iconOrigin.y;
           [_iconImageView drawInRect:CGRectMake(iconTop.x, iconTop.y + _insets.top, iconSize.width, iconSize.height)];
-          y = iconTop.y + _insets.top + iconSize.height + titleInsets.top;
+          y = iconTop.y + _insets.top + iconSize.height;
           break;
         }
       }
@@ -655,6 +666,7 @@
     CGContextSetShadowWithColor(context, titleShadowOffset, 0.0, titleShadowColor.CGColor);
 
     x += titleInsets.left;
+    y += titleInsets.top;
     if (y < _insets.top) y = _insets.top + titleInsets.top;
 
     // Draw title. If we have a secondary title, we'll need to adjust for alignment.
