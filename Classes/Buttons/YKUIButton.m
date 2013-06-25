@@ -525,8 +525,10 @@
     else if (!CGSizeEqualToSize(_highlightedTitleShadowOffset, CGSizeZero)) titleShadowOffset = _highlightedTitleShadowOffset;
   }
   
-  self.iconImageView.image = icon;
-
+  if (icon) {
+    self.iconImageView.image = icon;
+  }
+  
   // Set a sensible default
   if (borderShadowColor && borderShadowBlur == 0) borderShadowBlur = 3;
 
