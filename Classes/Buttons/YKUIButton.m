@@ -632,7 +632,7 @@
         case YKUIButtonIconPositionTop: {
           CGPoint iconTop = YKCGPointToCenter(iconSize, size);
           [_iconImageView drawInRect:CGRectMake(iconTop.x, _insets.top, iconSize.width, iconSize.height)];
-          y = _insets.top + iconSize.height + titleInsets.top;
+          y = _insets.top + iconSize.height;
           break;
         }
         case YKUIButtonIconPositionCenter: {
@@ -640,7 +640,7 @@
           if (_iconOrigin.x != CGFLOAT_MAX) iconTop.x = _iconOrigin.x;
           if (_iconOrigin.y != CGFLOAT_MAX) iconTop.y = _iconOrigin.y;
           [_iconImageView drawInRect:CGRectMake(iconTop.x, iconTop.y + _insets.top, iconSize.width, iconSize.height)];
-          y = iconTop.y + _insets.top + iconSize.height + titleInsets.top;
+          y = iconTop.y + _insets.top + iconSize.height;
           break;
         }
       }
@@ -656,6 +656,7 @@
     CGContextSetShadowWithColor(context, titleShadowOffset, 0.0, titleShadowColor.CGColor);
 
     x += titleInsets.left;
+    y += titleInsets.top;
     if (y < _insets.top) y = _insets.top + titleInsets.top;
 
     // Draw title. If we have a secondary title, we'll need to adjust for alignment.
