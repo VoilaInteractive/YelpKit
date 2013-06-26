@@ -116,6 +116,7 @@ typedef enum {
   
   UIImage *_iconImage;
   YKUIImageView *_iconImageView;
+  BOOL _externalIconImageView; // set to YES when a consumer of YKUIButton sets the iconImageView. This will cause us to start using that instead of an iconImageView that we've created.
   CGSize _iconImageSize;
   CGPoint _iconOrigin;
   

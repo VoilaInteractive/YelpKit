@@ -392,6 +392,13 @@
   self.cornerRadius = cornerRadius;  
 }
 
+- (void)setIconImageView:(YKUIImageView *)iconImageView {
+  _externalIconImageView = !!(iconImageView);
+  [iconImageView retain];
+  [_iconImageView release];
+  _iconImageView = iconImageView;
+}
+
 - (YKUIImageView *)iconImageView {
   if (!_iconImageView) {
     _iconImageView = [[YKUIImageView alloc] init];
@@ -524,7 +531,9 @@
     else if (!CGSizeEqualToSize(_highlightedTitleShadowOffset, CGSizeZero)) titleShadowOffset = _highlightedTitleShadowOffset;
   }
   
-  if (icon) {
+  if (_externalIconImageView) {
+    icon = _iconImageView.image;
+  } else {
     self.iconImageView.image = icon;
   }
   
