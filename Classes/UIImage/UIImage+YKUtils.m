@@ -55,13 +55,13 @@
   return viewImage;
 }
 
-+ (UIImage *)croppedImageFromImage:(UIImage *)image frame:(CGRect)frame {
+- (UIImage *)croppedImageFromFrame:(CGRect)frame {
   CGFloat scale = [[UIScreen mainScreen] scale];
   frame.origin.x *= scale;
   frame.origin.y *= scale;
   frame.size.height *= scale;
   frame.size.width *= scale;
-  return [UIImage imageWithCGImage:CGImageCreateWithImageInRect(image.CGImage, frame) scale:scale orientation:UIImageOrientationUp];
+  return [UIImage imageWithCGImage:CGImageCreateWithImageInRect(self.CGImage, frame) scale:scale orientation:UIImageOrientationUp];
 }
 
 - (UIImage *)resizedImageInSize:(CGSize)size contentMode:(UIViewContentMode)contentMode opaque:(BOOL)opaque {
