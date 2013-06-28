@@ -55,6 +55,15 @@
   return viewImage;
 }
 
+- (UIImage *)croppedImageFromFrame:(CGRect)frame {
+  CGFloat scale = [self scale];
+  frame.origin.x *= scale;
+  frame.origin.y *= scale;
+  frame.size.height *= scale;
+  frame.size.width *= scale;
+  return [UIImage imageWithCGImage:CGImageCreateWithImageInRect(self.CGImage, frame) scale:scale orientation:[self imageOrientation]];
+}
+
 - (UIImage *)resizedImageInSize:(CGSize)size contentMode:(UIViewContentMode)contentMode opaque:(BOOL)opaque {
   CGRect imageRect = YKCGRectConvert(CGRectMake(0, 0, size.width, size.height), self.size, contentMode);
 

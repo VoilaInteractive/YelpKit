@@ -47,6 +47,14 @@
  */
 + (UIImage *)imageFromView:(UIView *)view;
 
+
+/*!
+ Crops a new image from the given instance image
+ @param frame Rect to constrain the new image cropped out of image
+ @result UIImage that is cropped from the original image
+ */
+- (UIImage *)croppedImageFromFrame:(CGRect)frame;
+
 /*!
  Resizes an image based on a given content mode
 
