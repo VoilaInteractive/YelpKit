@@ -49,8 +49,7 @@
 
 
 /*!
- Crops a new image from the given image
- @param image Image to crop
+ Crops a new image from the given instance image
  @param frame Rect to constrain the new image cropped out of image
  @result UIImage that is cropped from the original image
  */
