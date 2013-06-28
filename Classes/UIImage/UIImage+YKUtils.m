@@ -56,7 +56,7 @@
 }
 
 - (UIImage *)croppedImageFromFrame:(CGRect)frame {
-  CGFloat scale = [[UIScreen mainScreen] scale];
+  CGFloat scale = [self scale];
   frame.origin.x *= scale;
   frame.origin.y *= scale;
   frame.size.height *= scale;
