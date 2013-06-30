@@ -519,6 +519,7 @@
     if (_highlightedImage) image = _highlightedImage;
     if (_selectedBorderShadowColor) borderShadowColor = _selectedBorderShadowColor;
     if (_selectedBorderShadowBlur) borderShadowBlur = _selectedBorderShadowBlur;
+    if (_selectedBorderColor) borderColor = _selectedBorderColor;
     if (_selectedIconImage) icon = _selectedIconImage;
     if (_selectedTitleShadowColor) titleShadowColor = _selectedTitleShadowColor;
     else if (_highlightedTitleShadowColor) titleShadowColor = _highlightedTitleShadowColor;

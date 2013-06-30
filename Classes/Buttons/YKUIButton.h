@@ -398,6 +398,11 @@ typedef enum {
 @property (retain, nonatomic) UIColor *selectedBorderShadowColor;
 
 /*!
+ Border color (selected).
+ */
+@property (retain, nonatomic) UIColor *selectedBorderColor;
+
+/*!
  Border shadow blur (selected).
  */
 @property (assign, nonatomic) CGFloat selectedBorderShadowBlur;
