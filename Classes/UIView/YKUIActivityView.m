@@ -56,7 +56,11 @@
 
 - (CGSize)sizeThatFits:(CGSize)size {
   // TODO: Size based on activity style and label height
-  return CGSizeMake(size.width, 60);
+  if (self.frame.size.height > 0) {
+    return CGSizeMake(size.width, self.frame.size.height);
+  } else {
+    return CGSizeMake(size.width, 60);
+  }
 }
 
 - (void)_setActivityEnabled:(BOOL)activityEnabled {  
