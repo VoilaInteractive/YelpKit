@@ -650,7 +650,9 @@ static BOOL gAuthProtectionDisabled = NO;
     [self didError:[YKError errorWithKey:YKErrorNotConnectedToInternet error:error]];
   } else if ([error domain] == NSURLErrorDomain && [error code] == NSURLErrorCannotConnectToHost) {
      [self didError:[YKError errorWithKey:YKErrorCannotConnectToHost error:error]];
-  } else {    
+  } else if([error code] == NSURLErrorCannotFindHost) {
+    [self didError:[YKError errorWithKey:YKErrorCannotFindHost error:error]];
+  } else {
     [self didError:[YKError errorWithError:error]];
   }
 }

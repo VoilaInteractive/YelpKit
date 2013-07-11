@@ -38,6 +38,7 @@ extern NSString *const YKErrorServerResourceNotFound; // Server was reached but 
 extern NSString *const YKErrorServerMaintenance; // Server was reached but returned a 503 error
 extern NSString *const YKErrorServerResponse; // Server was reached but returned some other error
 extern NSString *const YKErrorCannotConnectToHost; // Server not reachable but internet active
+extern NSString *const YKErrorCannotFindHost;
 extern NSString *const YKErrorNotConnectedToInternet;
 extern NSString *const YKErrorServerUnauthorized; // Server returned 401
 
