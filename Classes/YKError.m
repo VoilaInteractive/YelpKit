@@ -90,21 +90,29 @@ NSString *const YKErrorServerUnauthorized = @"YPErrorServerUnauthorized";
     YKDebug(@"Description for error key=%@: %@", _key, description);
     if (!description || [description isEqualToString:_key]) {
       if (_unknownDescription) return _unknownDescription;
+
       static NSDictionary *DescriptionsBuiltIn = nil;
-      DescriptionsBuiltIn = @{
-                              YKErrorUnknown: @"There was an error. Please try again later.",
-                              YKErrorRequest: @"Sorry, we couldn't complete your request. Please try again in a bit.",
-                              YKErrorServerResourceNotFound: @"Sorry, we couldn't complete your request. Please try again in a bit.",
-                              YKErrorServerResponse: @"Sorry, we couldn't complete your request. Please try again in a bit. ",
-                              YKErrorServerMaintenance: @"Sorry, we're down for maintenance. But don't worry, we'll be back shortly!",
-                              YKErrorCannotConnectToHost: @"Sorry, something's funky with your connection. Try again in a bit.",
-                              YKErrorCannotFindHost: @"Sorry, something's funky with your connection. Try again in a bit.",
-                              YKErrorNotConnectedToInternet: @"You're not connected to the Internet. Please connect and retry.",
-                              YKErrorServerUnauthorized: @"You'll need to log in.",
-                              };
+      static dispatch_once_t onceToken = 0;
+      dispatch_once(&onceToken, ^{
+        DescriptionsBuiltIn = [@{
+                                YKErrorUnknown: @"There was an error. Please try again later.",
+                                YKErrorRequest: @"Sorry, we couldn't complete your request. Please try again in a bit.",
+                                YKErrorServerResourceNotFound: @"Sorry, we couldn't complete your request. Please try again in a bit.",
+                                YKErrorServerResponse: @"Sorry, we couldn't complete your request. Please try again in a bit. ",
+                                YKErrorServerMaintenance: @"Sorry, we're down for maintenance. But don't worry, we'll be back shortly!",
+                                YKErrorCannotConnectToHost: @"Sorry, something's funky with your connection. Try again in a bit.",
+                                YKErrorCannotFindHost: @"Sorry, something's funky with your connection. Try again in a bit.",
+                                YKErrorNotConnectedToInternet: @"You're not connected to the Internet. Please connect and retry.",
+                                YKErrorServerUnauthorized: @"You'll need to log in.",
+                                } retain];
+      });
       
       NSString *keyBuiltIn = [DescriptionsBuiltIn objectForKey:_key];
       if (keyBuiltIn) return YKLocalizedString(keyBuiltIn);      
+      
+      // Needed for backwards compatibility
+      NSString *defaultErrorMessage = YKLocalizedString(@"YPErrorUnknown");
+      if (![defaultErrorMessage isEqualToString:@"YPErrorUnknown"]) return defaultErrorMessage;
       
       NSString *unknownError = YKLocalizedString(@"YKErrorUnknown");
       if ([unknownError isEqualToString:YKErrorUnknown]) unknownError = YKLocalizedString(@"There was an error. Please try again later.");
