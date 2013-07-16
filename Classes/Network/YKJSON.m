@@ -60,14 +60,14 @@
  }
  Class objClass = [obj class];
  id newJSONSerializeableParent;
- if ([objClass isSubclassOfClass:[NSDictionary class]] || [objClass isSubclassOfClass:[NSMutableDictionary class]]) {
+ if ([objClass isSubclassOfClass:[NSDictionary class]]) {
    newJSONSerializeableParent = [[NSMutableDictionary alloc] initWithDictionary:obj];
- } else if ([objClass isSubclassOfClass:[NSArray class]] || [objClass isSubclassOfClass:[NSMutableArray class]]) {
+ } else if ([objClass isSubclassOfClass:[NSArray class]]) {
    newJSONSerializeableParent = [[NSMutableArray alloc] init];
  }
  for (id key in obj) {
    id value = key;
-   BOOL isDictionary = [objClass isSubclassOfClass:[NSDictionary class]] || [objClass isSubclassOfClass:[NSMutableDictionary class]];
+   BOOL isDictionary = [objClass isSubclassOfClass:[NSDictionary class]];
    if (isDictionary) {
      value = [obj objectForKey:key];
    }
@@ -88,7 +88,7 @@
        [newJSONSerializeableParent addObject:[value JSON]];
      }
    } else {
-     // We can try, but at this poin things are expected to fail later down in recursion
+     // We probably have a dictionary or array with objects that are unserializeable or will respond to JSON method calls
      NSString *result = [self _JSONObjectFromObject:value];
      if (isDictionary) {
        [(NSMutableDictionary*)newJSONSerializeableParent setValue:result forKey:key];
