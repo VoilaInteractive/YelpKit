@@ -54,20 +54,17 @@ typedef void (^YKURLCacheDataBlock)(NSData *data);
  */
 @interface YKURLCache : NSObject {  
   NSString *_name;
-  NSString *_cachePath;  
-  NSTimeInterval _invalidationAge;
-  BOOL _disableDiskCache; 
 }
 
 /*!
  Disables the disk cache. Disables ETag support as well.
  */
-@property (nonatomic) BOOL disableDiskCache;
+@property (assign, nonatomic) BOOL disableDiskCache;
 
 /*!
  Gets the path to the directory of the disk cache.
  */
-@property (nonatomic, copy) NSString *cachePath;
+@property (copy, nonatomic) NSString *cachePath;
 
 /*!
  Gets the path to the directory of the disk cache for ETags.
@@ -77,7 +74,7 @@ typedef void (^YKURLCacheDataBlock)(NSData *data);
 /*!
   The amount of time to set back the modification timestamp on files when invalidating them.
  */
-@property (nonatomic) NSTimeInterval invalidationAge;
+@property (assign, nonatomic) NSTimeInterval invalidationAge;
 
 /*!
  Gets a shared cache identified with a unique name.
@@ -185,9 +182,14 @@ typedef void (^YKURLCacheDataBlock)(NSData *data);
 - (NSData *)dataForKey:(NSString *)key expires:(NSTimeInterval)expirationAge timestamp:(NSDate**)timestamp;
 
 /*!
- Default dispatch queue.
+ Default dispatch queue for cache writes.
  */
-+ (dispatch_queue_t)defaultDispatchQueue;
++ (dispatch_queue_t)defaultWriteQueue;
+
+/*!
+ Default dispatch queue for cache reads.
+ */
++ (dispatch_queue_t)defaultReadQueue;
 
 /*!
  Get an ETag value for a given cache key.
@@ -213,7 +215,7 @@ typedef void (^YKURLCacheDataBlock)(NSData *data);
 /*!
  Stores an ETag value in the ETag cache.
  */
-- (void)storeETag:(NSString *)ETag forKey:(NSString *)key;
+- (void)storeETag:(NSString *)ETag forKey:(NSString*)key asynchronous:(BOOL)asynchronous;
 
 /*!
  Load data in dispatch queue.
@@ -240,14 +242,14 @@ typedef void (^YKURLCacheDataBlock)(NSData *data);
 - (void)moveDataFromPath:(NSString *)path toURLString:(NSString *)newURLString;
 
 /*!
- Removes the data for a URL from the memory cache and optionally from the disk cache.
+ Removes the data for a URL from the disk cache.
  */
-- (void)removeURLString:(NSString *)URLString fromDisk:(BOOL)fromDisk;
+- (void)removeURLString:(NSString *)URLString;
 
 - (void)removeKey:(NSString *)key;
 
 /*!
- Erases the disk cache.
+ Erases the disk cache.  This method is blocking and not thread safe.
  */
 - (void)removeAll;
 

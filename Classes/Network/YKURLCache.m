@@ -56,22 +56,53 @@
 
 static NSString *kEtagCacheDirectoryName = @"ETag";
 
-static NSMutableDictionary *gNamedCaches = NULL;
-
-@interface YKURLCache()
-+ (NSString *)_cachePathWithName:(NSString *)name;
-@end
-
+static NSString *gWriteFileName = nil;
+static NSString *gReadFileName = nil;
+static NSLock *gFileNameLock = nil;
 
 @implementation YKURLCache
 
-@synthesize disableDiskCache=_disableDiskCache, cachePath=_cachePath, invalidationAge=_invalidationAge;
++ (void)initialize {
+  if (self == [YKURLCache class]) {
+    gFileNameLock = [[NSLock alloc] init];
+  }
+}
+
++ (BOOL)_setWriteFileName:(NSString *)name {
+  [gFileNameLock lock];
+  // Only proceed with writing the file if it is not currently being read
+  BOOL shouldWrite = (!name || ![name isEqualToString:gReadFileName]);
+  if (shouldWrite) {
+    [name retain];
+    [gWriteFileName release];
+    gWriteFileName = name;
+  }
+  [gFileNameLock unlock];
+  return shouldWrite;
+}
+
++ (BOOL)_setReadFileName:(NSString *)name {
+  [gFileNameLock lock];
+  // Only proceed with reading the file if it is not currently being written to
+  BOOL shouldRead = (!name || ![name isEqualToString:gWriteFileName]);
+  if (shouldRead) {
+    [name retain];
+    [gReadFileName release];
+    gReadFileName = name;
+  }
+  [gFileNameLock unlock];
+  return shouldRead;
+}
 
 - (id)initWithName:(NSString *)name {
   if ((self = [super init])) {
     _name = [name copy];
     _cachePath = [[YKURLCache _cachePathWithName:name] retain];
+    _ETagCachePath = [[YKURLCache _ETagCachePathWithName:name] retain];
     _invalidationAge = YKTimeIntervalDay;
+    if (![YKURLCache _ensureCacheDirectoriesExist:name]) {
+      YKAssert(NO, @"YKURLCache did not successfully create cache directory");
+    }
   }
   return self;
 }
@@ -82,19 +113,30 @@ static NSMutableDictionary *gNamedCaches = NULL;
 }
 
 - (void)dealloc {
-  [[NSNotificationCenter defaultCenter] removeObserver:self];
   [_name release];
   [_cachePath release];
+  [_ETagCachePath release];
   [super dealloc];
 }
 
-+ (dispatch_queue_t)defaultDispatchQueue {
++ (dispatch_queue_t)defaultWriteQueue {
   static dispatch_once_t once;
-  static dispatch_queue_t DefaultDispatchQueue = NULL;
+  static dispatch_queue_t DefaultWriteQueue = NULL;
   dispatch_once(&once, ^{
-    DefaultDispatchQueue = dispatch_queue_create("com.YelpKit.YKURLCache.defaultDispatchQueue", 0);
+    DefaultWriteQueue = dispatch_queue_create("com.YelpKit.YKURLCache.defaultWriteQueue", DISPATCH_QUEUE_SERIAL);
+    dispatch_set_target_queue(DefaultWriteQueue, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0));
   });
-  return DefaultDispatchQueue;
+  return DefaultWriteQueue;
+}
+
++ (dispatch_queue_t)defaultReadQueue {
+  static dispatch_once_t once;
+  static dispatch_queue_t DefaultReadQueue = NULL;
+  dispatch_once(&once, ^{
+    DefaultReadQueue = dispatch_queue_create("com.YelpKit.YKURLCache.defaultReadQueue", DISPATCH_QUEUE_SERIAL);
+    dispatch_set_target_queue(DefaultReadQueue, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0));
+  });
+  return DefaultReadQueue;
 }
 
 + (NSUInteger)getSysInfo:(uint)typeSpecifier {
@@ -114,41 +156,44 @@ static NSMutableDictionary *gNamedCaches = NULL;
 }
 
 + (YKURLCache *)cacheWithName:(NSString *)name {
-  YKURLCache *cache = nil;
-  @synchronized([YKURLCache class]) {
-    if (gNamedCaches == NULL)
-      gNamedCaches = [[NSMutableDictionary alloc] init];
-
+  static dispatch_once_t once;
+  static dispatch_queue_t CacheAccessQueue = NULL;
+  static NSMutableDictionary *gNamedCaches = NULL;
+  dispatch_once(&once, ^{
+    gNamedCaches = [[NSMutableDictionary alloc] init];
+    CacheAccessQueue = dispatch_queue_create("com.YelpKit.YKURLCache.cacheAccessQueue", DISPATCH_QUEUE_SERIAL);
+  });
+  
+  __block YKURLCache *cache = nil;
+  dispatch_sync(CacheAccessQueue, ^{
     cache = [gNamedCaches objectForKey:name];
     if (!cache) {
       cache = [[[YKURLCache alloc] initWithName:name] autorelease];
       [gNamedCaches setObject:cache forKey:name];
     }
-  }
+  });
+  
   return cache;
 }
 
-+ (NSString*)_cachePathWithName:(NSString*)name {
-  NSString *cachesPath = [YKResource cacheDirectory];
-  NSString *cachePath = [cachesPath stringByAppendingPathComponent:name];
-  NSString *ETagCachePath = [cachePath stringByAppendingPathComponent:kEtagCacheDirectoryName];
-
-  [NSFileManager gh_ensureDirectoryExists:cachesPath created:nil error:nil];
-  [NSFileManager gh_ensureDirectoryExists:cachePath created:nil error:nil];
-  [NSFileManager gh_ensureDirectoryExists:ETagCachePath created:nil error:nil];
-
-  return cachePath;
+/*!
+ @param name Name of the cache
+ 
+ @result Whether the cache directories exist or were successfully created
+ */
++ (BOOL)_ensureCacheDirectoriesExist:(NSString *)name {
+  return [NSFileManager gh_ensureDirectoryExists:[YKURLCache _ETagCachePathWithName:name] created:nil error:nil];
 }
 
-- (NSString *)ETagFromCacheWithKey:(NSString *)key {
-  NSString *path = [self ETagCachePathForKey:key];
-  NSData *data = [NSData dataWithContentsOfFile:path];
-  return [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
++ (NSString *)_cachePathWithName:(NSString*)name {
+  return [[YKResource cacheDirectory] stringByAppendingPathComponent:name];
 }
 
-- (NSString *)ETagCachePath {
-  return [self.cachePath stringByAppendingPathComponent:kEtagCacheDirectoryName];
++ (NSString *)_ETagCachePathWithName:(NSString *)name {
+  return [[YKURLCache _cachePathWithName:name] stringByAppendingPathComponent:kEtagCacheDirectoryName];
 }
+
+#pragma mark Path handling
 
 - (NSString *)keyForURLString:(NSString *)URLString {
   return [URLString gh_MD5];
@@ -167,15 +212,53 @@ static NSMutableDictionary *gNamedCaches = NULL;
   return [self.ETagCachePath stringByAppendingPathComponent:key];
 }
 
+- (NSString *)ETagForKey:(NSString*)key {
+  return [self ETagFromCacheWithKey:key];
+}
+
+#pragma mark Cache read
+
+- (NSString *)ETagFromCacheWithKey:(NSString *)key {
+  NSString *path = [self ETagCachePathForKey:key];
+  __block NSData *data = nil;
+  dispatch_sync([YKURLCache defaultReadQueue], ^{
+    if ([YKURLCache _setReadFileName:path]) {
+      data = [NSData dataWithContentsOfFile:path];
+      [YKURLCache _setReadFileName:nil];
+    }
+  });
+  
+  return [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
+}
+
 - (BOOL)hasDataForURLString:(NSString *)URLString {
-  NSString *filePath = [self cachePathForURLString:URLString];
-  NSFileManager *fm = [NSFileManager defaultManager];
-  return [fm fileExistsAtPath:filePath];
+  return [self hasDataForURLString:URLString expires:YKTimeIntervalMax];
 }
 
 - (BOOL)hasDataForURLString:(NSString *)URLString expires:(NSTimeInterval)expires {
   NSString *key = [self keyForURLString:URLString];
   return [self hasDataForKey:key expires:expires];
+}
+
+- (BOOL)hasDataForKey:(NSString *)key expires:(NSTimeInterval)expires {
+  NSString *filePath = [self cachePathForKey:key];
+  __block BOOL exists = NO;
+  dispatch_sync([YKURLCache defaultReadQueue], ^{
+    if ([YKURLCache _setReadFileName:filePath]) {
+      NSFileManager *fm = [NSFileManager defaultManager];
+      if ([fm fileExistsAtPath:filePath]) {
+        NSDictionary *attrs = [fm attributesOfItemAtPath:filePath error:nil];
+        NSDate *modified = [attrs objectForKey:NSFileModificationDate];
+        if ([modified timeIntervalSinceNow] < -expires) {
+          exists = NO;
+        }
+        exists = YES;
+      }
+      [YKURLCache _setReadFileName:nil];
+    }
+  });
+
+  return exists;
 }
 
 - (NSData *)dataForURLString:(NSString *)URLString {
@@ -188,35 +271,27 @@ static NSMutableDictionary *gNamedCaches = NULL;
   return [self dataForKey:key expires:expirationAge timestamp:timestamp];
 }
 
-- (BOOL)hasDataForKey:(NSString *)key expires:(NSTimeInterval)expires {
-  NSString *filePath = [self cachePathForKey:key];
-  NSFileManager *fm = [NSFileManager defaultManager];
-  if ([fm fileExistsAtPath:filePath]) {
-    NSDictionary *attrs = [fm attributesOfItemAtPath:filePath error:nil];
-    NSDate *modified = [attrs objectForKey:NSFileModificationDate];
-    if ([modified timeIntervalSinceNow] < -expires) {
-      return NO;
-    }
-    return YES;
-  }
-  return NO;
-}
-
 - (NSData *)dataForKey:(NSString*)key expires:(NSTimeInterval)expires timestamp:(NSDate**)timestamp {
   NSString *filePath = [self cachePathForKey:key];
-  NSFileManager *fm = [NSFileManager defaultManager];
-  if ([fm fileExistsAtPath:filePath]) {
-    NSDictionary *attrs = [fm attributesOfItemAtPath:filePath error:nil];
-    NSDate *modified = [attrs objectForKey:NSFileModificationDate];
-    if ([modified timeIntervalSinceNow] < -expires) {
-      return nil;
+  __block NSData *data = nil;
+  dispatch_sync([YKURLCache defaultReadQueue], ^{
+    if ([YKURLCache _setReadFileName:filePath]) {
+      NSFileManager *fm = [NSFileManager defaultManager];
+      if ([fm fileExistsAtPath:filePath]) {
+        NSDictionary *attrs = [fm attributesOfItemAtPath:filePath error:nil];
+        NSDate *modified = [attrs objectForKey:NSFileModificationDate];
+        if ([modified timeIntervalSinceNow] >= -expires) {
+          data = [NSData dataWithContentsOfFile:filePath];
+        }
+        if (timestamp) {
+          *timestamp = modified;
+        }
+      }
+      [YKURLCache _setReadFileName:nil];
     }
-    if (timestamp) {
-      *timestamp = modified;
-    }
-    return [NSData dataWithContentsOfFile:filePath];
-  }
-  return nil;
+  });
+
+  return data;
 }
 
 - (void)dataForURLString:(NSString *)URLString dataBlock:(YKURLCacheDataBlock)dataBlock {
@@ -225,17 +300,21 @@ static NSMutableDictionary *gNamedCaches = NULL;
 }
 
 - (void)dataForKey:(NSString *)key dataBlock:(YKURLCacheDataBlock)dataBlock {
-  dispatch_async([YKURLCache defaultDispatchQueue], ^{
-    NSData *data = [NSData dataWithContentsOfFile:[self cachePathForKey:key]];
+  NSString *filePath = [self cachePathForKey:key];
+  dispatch_async([YKURLCache defaultReadQueue], ^{
+    NSData *data = nil;
+    if ([YKURLCache _setReadFileName:filePath]) {
+      data = [NSData dataWithContentsOfFile:filePath];
+      [YKURLCache _setReadFileName:nil];
+    }
+    
     dispatch_async(dispatch_get_main_queue(), ^{
       dataBlock(data);
     });
   });
 }
 
-- (NSString *)ETagForKey:(NSString*)key {
-  return [self ETagFromCacheWithKey:key];
-}
+#pragma mark Cache write
 
 - (void)storeData:(NSData *)data forURLString:(NSString *)URLString asynchronous:(BOOL)asynchronous {
   NSParameterAssert(URLString);
@@ -245,23 +324,31 @@ static NSMutableDictionary *gNamedCaches = NULL;
 
 - (void)storeData:(NSData *)data forKey:(NSString *)key asynchronous:(BOOL)asynchronous {
   NSParameterAssert(key);
-  if (_disableDiskCache) return;
-  
   NSString *filePath = [self cachePathForKey:key];
-  NSFileManager *fm = [NSFileManager defaultManager];
-  if (asynchronous) {
-    dispatch_async([YKURLCache defaultDispatchQueue], ^{
-      [fm createFileAtPath:filePath contents:data attributes:nil];
-    });
-  } else {
-    [fm createFileAtPath:filePath contents:data attributes:nil];
-  }
+  [self _storeData:data forPath:filePath asynchronous:asynchronous];
 }
 
-- (void)storeETag:(NSString *)ETag forKey:(NSString*)key {
+- (void)storeETag:(NSString *)ETag forKey:(NSString*)key asynchronous:(BOOL)asynchronous {
   NSString *filePath = [self ETagCachePathForKey:key];
+  [self _storeData:[ETag dataUsingEncoding:NSUTF8StringEncoding] forPath:filePath asynchronous:asynchronous];
+}
+
+- (void)_storeData:(NSData *)data forPath:(NSString *)path asynchronous:(BOOL)asynchronous {
+  if (_disableDiskCache) return;
+  
   NSFileManager *fm = [NSFileManager defaultManager];
-  [fm createFileAtPath:filePath contents:[ETag dataUsingEncoding:NSUTF8StringEncoding] attributes:nil];
+  void (^storeAction)() = ^{
+    if ([YKURLCache _setWriteFileName:path]) {
+      [fm createFileAtPath:path contents:data attributes:nil];
+      [YKURLCache _setWriteFileName:nil];
+    }
+  };
+  
+  if (asynchronous) {
+    dispatch_async([YKURLCache defaultWriteQueue], storeAction);
+  } else {
+    dispatch_sync([YKURLCache defaultWriteQueue], storeAction);
+  }
 }
 
 - (void)moveDataForURLString:(NSString *)oldURLString toURLString:(NSString *)newURLString {
@@ -269,12 +356,7 @@ static NSMutableDictionary *gNamedCaches = NULL;
   NSParameterAssert(newURLString);
   NSString *oldKey = [self keyForURLString:oldURLString];
   NSString *oldPath = [self cachePathForKey:oldKey];
-  NSFileManager *fm = [NSFileManager defaultManager];
-  if ([fm fileExistsAtPath:oldPath]) {
-    NSString *newKey = [self keyForURLString:newURLString];
-    NSString *newPath = [self cachePathForKey:newKey];
-    [fm moveItemAtPath:oldPath toPath:newPath error:nil];
-  }
+  [self moveDataFromPath:oldPath toURLString:newURLString];
 }
 
 - (void)moveDataFromPath:(NSString *)path toURLString:(NSString *)newURLString {
@@ -282,31 +364,40 @@ static NSMutableDictionary *gNamedCaches = NULL;
   NSParameterAssert(newURLString);
   NSString *newKey = [self keyForURLString:newURLString];
   NSFileManager *fm = [NSFileManager defaultManager];
-  if ([fm fileExistsAtPath:path]) {
-    NSString *newPath = [self cachePathForKey:newKey];
-    [fm moveItemAtPath:path toPath:newPath error:nil];
-  }
+  
+  // Assume moving data to a new URL, this means moving is equivalent to a read operation, could check the new URL too but that increases complexity significantly
+  dispatch_sync([YKURLCache defaultReadQueue], ^{
+    if ([YKURLCache _setReadFileName:path]) {
+      if ([fm fileExistsAtPath:path]) {
+        NSString *newPath = [self cachePathForKey:newKey];
+        [fm moveItemAtPath:path toPath:newPath error:nil];
+      }
+      [YKURLCache _setReadFileName:nil];
+    }
+  });
 }
 
-- (void)removeURLString:(NSString *)URLString fromDisk:(BOOL)fromDisk {
-  if (fromDisk) {
-    NSString *key = [self keyForURLString:URLString];
-    NSString *filePath = [self cachePathForKey:key];
-    NSFileManager *fm = [NSFileManager defaultManager];
-    if (filePath) {
-      [fm removeItemAtPath:filePath error:nil];
-    }
-  }
+- (void)removeURLString:(NSString *)URLString {
+  NSString *key = [self keyForURLString:URLString];
+  [self removeKey:key];
 }
 
 - (void)removeKey:(NSString *)key {
   NSString *filePath = [self cachePathForKey:key];
-  NSFileManager *fm = [NSFileManager defaultManager];
-  if (filePath && [fm fileExistsAtPath:filePath]) {
-    [fm removeItemAtPath:filePath error:nil];
-  }
+  [self _removePath:filePath];
 }
 
+- (void)_removePath:(NSString *)path {
+  NSFileManager *fm = [NSFileManager defaultManager];
+  dispatch_async([YKURLCache defaultWriteQueue], ^{
+    if ([YKURLCache _setWriteFileName:path]) {
+      [fm removeItemAtPath:path error:nil];
+      [YKURLCache _setWriteFileName:nil];
+    }
+  });
+}
+
+// This method is blocking and not thread safe
 - (void)removeAll {
   NSFileManager *fm = [NSFileManager defaultManager];
   [fm removeItemAtPath:_cachePath error:nil];
@@ -320,33 +411,29 @@ static NSMutableDictionary *gNamedCaches = NULL;
 
 - (void)invalidateKey:(NSString *)key {
   NSString *filePath = [self cachePathForKey:key];
-  NSFileManager *fm = [NSFileManager defaultManager];
-  if (filePath && [fm fileExistsAtPath:filePath]) {
-    NSDate *invalidDate = [NSDate dateWithTimeIntervalSinceNow:-_invalidationAge];
-    NSDictionary *attrs = [NSDictionary dictionaryWithObject:invalidDate forKey:NSFileModificationDate];
-
-#if __IPHONE_4_0 <= __IPHONE_OS_VERSION_MAX_ALLOWED
-    [fm setAttributes:attrs ofItemAtPath:filePath error:nil];
-#else
-    [fm changeFileAttributes:attrs atPath:filePath];
-#endif
-  }
+  [self _invalidatePath:filePath];
 }
 
 - (void)invalidateAll {
-  NSDate *invalidDate = [NSDate dateWithTimeIntervalSinceNow:-_invalidationAge];
-  NSDictionary *attrs = [NSDictionary dictionaryWithObject:invalidDate forKey:NSFileModificationDate];
-
   NSFileManager *fm = [NSFileManager defaultManager];
   NSDirectoryEnumerator *enumerator = [fm enumeratorAtPath:_cachePath];
   for (NSString *fileName in enumerator) {
     NSString* filePath = [_cachePath stringByAppendingPathComponent:fileName];
-#if __IPHONE_4_0 <= __IPHONE_OS_VERSION_MAX_ALLOWED
-    [fm setAttributes:attrs ofItemAtPath:filePath error:nil];
-#else
-    [fm changeFileAttributes:attrs atPath:filePath];
-#endif
+    [self _invalidatePath:filePath];
   }
+}
+
+- (void)_invalidatePath:(NSString *)path {
+  NSDate *invalidDate = [NSDate dateWithTimeIntervalSinceNow:-_invalidationAge];
+  NSDictionary *attrs = [NSDictionary dictionaryWithObject:invalidDate forKey:NSFileModificationDate];
+  
+  NSFileManager *fm = [NSFileManager defaultManager];
+  dispatch_async([YKURLCache defaultWriteQueue], ^{
+    if ([YKURLCache _setWriteFileName:path]) {
+      [fm setAttributes:attrs ofItemAtPath:path error:nil];
+      [YKURLCache _setWriteFileName:nil];
+    }
+  });
 }
 
 #pragma mark Image Disk Cache
@@ -363,7 +450,7 @@ static NSMutableDictionary *gNamedCaches = NULL;
     YKDebug(@"Image disk cache HIT: %@ (length=%d), Loading image took: %0.3f", URLString, [cachedData length], ([NSDate timeIntervalSinceReferenceDate] - start));
     // If the image was invalid, remove it from the cache
     if (!image) {
-      [self removeURLString:URLString fromDisk:YES];
+      [self removeURLString:URLString];
     }
   }
   return image;
