@@ -1,9 +1,9 @@
 //
-//  YelpKit.h
+//  NSObject+YKJSON.m
 //  YelpKit
 //
-//  Created by Gabriel Handford on 5/1/12.
-//  Copyright (c) 2012 Yelp. All rights reserved.
+//  Created by Alexander Haefner on 7/15/13.
+//  Copyright 2013 Yelp. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -27,40 +27,26 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "YKLayout.h"
-#import "YKUILayoutView.h"
-
-#import "YKDefines.h"
-#import "YKError.h"
-
-#import "YKURL.h"
-#import "YKURLRequest.h"
-#import "YKJSONRequest.h"
-#import "YKJSON.h"
 #import "NSObject+YKJSON.h"
+#import "YKJSON.h"
 
-#import "YKUIActivityLabel.h"
-#import "YKUIButton.h"
-#import "YKUIButtons.h"
-#import "YKUILayoutView.h"
-#import "YKUIActivityView.h"
-#import "YKUIListView.h"
-#import "YKUIAlertView.h"
-#import "YKUIActionSheet.h"
-#import "YKUIImageView.h"
-#import "YKUINavigationBar.h"
-#import "YKUIRefreshScrollView.h"
-#import "YKUIScrollView.h"
-#import "YKUIBorder.h"
-#import "YKUISwitchButton.h"
+@implementation NSObject (YKJSON)
 
-#import "YKTableIndexedView.h"
-#import "YKTableViewCell.h"
-#import "YKUIActivityCell.h"
-#import "YKUIButtonCell.h"
+- (id)yk_JSON {
+  return [self yk_JSON:nil];
+}
 
-#import "YKSUIView.h"
-#import "YKUIViewStack.h"
+- (id)yk_JSON:(YKError **)error {
+  return [self yk_JSON:error options:0];
+}
 
-#import "YKUtils.h"
+- (id)yk_JSON:(YKError **)error options:(NSJSONWritingOptions)options {
+  if (([self isKindOfClass:[NSData class]])) {
+    return [YKJSON objectForData:(NSData*)self error:error];
+  } else if ([self isKindOfClass:[NSString class]]) {
+    return [YKJSON objectForString:(NSString *)self error:error];
+  }
+  return [YKJSON JSONFromObject:self options:options encoding:NSUTF8StringEncoding error:error];
+}
 
+@end
