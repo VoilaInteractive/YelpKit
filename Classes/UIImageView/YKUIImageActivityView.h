@@ -32,7 +32,7 @@
 #import "YKUIControl.h"
 
 
-@protocol YKUIImageActivityView <YKUIImageView>
+@protocol YKUIImageActivityView
 @property (readonly, nonatomic) YKUIImageViewStatus status;
 @property (assign, nonatomic) UIActivityIndicatorViewStyle activityStyle;
 - (void)startActivity;

@@ -31,7 +31,6 @@
 #import "YKError.h"
 
 @class YKImageLoader;
-@class YKImageLoaderQueue;
 
 typedef enum {
   YKImageLoaderStatusNone,
@@ -63,8 +62,6 @@ typedef enum {
   UIImage *_loadingImage;
   UIImage *_errorImage;
   id<YKImageLoaderDelegate> _delegate; // weak
-  
-  YKImageLoaderQueue *_queue; // weak
 }
 
 @property (readonly, retain, nonatomic) YKURL *URL;
@@ -73,7 +70,6 @@ typedef enum {
 @property (retain, nonatomic) UIImage *loadingImage;
 @property (retain, nonatomic) UIImage *errorImage;
 @property (assign, nonatomic) id<YKImageLoaderDelegate> delegate;
-@property (assign, nonatomic) YKImageLoaderQueue *queue;
 
 /*!
  Image loader with loading image and default image.
@@ -115,13 +111,6 @@ typedef enum {
  @param URL URL
  */
 - (void)setURL:(YKURL *)URL;
-
-/*!
- Load URL.
- @param URL URL
- @param queue Loader queue
- */
-- (void)setURL:(YKURL *)URL queue:(YKImageLoaderQueue *)queue;
 
 /*!
  Load URL string.

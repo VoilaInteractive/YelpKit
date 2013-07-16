@@ -44,13 +44,13 @@ static NSTimeInterval gYKURLRequestDefaultTimeout = 25.0;
 #endif
 static BOOL gYKURLRequestCacheEnabled = YES; // Defaults to ON
 static BOOL gYKURLRequestCacheAsyncEnabled = YES; // Defaults to ON
+static NSInteger gYKURLRequestCount = 0;
 
 
 @interface YKURLRequest ()
 @property (retain, nonatomic) NSData *responseData;
 @property (copy, nonatomic) YKURLRequestFinishBlock finishBlock; 
 @property (copy, nonatomic) YKURLRequestFailBlock failBlock;
-- (void)_start;
 - (void)_stop;
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error;
 @end
@@ -60,6 +60,30 @@ static BOOL gYKURLRequestCacheAsyncEnabled = YES; // Defaults to ON
 @synthesize connection=_connection, timeout=_timeout, request=_request, response=_response, delegate=__delegate, finishSelector=_finishSelector, failSelector=_failSelector, cancelSelector=_cancelSelector, expiresAge=_expiresAge, URL=_URL, cacheName=_cacheName, cachePolicy=_cachePolicy, mockResponse=_mockResponse, mockResponseDelayInterval=_mockResponseDelayInterval, dataInterval=_dataInterval, totalInterval=_totalInterval, start=_start, downloadedData=_downloadedData, cacheHit=_cacheHit, inCache=_inCache, stopped=_stopped, error=_error, started=_started, responseInterval=_responseInterval, runLoop=_runLoop, sentInterval=_sentInterval, bytesWritten=_bytesWritten;
 @synthesize responseData=_responseData, finishBlock=_finishBlock, failBlock=_failBlock; // Private properties
 
++ (NSOperationQueue *)networkQueue {
+  static NSOperationQueue *networkQueue = nil;
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    networkQueue = [[NSOperationQueue alloc] init];
+    networkQueue.name = @"com.YelpKit.YKURLRequest.networkQueue";
+  });
+  return networkQueue;
+}
+
++ (void)requestWillStart {
+  @synchronized ([[self class] networkQueue]) {
+    gYKURLRequestCount++;
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = (gYKURLRequestCount > 0);
+  }
+}
+
++ (void)requestDidStop {
+  @synchronized ([[self class] networkQueue]) {
+    gYKURLRequestCount--;
+    YKAssert(gYKURLRequestCount >= 0, @"request count should never be negative");
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = (gYKURLRequestCount > 0);
+  }
+}
 
 - (id)init {
   if ((self = [super init])) {
@@ -182,6 +206,7 @@ static BOOL gYKURLRequestCacheAsyncEnabled = YES; // Defaults to ON
 
   if (_started) [NSException raise:NSInternalInconsistencyException format:@"Re-using a request more than once is not supported."];
   _started = YES;
+  [[self class] requestWillStart];
   
   _URL = [URL retain];
   _method = method;
@@ -279,8 +304,10 @@ static BOOL gYKURLRequestCacheAsyncEnabled = YES; // Defaults to ON
   if (useCustomTimer) {
     _timer = [NSTimer scheduledTimerWithTimeInterval:_timeout target:self selector:@selector(_timeout) userInfo:nil repeats:NO];
   }
+  
   _connection = [[connectionClass alloc] initWithRequest:_request delegate:self startImmediately:NO];   
-  [self _start];
+  [_connection setDelegateQueue:[[self class] networkQueue]];
+  [_connection start];
   return YES;
 }
 
@@ -294,12 +321,6 @@ static BOOL gYKURLRequestCacheAsyncEnabled = YES; // Defaults to ON
   [_timer invalidate];
   _timer = nil;
   [self didError:[YKError errorWithKey:YKErrorCannotConnectToHost]];
-}
-
-- (void)_start {
-  YKDebug(@"Starting...");
-  [_connection scheduleInRunLoop:(self.runLoop ? self.runLoop : [NSRunLoop mainRunLoop]) forMode:NSDefaultRunLoopMode];
-  [_connection start];
 }
 
 - (void)cancel {
@@ -317,9 +338,15 @@ static BOOL gYKURLRequestCacheAsyncEnabled = YES; // Defaults to ON
   if (notify) {
     YKDebug(@"Cancel (%@/%@)", self.delegate, NSStringFromSelector(_cancelSelector));
     if (_cancelSelector != NULL) {
-      [[__delegate gh_proxyOnMainThread:YES] performSelector:_cancelSelector withObject:self];
+      dispatch_async(dispatch_get_main_queue(), ^{
+        [__delegate performSelector:_cancelSelector withObject:self];
+      });
     }
-    if (_failBlock != NULL) _failBlock(nil);
+    if (_failBlock != NULL) {
+      dispatch_async(dispatch_get_main_queue(), ^{
+        _failBlock(nil);
+      });
+    }
   }
   [self _stop];
 }
@@ -329,7 +356,11 @@ static BOOL gYKURLRequestCacheAsyncEnabled = YES; // Defaults to ON
 }
 
 - (void)_stop {
-  if (!_stopped) YKDebug(@"Stopping");
+  if (!_stopped) {
+    YKDebug(@"Stopping");
+    if (_started) [[self class] requestDidStop];
+  }
+  
   _stopped = YES;
   [_timer invalidate];
   _timer = nil;
@@ -341,7 +372,6 @@ static BOOL gYKURLRequestCacheAsyncEnabled = YES; // Defaults to ON
     
     // This may be called in a callback from the connection, so use autorelease
     [oldConnection cancel];
-    [oldConnection unscheduleFromRunLoop:(self.runLoop ? self.runLoop : [NSRunLoop mainRunLoop]) forMode:NSDefaultRunLoopMode];
     [oldConnection autorelease];         
   }
   // Delegates are retained only for the life of the connection
@@ -409,9 +439,16 @@ static BOOL gYKURLRequestCacheAsyncEnabled = YES; // Defaults to ON
   [_error release];
   _error = error;
   if (_failSelector != NULL) {
-    [[__delegate gh_proxyOnMainThread:YES] performSelector:_failSelector withObject:self withObject:error];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [__delegate performSelector:_failSelector withObject:self withObject:error];
+    });
   }
-  if (_failBlock != NULL) _failBlock(error);
+  if (_failBlock != NULL) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+      _failBlock(error);
+    });
+  }
   [self _stop];
 }
 
@@ -431,12 +468,17 @@ static BOOL gYKURLRequestCacheAsyncEnabled = YES; // Defaults to ON
   if (error) {
     [self didError:error];
     return;
-  }  
-  
-  if (_finishSelector != NULL) {
-    [[__delegate gh_proxyOnMainThread:YES] performSelector:_finishSelector withObject:self withObject:obj];
   }
-  if (_finishBlock != NULL) _finishBlock(obj);
+  if (_finishSelector != NULL) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [__delegate performSelector:_finishSelector withObject:self withObject:obj];
+    });
+  }
+  if (_finishBlock != NULL) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+      _finishBlock(obj);
+    });
+  }
   [self _stop];
 }
 

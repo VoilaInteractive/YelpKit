@@ -79,7 +79,6 @@
   } else {
     [_view setOverlayColor:nil];
   }
-  [_view setNeedsDisplay];
 }
 
 - (void)setURLString:(NSString *)URLString { 
@@ -92,7 +91,6 @@
 
 - (void)setImage:(UIImage *)image { 
   [_view setImage:image];
-  [_view setNeedsDisplay];
 }
 
 - (UIImage *)image { 

@@ -99,6 +99,7 @@
   for (UIView *view in views) {
     [self addView:view];
   }
+  [self setNeedsLayout];
 }
 
 - (NSArray *)viewsWithTag:(NSInteger)tag {

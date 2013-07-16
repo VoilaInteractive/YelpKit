@@ -45,6 +45,7 @@
 #import "YKUIListView.h"
 #import "YKUIAlertView.h"
 #import "YKUIActionSheet.h"
+#import "YKUIImageBaseView.h"
 #import "YKUIImageView.h"
 #import "YKUINavigationBar.h"
 #import "YKUIRefreshScrollView.h"

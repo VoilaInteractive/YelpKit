@@ -27,15 +27,14 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "YKUILayoutView.h"
+#import "YKUIImageBaseView.h"
 #import "YKImageLoader.h"
 
+/*!
+ Image view.
 
-@protocol YKUIImageView <NSObject>
-@property (retain, nonatomic) UIImage *image;
-@property (retain, nonatomic) NSString *URLString;
-@end
-
+ Defaults to non-opaque with white background and fill aspect fit content mode.
+ */
 
 typedef enum {
   YKUIImageViewStatusNone,
@@ -46,113 +45,23 @@ typedef enum {
 
 @class YKUIImageView;
 
-typedef void (^YKUIImageViewStatusBlock)(id<YKUIImageView> imageView, YKUIImageViewStatus status, UIImage *image);
+typedef void (^YKUIImageViewStatusBlock)(YKUIImageView *imageView, YKUIImageViewStatus status, UIImage *image);
 
 @protocol YKUIImageViewDelegate <NSObject>
 @optional
-- (void)imageView:(id<YKUIImageView>)imageView didLoadImage:(UIImage *)image;
-- (void)imageViewDidStart:(id<YKUIImageView>)imageView;
-- (void)imageView:(id<YKUIImageView>)imageView didError:(YKError *)error;
-- (void)imageViewDidCancel:(id<YKUIImageView>)imageView;
+- (void)imageView:(YKUIImageView *)imageView didLoadImage:(UIImage *)image;
+- (void)imageViewDidStart:(YKUIImageView *)imageView;
+- (void)imageView:(YKUIImageView *)imageView didError:(YKError *)error;
+- (void)imageViewDidCancel:(YKUIImageView *)imageView;
 @end
 
+@interface YKUIImageView : YKUIImageBaseView <YKImageLoaderDelegate>
 
-/*!
- Image base view. Doesn't draw contents. See YKUIImageView.
- */
-@interface YKUIImageBaseView : YKUILayoutView <YKUIImageView, YKImageLoaderDelegate> {
-  YKImageLoader *_imageLoader;
-  YKUIImageViewStatus _status;
-  UIImage *_image;  
-  YKUIImageViewStatusBlock _statusBlock;
-  id<YKUIImageViewDelegate> _delegate;
-
-  BOOL _renderInBackground;
-}
-
-@property (readonly, nonatomic) YKUIImageViewStatus status;
 @property (assign, nonatomic) id<YKUIImageViewDelegate> delegate;
 @property (readonly, nonatomic) YKImageLoader *imageLoader;
+@property (readonly, assign, nonatomic) YKUIImageViewStatus status;
 @property (copy, nonatomic) YKUIImageViewStatusBlock statusBlock;
-
-/*!
- Experimental. If YES, the view will render to an image in the background then call setNeedsDisplay.
- Note: If this view is drawn directly using drawInRect:, self.frame.size must be set to the same size
- that will be used with drawInRect:. Otherwise the background rendered image may render with an
- incorrect size.
- The images rendered in the background are automatically added to the in-memory image cache and reused appropriately.
- */
-@property (assign, nonatomic) BOOL renderInBackground;
-
-/*!
- Image size.
- @result Image size or CGSizeZero if no image set
- */
-@property (readonly, nonatomic) CGSize size;
-
-
-+ (void)setDisableRenderInBackground:(BOOL)disableRenderInBackground;
-
-- (id)initWithImage:(UIImage *)image;
-
-- (id)initWithURLString:(NSString *)URLString loadingImage:(UIImage *)loadingImage defaultImage:(UIImage *)defaultImage;
-
-/*!
- @result Loading image
- */
-- (UIImage *)loadingImage;
-
-// For subclasses to notify when image was loaded asynchronously
-- (void)didLoadImage:(UIImage *)image;
-
-/*!
- Cancel any image loading.
- */
-- (void)cancel;
-
-- (void)reload;
-
-/*!
- Set URLString to load with loading image and default image (if URL is nil).
- 
- @param URLString URL as a string
- @param loadingImage Image to use while loading
- @param defaultImage Default image to use if image is nil
- @param errorImage Error image to use on error
- */
-- (void)setURLString:(NSString *)URLString loadingImage:(UIImage *)loadingImage defaultImage:(UIImage *)defaultImage errorImage:(UIImage *)errorImage;
-
-- (void)setURLString:(NSString *)URLString loadingImage:(UIImage *)loadingImage defaultImage:(UIImage *)defaultImage;
-
-- (void)setURLString:(NSString *)URLString defaultImage:(UIImage *)defaultImage;
-
-
-@end
-
-
-/*!
- Image view.
-
- Defaults to non-opaque with white background and fill aspect fit content mode.
- */
-@interface YKUIImageView : YKUIImageBaseView { 
-  
-  UIColor *_strokeColor;
-  CGFloat _strokeWidth;
-  CGFloat _cornerRadius;
-    
-  UIColor *_color;
-  UIColor *_overlayColor;
-  
-  UIColor *_shadowColor;
-  CGFloat _shadowBlur;
-  UIColor *_backgroundColor2;
-
-  UIViewContentMode _imageContentMode;
-  
-  UIImage *_renderedContents;
-  UIImage *_renderedBlankContents;
-}
+@property (retain, nonatomic) NSString *URLString;
 
 /*!
  Stroke (border) color.
@@ -206,11 +115,59 @@ typedef void (^YKUIImageViewStatusBlock)(id<YKUIImageView> imageView, YKUIImageV
 @property (assign, nonatomic) UIViewContentMode imageContentMode;
 
 /*!
+ Init
+ @param URLString URL as a string
+ @param loadingImage Image to use while loading
+ @param defaultImage Default image to use if image is nil
+ @result YKUIImageView
+ */
+- (id)initWithURLString:(NSString *)URLString loadingImage:(UIImage *)loadingImage defaultImage:(UIImage *)defaultImage;
+
+/*!
+ Init
+ @param URLString URL as a string
+ @param loadingImage Image to use while loading
+ @param defaultImage Default image to use if image is nil
+ @param requiresSpecialRendering If this flag is set to NO, then the image will be displayed as is without being processed (fast)
+ @result YKUIImageView
+ */
+- (id)initWithURLString:(NSString *)URLString loadingImage:(UIImage *)loadingImage defaultImage:(UIImage *)defaultImage requiresSpecialRendering:(BOOL)requiresSpecialRendering;
+
+/*!
+ Set URLString to load with loading image and default image (if URL is nil).
+ 
+ @param URLString URL as a string
+ @param loadingImage Image to use while loading
+ @param defaultImage Default image to use if image is nil
+ @param errorImage Error image to use on error
+ */
+- (void)setURLString:(NSString *)URLString loadingImage:(UIImage *)loadingImage defaultImage:(UIImage *)defaultImage errorImage:(UIImage *)errorImage;
+
+- (void)setURLString:(NSString *)URLString loadingImage:(UIImage *)loadingImage defaultImage:(UIImage *)defaultImage;
+
+- (void)setURLString:(NSString *)URLString defaultImage:(UIImage *)defaultImage;
+
+/*!
+ Cancel any image loading.
+ */
+- (void)cancel;
+
+/*!
+ Reloads the request image from a URL
+ */
+- (void)reload;
+
+/*!
+ @result Loading image
+ */
+- (UIImage *)loadingImage;
+
+/*!
  Draw image in rect for current graphics context.
 
  @param rect Rect
  */
-- (void)drawInRect:(CGRect)rect;
+- (void)drawInRect:(CGRect)rect DEPRECATED_ATTRIBUTE; // use addSubview: instead
 
 /*!
  Draw image in rect for current graphics context.
@@ -218,7 +175,7 @@ typedef void (^YKUIImageViewStatusBlock)(id<YKUIImageView> imageView, YKUIImageV
  @param rect Rect
  @param contentMode Content mode
  */
-- (void)drawInRect:(CGRect)rect contentMode:(UIViewContentMode)contentMode;
+- (void)drawInRect:(CGRect)rect contentMode:(UIViewContentMode)contentMode DEPRECATED_ATTRIBUTE; // use addSubview: instead
 
 @end
 

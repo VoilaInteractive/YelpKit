@@ -188,7 +188,7 @@
   CGFloat y = 0;
 
   y += _insets.top;
-  UIEdgeInsets titleInsets = [self _titleInsets];
+  UIEdgeInsets titleInsets = [self titleInsets];
   y += titleInsets.top;
 
   // If the title is nil, but _titleSize hasn't been updated yet
@@ -239,6 +239,66 @@
 
   y += titleInsets.bottom;
   y += _insets.bottom;
+  
+  // layout the icon
+  
+  UIImage *icon = _iconImageView.image;
+  BOOL showIcon = (icon != nil && !_iconImageView.hidden);
+  CGSize iconSize = _iconImageSize;
+  if (icon && YKCGSizeIsZero(iconSize)) {
+    iconSize = icon.size;
+  }
+  
+  CGRect bounds = self.bounds;
+  
+  CGSize titleSize = _titleSize;
+  if (!_titleHidden) {
+    CGFloat lineWidth = titleSize.width + titleInsets.left + titleInsets.right;
+    if (showIcon && _iconPosition == YKUIButtonIconPositionLeft) lineWidth += iconSize.width;
+    CGFloat x = bounds.origin.x;
+    
+    if (_titleAlignment == UITextAlignmentCenter) {
+      CGFloat width = size.width - _insets.left - _insets.right;
+      if (_accessoryImage) width -= _accessoryImage.size.width;
+      x += roundf(width/2.0 - lineWidth/2.0) + _insets.left;
+    } else {
+      x += _insets.left;
+    }
+    if (x < 0) x = 0;
+    
+    if (showIcon) {
+      switch (_iconPosition) {
+        case YKUIButtonIconPositionLeft: {
+          CGPoint iconTop = YKCGPointToCenter(iconSize, size);
+          iconTop.x = x;
+          _iconImageView.frame = CGRectMake(iconTop.x, iconTop.y, iconSize.width, iconSize.height);
+          x += iconSize.width;
+          break;
+        }
+        case YKUIButtonIconPositionTop: {
+          CGPoint iconTop = YKCGPointToCenter(iconSize, size);
+          _iconImageView.frame = CGRectMake(iconTop.x, _insets.top, iconSize.width, iconSize.height);
+          break;
+        }
+        case YKUIButtonIconPositionCenter: {
+          CGPoint iconTop = YKCGPointToCenter(iconSize, CGSizeMake(size.width, size.height - titleSize.height));
+          if (_iconOrigin.x != CGFLOAT_MAX) iconTop.x = _iconOrigin.x;
+          if (_iconOrigin.y != CGFLOAT_MAX) iconTop.y = _iconOrigin.y;
+          _iconImageView.frame = CGRectMake(iconTop.x, iconTop.y + _insets.top, iconSize.width, iconSize.height);
+          break;
+        }
+      }
+      showIcon = NO;
+    } else if (!YKCGSizeIsZero(iconSize)) {
+      if (_iconPosition == YKUIButtonIconPositionLeft) {
+        x += iconSize.width;
+      }
+    }
+  }
+  
+  if (showIcon) {
+    _iconImageView.frame = YKCGRectToCenterInRect(iconSize, bounds);
+  }
 
   return CGSizeMake(size.width, y);
 }
@@ -393,14 +453,35 @@
 }
 
 - (void)setIconImage:(UIImage *)iconImage {
-  [_iconImageView release];
-  _iconImageView = [[YKUIImageView alloc] initWithImage:iconImage];
-  _iconImageView.contentMode = UIViewContentModeScaleToFill;
-  _iconImageView.backgroundColor = [UIColor clearColor];
+  YKUIImageView *iconImageView = [[YKUIImageView alloc] initWithImage:iconImage];
+  iconImageView.contentMode = UIViewContentModeScaleToFill;
+  iconImageView.backgroundColor = [UIColor clearColor];
+  iconImageView.shadowBlur = 5.0f;
+  self.iconImageView = iconImageView;
+  [iconImageView release];
+  [self didChangeValueForKey:@"iconImage"];
 }
 
 - (UIImage *)iconImage {
   return _iconImageView.image;
+}
+
+- (void)setIconImageView:(YKUIImageView *)iconImageView
+{
+  [iconImageView retain];
+  [_iconImageView release];
+  [self addSubview:iconImageView];
+  [_iconImageView removeFromSuperview];
+  _iconImageView = iconImageView;
+  [self didChangeValueForKey:@"iconImageView"];
+}
+
+- (void)setIconShadowColor:(UIColor *)iconShadowColor
+{
+  [iconShadowColor retain];
+  [_iconShadowColor release];
+  _iconShadowColor = iconShadowColor;
+  _iconImageView.shadowColor = iconShadowColor;
 }
 
 - (UIColor *)textColorForState:(UIControlState)state {
@@ -617,19 +698,15 @@
     if (x < 0) x = 0;
 
     if (showIcon) {
-      if (_iconShadowColor) CGContextSetShadowWithColor(context, CGSizeZero, 5.0, _iconShadowColor.CGColor);
       switch (_iconPosition) {
         case YKUIButtonIconPositionLeft: {
           CGPoint iconTop = YKCGPointToCenter(iconSize, size);
           iconTop.x = x;
           iconTop.y += bounds.origin.y + _insets.top;
-          [_iconImageView drawInRect:CGRectMake(iconTop.x, iconTop.y, iconSize.width, iconSize.height)];
           x += iconSize.width;
           break;
         }
         case YKUIButtonIconPositionTop: {
-          CGPoint iconTop = YKCGPointToCenter(iconSize, size);
-          [_iconImageView drawInRect:CGRectMake(iconTop.x, _insets.top, iconSize.width, iconSize.height)];
           y = _insets.top + iconSize.height + titleInsets.top;
           break;
         }
@@ -637,12 +714,10 @@
           CGPoint iconTop = YKCGPointToCenter(iconSize, CGSizeMake(size.width, size.height - titleSize.height));
           if (_iconOrigin.x != CGFLOAT_MAX) iconTop.x = _iconOrigin.x;
           if (_iconOrigin.y != CGFLOAT_MAX) iconTop.y = _iconOrigin.y;
-          [_iconImageView drawInRect:CGRectMake(iconTop.x, iconTop.y + _insets.top, iconSize.width, iconSize.height)];
           y = iconTop.y + _insets.top + iconSize.height + titleInsets.top;
           break;
         }
       }
-      CGContextSetShadowWithColor(context, CGSizeZero, 0.0, NULL);
       showIcon = NO;
     } else if (!YKCGSizeIsZero(iconSize)) {
       if (_iconPosition == YKUIButtonIconPositionLeft) {
@@ -695,12 +770,6 @@
 
   if (accessoryImage) {
     [accessoryImage drawAtPoint:YKCGPointToRight(accessoryImage.size, CGSizeMake(size.width - 10, bounds.size.height))];
-  }
-
-  if (showIcon) {
-    if (_iconShadowColor) CGContextSetShadowWithColor(context, CGSizeZero, 3.0, _iconShadowColor.CGColor);
-    [_iconImageView drawInRect:YKCGRectToCenterInRect(iconSize, bounds)];
-    CGContextSetShadowWithColor(context, CGSizeZero, 0.0, NULL);
   }
 }
 
