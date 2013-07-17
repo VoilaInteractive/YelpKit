@@ -72,9 +72,6 @@
      value = [obj objectForKey:key];
    }
    if ([NSJSONSerialization isValidJSONObject:@[value]]) {
-     if (!([value isKindOfClass:[NSString class]] || [value isKindOfClass:[NSNumber class]] || [value isKindOfClass:[NSNull class]])) {
-       value = [self _JSONObjectFromObject:value];
-     }
      if (isDictionary) {
        [newJSONSerializableParent setValue:value forKey:key];
      } else {
