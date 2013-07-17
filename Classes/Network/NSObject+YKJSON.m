@@ -33,8 +33,7 @@
 @implementation NSObject (YKJSON)
 
 - (id)yk_JSON {
-  YKError *error = nil;
-  return [self yk_JSON:&error];
+  return [self yk_JSON:nil];
 }
 
 - (id)yk_JSON:(YKError **)error {
