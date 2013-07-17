@@ -30,6 +30,10 @@
 #import <Foundation/Foundation.h>
 @class YKError;
 
+@protocol YKJSONSerializable <NSObject>
+- (id)JSON;
+@end
+
 /*!
  A class that wraps NSJSONSerialization and makes conversion of objects between different JSON representations straightforward.  Objects that wish to control their own JSON representation that is returned when they are parsed by YKJSON should implement the (id)JSON selector and return an object representation (e.g. NSDictionary) that represents their JSON structure.
  */
