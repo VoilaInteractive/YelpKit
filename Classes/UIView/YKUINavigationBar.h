@@ -41,8 +41,9 @@ typedef enum {
   YKUINavigationPositionRight = 1,
 } YKUINavigationPosition;
 
-@interface YKUINavigationBar : UIView {
+@interface YKUINavigationBar : UINavigationBar {
   UILabel *_titleLabel;
+  UIImage *_backgroundImage;
   
   CGSize _defaultContentViewSize;
 }
@@ -51,10 +52,10 @@ typedef enum {
 @property (retain, nonatomic) UIView *rightButton;
 @property (retain, nonatomic) UIView *contentView;
 
-@property (retain, nonatomic) UIColor *backgroundColor1;
-@property (retain, nonatomic) UIColor *backgroundColor2;
-@property (retain, nonatomic) UIColor *topBorderColor;
-@property (retain, nonatomic) UIColor *bottomBorderColor;
+@property (retain, nonatomic) UIColor *backgroundColor1 UI_APPEARANCE_SELECTOR;
+@property (retain, nonatomic) UIColor *backgroundColor2 UI_APPEARANCE_SELECTOR;
+@property (retain, nonatomic) UIColor *topBorderColor UI_APPEARANCE_SELECTOR;
+@property (retain, nonatomic) UIColor *bottomBorderColor UI_APPEARANCE_SELECTOR;
 @property (assign, nonatomic) CGFloat borderWidth;
 
 /*!
@@ -97,5 +98,10 @@ typedef enum {
  @param animated
  */
 - (void)setLeftButton:(UIView *)leftButton style:(YKUINavigationButtonStyle)style animated:(BOOL)animated;
+
+/*!
+ Will ruind the default shadowImage of UINavigationBar
+ */
+- (void)setNoShadow;
 
 @end
