@@ -42,7 +42,7 @@ static NSTimeInterval gYKURLRequestDefaultTimeout = 90.0;
 #else
 static NSTimeInterval gYKURLRequestDefaultTimeout = 25.0;
 #endif
-static BOOL gYKURLRequestCacheEnabled = YES; // Defaults to ON
+static BOOL gYKURLRequestCacheEnabled = NO; // Defaults to ON
 static BOOL gYKURLRequestCacheAsyncEnabled = YES; // Defaults to ON
 
 
@@ -586,7 +586,7 @@ static id<YKCompressor> gCompressor = NULL;
 }
 
 - (NSCachedURLResponse *)connection:(NSURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse {
-  return nil;
+  return cachedResponse;
 }
 
 static BOOL gAuthProtectionDisabled = NO;
