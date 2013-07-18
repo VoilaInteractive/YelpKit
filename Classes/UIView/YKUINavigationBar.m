@@ -126,7 +126,6 @@
     _titleLabel.numberOfLines = 1;
     _titleLabel.lineBreakMode = UILineBreakModeMiddleTruncation;
     _titleLabel.adjustsFontSizeToFitWidth = YES;
-    _titleLabel.shadowColor = [UIColor darkGrayColor];
     _titleLabel.textColor = [UIColor whiteColor];
     _titleLabel.textAlignment = UITextAlignmentCenter;
     _titleLabel.opaque = NO;
