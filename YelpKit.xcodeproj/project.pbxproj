@@ -1341,6 +1341,7 @@
 		005592F3140B0085001E9C43 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = armv7;
 				COPY_PHASE_STRIP = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "YelpKit-Prefix.pch";
@@ -1362,6 +1363,7 @@
 		005592F4140B0085001E9C43 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = armv7;
 				COPY_PHASE_STRIP = NO;
 				"GCC_OPTIMIZATION_LEVEL[sdk=iphonesimulator*][arch=*]" = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
