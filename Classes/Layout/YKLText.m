@@ -65,11 +65,11 @@
 }
 
 + (YKLText *)text:(NSString *)text font:(UIFont *)font {
-  return [self text:text font:font textColor:nil lineBreakMode:NSUIntegerMax];
+  return [self text:text font:font textColor:nil lineBreakMode:NSIntegerMax];
 }
 
 + (YKLText *)text:(NSString *)text font:(UIFont *)font textColor:(UIColor *)textColor {
-  return [self text:text font:font textColor:textColor lineBreakMode:NSUIntegerMax];
+  return [self text:text font:font textColor:textColor lineBreakMode:NSIntegerMax];
 }
 
 + (YKLText *)text:(NSString *)text font:(UIFont *)font textColor:(UIColor *)textColor lineBreakMode:(UILineBreakMode)lineBreakMode {
@@ -126,13 +126,13 @@
   }
 
   if (YKCGSizeIsZero(constrainedToSize)) {
-    if (_lineBreakMode == NSUIntegerMax) {
+    if ((NSInteger)_lineBreakMode == NSIntegerMax) {
       _sizeThatFits = [_text sizeWithFont:_font];
     } else {
       _sizeThatFits = [_text sizeWithFont:_font forWidth:size.width lineBreakMode:_lineBreakMode];
     }
   } else {
-    if (_lineBreakMode == NSUIntegerMax) {
+    if ((NSInteger)_lineBreakMode == NSIntegerMax) {
       _sizeThatFits = [_text sizeWithFont:_font constrainedToSize:constrainedToSize];
     } else {
       _sizeThatFits = [_text sizeWithFont:_font constrainedToSize:constrainedToSize lineBreakMode:_lineBreakMode];
@@ -164,7 +164,7 @@
   if (_textAlignment != UITextAlignmentLeft) {
     // TODO: Single line with non-left alignment?
     [_text drawInRect:rect withFont:_font lineBreakMode:_lineBreakMode alignment:_textAlignment];
-  } else if (_lineBreakMode == NSUIntegerMax) {
+  } else if ((NSInteger)_lineBreakMode == NSIntegerMax) {
     if ([self isSingleLine]) {
       [_text drawAtPoint:rect.origin withFont:_font];
     } else {

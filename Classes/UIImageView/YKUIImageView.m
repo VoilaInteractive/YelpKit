@@ -233,7 +233,7 @@ static BOOL gYKUIImageViewDisableRenderInBackground = NO;
 
 - (void)sharedInit {
   [super sharedInit];
-  _imageContentMode = NSUIntegerMax;
+  _imageContentMode = NSIntegerMax;
 }
 
 - (void)dealloc {
@@ -248,7 +248,7 @@ static BOOL gYKUIImageViewDisableRenderInBackground = NO;
 }
 
 - (UIViewContentMode)imageContentMode {
-  if (_imageContentMode == NSUIntegerMax) return self.contentMode;
+  if ((NSInteger)_imageContentMode == NSIntegerMax) return self.contentMode;
   return _imageContentMode;
 }
 
