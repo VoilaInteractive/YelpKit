@@ -44,8 +44,8 @@
 
 @end
 
-static BOOL gYKUIImageViewDisableRenderInBackground = YES;
-static BOOL gYKUIImageViewAlwaysRenderImmediately = YES;
+static BOOL gYKUIImageViewDisableRenderInBackground = NO;
+static BOOL gYKUIImageViewAlwaysRenderImmediately = NO;
 
 @implementation YKUIImageBaseView
 

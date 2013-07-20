@@ -337,18 +337,17 @@ static NSInteger gYKURLRequestCount = 0;
   [self didCancel];
   if (notify) {
     YKDebug(@"Cancel (%@/%@)", self.delegate, NSStringFromSelector(_cancelSelector));
-    if (_cancelSelector != NULL) {
-      dispatch_async(dispatch_get_main_queue(), ^{
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+      if (_cancelSelector != NULL) {
         [__delegate performSelector:_cancelSelector withObject:self];
-      });
-    }
-    if (_failBlock != NULL) {
-      dispatch_async(dispatch_get_main_queue(), ^{
+      }
+      if (_failBlock != NULL) {
         _failBlock(nil);
-      });
-    }
+      }
+      [self _stop];
+    });
   }
-  [self _stop];
 }
 
 - (void)close {
@@ -438,18 +437,16 @@ static NSInteger gYKURLRequestCount = 0;
   [error retain];
   [_error release];
   _error = error;
-  if (_failSelector != NULL) {
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
+  
+  dispatch_async(dispatch_get_main_queue(), ^{
+    if (_failSelector != NULL) {
       [__delegate performSelector:_failSelector withObject:self withObject:error];
-    });
-  }
-  if (_failBlock != NULL) {
-    dispatch_async(dispatch_get_main_queue(), ^{
+    }
+    if (_failBlock != NULL) {
       _failBlock(error);
-    });
-  }
-  [self _stop];
+    }
+    [self _stop];
+  });
 }
 
 - (id)objectForData:(NSData *)data error:(YKError **)error {
@@ -469,17 +466,16 @@ static NSInteger gYKURLRequestCount = 0;
     [self didError:error];
     return;
   }
-  if (_finishSelector != NULL) {
-    dispatch_async(dispatch_get_main_queue(), ^{
+  
+  dispatch_async(dispatch_get_main_queue(), ^{
+    if (_finishSelector != NULL) {
       [__delegate performSelector:_finishSelector withObject:self withObject:obj];
-    });
-  }
-  if (_finishBlock != NULL) {
-    dispatch_async(dispatch_get_main_queue(), ^{
+    }
+    if (_finishBlock != NULL) {
       _finishBlock(obj);
-    });
-  }
-  [self _stop];
+    }
+    [self _stop];
+  });
 }
 
 - (void)didCancel { }
