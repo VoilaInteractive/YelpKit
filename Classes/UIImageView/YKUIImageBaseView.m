@@ -157,21 +157,21 @@ static BOOL gYKUIImageViewAlwaysRenderImmediately = NO;
   [_image release];
   _image = image;
   
-  if (_image != nil && [self hasZeroSize]) {
+  if (_image != nil && [self _hasZeroSize]) {
     self.bounds = CGRectMake(0.0f, 0.0f, _image.size.width, _image.size.height);
   }
   
   [self _renderSoon];
 }
 
-- (BOOL)hasZeroSize
+- (BOOL)_hasZeroSize
 {
   return (self.bounds.size.width == 0.0f || self.bounds.size.height == 0.0f);
 }
 
 - (void)_render {
   // Cant't draw without a size
-  if ([self hasZeroSize]) {
+  if ([self _hasZeroSize]) {
     return;
   }
   
