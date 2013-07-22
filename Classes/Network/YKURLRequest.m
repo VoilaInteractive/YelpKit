@@ -234,7 +234,7 @@ static BOOL gYKURLRequestCacheAsyncEnabled = YES; // Defaults to ON
   
   YKDebug(@"Using timeout: %0.3f", _timeout);
   [_request release];
-  _request = [[NSMutableURLRequest requestWithURL:[NSURL URLWithString:[_URL URLString]] cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:_timeout] retain];
+  _request = [[NSMutableURLRequest requestWithURL:[NSURL URLWithString:[_URL URLString]] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:_timeout] retain];
   _request.HTTPShouldHandleCookies = YES;
   
   // TODO(gabe): Investigate If-Modified-Since header
