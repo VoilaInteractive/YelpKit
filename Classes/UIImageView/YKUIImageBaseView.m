@@ -37,7 +37,6 @@
 
 @property (assign, atomic) NSUInteger counter;
 @property (assign, nonatomic) BOOL imageWillRenderSoon;
-@property (assign, nonatomic) dispatch_queue_t localRenderQueue;
 @property (readwrite, retain, nonatomic) UIImage *renderedImage;
 @property (retain, nonatomic) UIImageView *renderedImageView;
 @property (assign, nonatomic) BOOL requiresSpecialRendering;
@@ -59,7 +58,7 @@ static BOOL gYKUIImageViewAlwaysRenderImmediately = NO;
   static dispatch_queue_t backgroundRenderQueue = NULL;
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
-    backgroundRenderQueue = dispatch_queue_create("com.YelpKit.YKUIImageBaseView.backgroundRenderQueue", DISPATCH_QUEUE_CONCURRENT);
+    backgroundRenderQueue = dispatch_queue_create("com.YelpKit.YKUIImageBaseView.backgroundRenderQueue", DISPATCH_QUEUE_SERIAL);
     dispatch_queue_t highPrioQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
     dispatch_set_target_queue(backgroundRenderQueue, highPrioQueue);
   });
@@ -70,8 +69,6 @@ static BOOL gYKUIImageViewAlwaysRenderImmediately = NO;
 
 - (void)sharedInit {
   [super sharedInit];
-  self.localRenderQueue = dispatch_queue_create("com.YelpKit.YKUIImageBaseView.localRenderQueue", DISPATCH_QUEUE_SERIAL);
-  dispatch_set_target_queue(self.localRenderQueue, [[self class] backgroundRenderQueue]);
   self.opaque = NO;
   self.backgroundColor = [UIColor whiteColor];
   self.contentMode = UIViewContentModeScaleAspectFit;
@@ -122,7 +119,6 @@ static BOOL gYKUIImageViewAlwaysRenderImmediately = NO;
   
   [_image release];
   [_renderedImage release];
-  dispatch_release(_localRenderQueue);
   [_renderedImageView release];
   [super dealloc];
 }
@@ -179,7 +175,7 @@ static BOOL gYKUIImageViewAlwaysRenderImmediately = NO;
     if (_renderInBackground && !gYKUIImageViewDisableRenderInBackground) {
       NSDictionary *contextDictionary = [self renderContextDictionary];
       UIImage *image = self.image;
-      dispatch_async(self.localRenderQueue, ^{
+      dispatch_async([[self class] backgroundRenderQueue], ^{
         UIImage *finalImage = [[self class] renderImage:image withContextDictionary:contextDictionary];
         dispatch_async(dispatch_get_main_queue(), ^{
           self.renderedImage = finalImage;
