@@ -457,6 +457,7 @@
   iconImageView.contentMode = UIViewContentModeScaleToFill;
   iconImageView.backgroundColor = [UIColor clearColor];
   iconImageView.shadowBlur = 5.0f;
+  iconImageView.renderInBackground = YES;
   self.iconImageView = iconImageView;
   [iconImageView release];
   [self didChangeValueForKey:@"iconImage"];
