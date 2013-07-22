@@ -222,7 +222,7 @@ static BOOL gYKUIImageViewAlwaysRenderImmediately = NO;
       self.imageWillRenderSoon = NO;
       [self forceRender];
     });
-  } else {
+  } else if (gYKUIImageViewAlwaysRenderImmediately) {
     [self forceRender];
   }
 }
