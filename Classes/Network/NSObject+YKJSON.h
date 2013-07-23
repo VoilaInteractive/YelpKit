@@ -48,11 +48,14 @@
 
 /*!
  Same as (id)yk_JSON, except that it allows you to pass in an error and receive data about an error in conversion of the object provided to a different representation.
+ @param error An error object that will be modified if there are errors in JSON conversion
  */
 - (id)yk_JSON:(YKError **)error;
 
 /*!
  Same as (id)yk_JSON, except that it will change the string written in conversion from an object representation to a string.
+ @param error An error object that will be modified if there are errors in JSON conversion
+ @param options Options for how NSJSONSerialization should write the JSON String. i.e. NSJSONWritingPrettyPrinted generates a string with newlines
  */
 - (id)yk_JSON:(YKError **)error options:(NSJSONWritingOptions)options;
 @end

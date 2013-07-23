@@ -77,7 +77,6 @@
      } else {
        [newJSONSerializableParent addObject:value];
      }
-     continue;
    } else if ([value respondsToSelector:@selector(JSON)]) {
      if (isDictionary) {
        [newJSONSerializableParent setValue:[self _JSONObjectFromObject:[value JSON]] forKey:key];

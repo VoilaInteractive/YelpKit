@@ -34,22 +34,25 @@
 
 @implementation YKJSONTest
 
-- (void)setUp {
-  _testArrayOne = @[@"one", @"two", @"three", @"four"];
-  _testMutableArrayOne = [[NSMutableArray alloc] initWithObjects:@"one", @"two", @"three", @"four", nil];
-  _testDictOne = @{@"keyOne": @"valueOne", @"keyTwo": @"valueTwo"};
-  _testMutableDictionaryOne = [[NSMutableDictionary alloc] initWithObjects:@[@"valueOne", @"valueTwo"] forKeys:@[@"keyOne", @"keyTwo"]];
-}
-
 - (void)testDictionaryEqual {
-  NSString *dictOne = [_testDictOne yk_JSON];
-  NSString *dictTwo = [_testMutableDictionaryOne yk_JSON];
+  NSDictionary *testDictOne = @{@"keyOne": @"valueOne", @"keyTwo": @"valueTwo"};
+  NSMutableDictionary *testMutableDictionaryOne = [[NSMutableDictionary alloc] initWithObjects:@[@"valueOne", @"valueTwo"] forKeys:@[@"keyOne", @"keyTwo"]];
+  NSString *dictOne = [testDictOne yk_JSON];
+  NSString *dictTwo = [testMutableDictionaryOne yk_JSON];
+  [testMutableDictionaryOne release];
+  GHAssertNotNil(dictOne, @"Test Dictionary One JSON string is nil");
+  GHAssertNotNil(dictTwo, @"Test Dictionary Two JSON string is nil");
   GHAssertEqualStrings(dictOne, dictTwo, @"Serialized Dicts are not equal");
 }
 
 - (void)testArrayEqual {
-  NSString *arrayOne = [_testArrayOne yk_JSON];
-  NSString *arrayTwo = [_testMutableArrayOne yk_JSON];
+  NSArray *testArrayOne = @[@"one", @"two", @"three", @"four"];
+  NSMutableArray *testMutableArrayOne = [[NSMutableArray alloc] initWithObjects:@"one", @"two", @"three", @"four", nil];
+  NSString *arrayOne = [testArrayOne yk_JSON];
+  NSString *arrayTwo = [testMutableArrayOne yk_JSON];
+  [testMutableArrayOne release];
+  GHAssertNotNil(arrayOne, @"Test Array One JSON string is nil");
+  GHAssertNotNil(arrayTwo, @"Test Array Two JSON string is nil");
   GHAssertEqualStrings(arrayOne, arrayTwo, @"Serialized Arrays are not equal");
 }
 

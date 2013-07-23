@@ -10,9 +10,5 @@
 
 @interface YKJSONTest : GHTestCase
 {
-  NSDictionary *_testDictOne;
-  NSMutableDictionary *_testMutableDictionaryOne;
-  NSArray *_testArrayOne;
-  NSMutableArray *_testMutableArrayOne;
 }
 @end
