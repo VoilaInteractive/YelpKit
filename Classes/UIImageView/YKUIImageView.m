@@ -68,6 +68,7 @@ static BOOL gYKUIImageViewDebugRender = NO;
 
 - (void)dealloc {
   _imageLoader.delegate = nil;
+  [_imageLoader cancel];
   [_imageLoader release];
   Block_release(_statusBlock);
   [_strokeColor release];
