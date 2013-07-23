@@ -54,6 +54,7 @@ typedef NSUInteger YKSUIViewAnimationOptions;
 
 @interface YKSUIView : YKUILayoutView {
   YKUINavigationBar *_navigationBar;
+  UINavigationItem *_navigationItem;
     
   YKUIViewStack *_stack;
   
@@ -165,11 +166,6 @@ typedef NSUInteger YKSUIViewAnimationOptions;
  @result YES if visible view
  */
 - (BOOL)isVisibleView;
-
-/*!
- Set navigation title.
- */
-- (void)setNavigationTitle:(NSString *)title animated:(BOOL)animated;
 
 /*!
  Set navigation button with title.

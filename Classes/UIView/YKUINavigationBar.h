@@ -42,16 +42,10 @@ typedef enum {
 } YKUINavigationPosition;
 
 @interface YKUINavigationBar : UINavigationBar {
-  UILabel *_titleLabel;
   UIImage *_backgroundImage;
   
   CGSize _defaultContentViewSize;
 }
-
-@property (retain, nonatomic) UIView *leftButton;
-@property (retain, nonatomic) UIView *rightButton;
-@property (retain, nonatomic) UIView *contentView;
-
 @property (retain, nonatomic) UIColor *backgroundColor1 UI_APPEARANCE_SELECTOR;
 @property (retain, nonatomic) UIColor *backgroundColor2 UI_APPEARANCE_SELECTOR;
 @property (retain, nonatomic) UIColor *topBorderColor UI_APPEARANCE_SELECTOR;
@@ -64,44 +58,5 @@ typedef enum {
  Note that the views are, by default, centered vertically. So, for iOS7, to account for the height of the status bar (20), this has to be set to 10.
  */
 @property (assign, nonatomic) CGFloat topInset;
-
-/*!
- Set the content view to a UILabel with title.
- @param title
- @param animated
- */
-- (void)setTitle:(NSString *)title animated:(BOOL)animated;
-
-/*!
- @result Title label
- */
-- (UILabel *)titleLabel;
-
-/*!
- Set the content view.
- Content view must return a valid sizeThatFits: method.
- @param contentView
- @param animated
- */
-- (void)setContentView:(UIView *)contentView animated:(BOOL)animated;
-
-/*!
- Set right button.
- @param rightButton
- @param animated
- */
-- (void)setRightButton:(UIView *)rightButton style:(YKUINavigationButtonStyle)style animated:(BOOL)animated;
-
-/*!
- Set left button.
- @param leftButton
- @param animated
- */
-- (void)setLeftButton:(UIView *)leftButton style:(YKUINavigationButtonStyle)style animated:(BOOL)animated;
-
-/*!
- Will ruind the default shadowImage of UINavigationBar
- */
-- (void)setNoShadow;
 
 @end

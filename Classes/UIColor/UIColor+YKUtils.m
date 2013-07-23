@@ -58,4 +58,8 @@
   return [UIColor colorWithRed:red green:green blue:blue alpha:alpha];
 }
 
++ (UIColor *)colorWithRGBA:(NSArray *)color {
+  return [UIColor colorWithRed:[(NSNumber *)color[0] floatValue]/255.0 green:[(NSNumber *)color[1] floatValue]/255.0 blue:[(NSNumber *)color[2] floatValue]/255.0 alpha:[(NSNumber *)color[3] floatValue]];
+}
+
 @end

@@ -16,7 +16,7 @@
 
   _tableView = [[[YKTableView alloc] init] autorelease];
   [self setView:_tableView];
-  [self.navigationBar setTitle:@"View Stack" animated:NO];
+  [self.navigationItem setTitle:@"View Stack"];
   
   __block id blockSelf = self;
   

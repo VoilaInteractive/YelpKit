@@ -39,11 +39,13 @@
   self.layout = [YKLayout layoutForView:self];
   self.backgroundColor = [UIColor blackColor];
   self.opaque = YES;
-  self.layout = [YKLayout layoutForView:self];  
+  self.layout = [YKLayout layoutForView:self];
+  _navigationItem = [[UINavigationItem alloc] init];
 }
 
 - (void)dealloc {
   [_navigationBar release];
+  [_navigationItem release];
   [super dealloc];
 }
 
@@ -80,6 +82,7 @@
 - (YKUINavigationBar *)navigationBar {
   if (!_navigationBar) {
     _navigationBar = [[YKUINavigationBar alloc] init];
+    [_navigationBar pushNavigationItem:_navigationItem animated:NO];
     [self applyStyleForNavigationBar:_navigationBar];
   }
   return _navigationBar;
@@ -121,10 +124,6 @@
   return [_stack isVisibleView:self];
 }
 
-- (void)setNavigationTitle:(NSString *)title animated:(BOOL)animated {
-  [self.navigationBar setTitle:title animated:animated];
-}
-
 - (YKUIButton *)setNavigationButtonWithTitle:(NSString *)title iconImage:(UIImage *)iconImage position:(YKUINavigationPosition)position style:(YKUINavigationButtonStyle)style animated:(BOOL)animated target:(id)target action:(SEL)action {
   YKUIButton *button = [[YKUIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 30)];
   button.title = title;
@@ -133,10 +132,10 @@
   [self applyStyleForNavigationButton:button style:style];
   switch (position) {
     case YKUINavigationPositionLeft:
-      [self.navigationBar setLeftButton:button style:YKUINavigationButtonStyleDefault animated:animated];
+      _navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithCustomView:button] autorelease];
       break;
     case YKUINavigationPositionRight:
-      [self.navigationBar setRightButton:button style:YKUINavigationButtonStyleDefault animated:animated];
+      _navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithCustomView:button] autorelease];
       break;
   }
   
@@ -145,7 +144,7 @@
 
 - (void)_updateBackButton {
   // Set back button on navigation bar if not left button
-  if (_navigationBar && !_navigationBar.leftButton) {
+  if (_navigationBar && !_navigationItem.leftBarButtonItem) {
     NSUInteger index = [_stack indexOfView:self];
     if (index > 0 && index != NSNotFound) {      
       
@@ -157,7 +156,7 @@
       backButton.borderStyle = YKUIBorderStyleRoundedBack;
       [self applyStyleForNavigationButton:backButton style:YKUINavigationButtonStyleBack];
       [backButton setTarget:self action:@selector(_back)];
-      _navigationBar.leftButton = backButton;
+      _navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithCustomView:backButton] autorelease];
     }
   }
 }
