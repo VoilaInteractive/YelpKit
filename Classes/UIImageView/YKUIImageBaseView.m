@@ -39,6 +39,8 @@
 @property (assign, nonatomic) BOOL imageWillRenderSoon;
 @property (readwrite, retain, nonatomic) UIImage *renderedImage;
 @property (retain, nonatomic) UIImageView *renderedImageView;
+@property (assign, atomic) NSUInteger renderQueueCount;
+@property (assign, nonatomic) NSUInteger renderCount;
 @property (assign, nonatomic) BOOL requiresSpecialRendering;
 
 @end
@@ -69,6 +71,8 @@ static BOOL gYKUIImageViewAlwaysRenderImmediately = NO;
 
 - (void)sharedInit {
   [super sharedInit];
+  self.renderQueueCount = 0;
+  self.renderCount = 0;
   self.opaque = NO;
   self.backgroundColor = [UIColor whiteColor];
   self.contentMode = UIViewContentModeScaleAspectFit;
@@ -153,10 +157,6 @@ static BOOL gYKUIImageViewAlwaysRenderImmediately = NO;
   [_image release];
   _image = image;
   
-  if (_image != nil && [self _hasZeroSize]) {
-    self.bounds = CGRectMake(0.0f, 0.0f, _image.size.width, _image.size.height);
-  }
-  
   [self _renderSoon];
 }
 
@@ -173,14 +173,18 @@ static BOOL gYKUIImageViewAlwaysRenderImmediately = NO;
   
   if (_requiresSpecialRendering) {
     if (_renderInBackground && !gYKUIImageViewDisableRenderInBackground) {
+      self.renderQueueCount++;
       NSDictionary *contextDictionary = [self renderContextDictionary];
       UIImage *image = self.image;
       dispatch_async([[self class] backgroundRenderQueue], ^{
-        UIImage *finalImage = [[self class] renderImage:image withContextDictionary:contextDictionary];
-        dispatch_async(dispatch_get_main_queue(), ^{
-          self.renderedImage = finalImage;
-          [self _renderFinal:YES];
-        });
+        self.renderCount++;
+        if (self.renderQueueCount == self.renderCount) {
+          UIImage *finalImage = [[self class] renderImage:image withContextDictionary:contextDictionary];
+          dispatch_async(dispatch_get_main_queue(), ^{
+            self.renderedImage = finalImage;
+            [self _renderFinal:YES];
+          });
+        }
       });
       // render an empty image while we wait, if there's not already a rendered image
       if (self.image && !self.renderedImage) {
