@@ -260,7 +260,7 @@ typedef enum {
 @property (assign, nonatomic) CGSize titleShadowOffset;
 
 /*!
- Image (view) to display to the left of the text.
+ Image (view) to display to the left of the text. This creates a YKUIImageView on access. That allows the user to do button.iconImageView setURLString without having to set a YKUIImageView.
  */
 @property (retain, nonatomic) YKUIImageView *iconImageView;
 
