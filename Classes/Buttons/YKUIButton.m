@@ -721,4 +721,8 @@
   [self drawInRect:self.bounds];
 }
 
+- (NSString *)accessibilityLabel {
+  return _title;
+}
+
 @end
