@@ -65,7 +65,7 @@
 + (YKSUIView *)viewWithView:(UIView *)view title:(NSString *)title {
   YKSUIView *viewForStack = [[[YKSUIView alloc] init] autorelease];
   viewForStack.view = view;
-  [viewForStack.navigationBar setTitle:title animated:NO];
+  [viewForStack.navigationBar setTitle:title];
   return viewForStack;
 }
 
@@ -233,9 +233,10 @@
 }
 
 - (void)applyStyleForNavigationBar:(YKUINavigationBar *)navigationBar {
+  //TODO(ahaefner): FIX THIS.  It no longer applies
   navigationBar.backgroundColor = [UIColor colorWithRed:98.0f/255.0f green:120.0f/255.0f blue:170.0f/255.0f alpha:1.0];
-  navigationBar.topBorderColor = [UIColor colorWithRed:87.0f/255.0f green:100.0f/255.0f blue:153.0f/255.0f alpha:1.0];
-  navigationBar.bottomBorderColor = [UIColor colorWithRed:87.0f/255.0f green:100.0f/255.0f blue:153.0f/255.0f alpha:1.0];
+  //navigationBar.topBorderColor = [UIColor colorWithRed:87.0f/255.0f green:100.0f/255.0f blue:153.0f/255.0f alpha:1.0];
+  //navigationBar.bottomBorderColor = [UIColor colorWithRed:87.0f/255.0f green:100.0f/255.0f blue:153.0f/255.0f alpha:1.0];
 }
 
 @end

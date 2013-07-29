@@ -52,14 +52,6 @@
   return self;
 }
 
-- (void)dealloc {
-  [_backgroundColor1 release];
-  [_backgroundColor2 release];
-  [_topBorderColor release];
-  [_bottomBorderColor release];
-  [super dealloc];
-}
-
 - (void)setTopInset:(CGFloat)topInset {
   _topInset = topInset;
   self.frame = YKCGRectSetHeight(self.frame, 44 + (2 * _topInset));
@@ -67,53 +59,6 @@
 
 - (CGSize)sizeThatFits:(CGSize)size {
   return CGSizeMake(size.width, 44);
-}
-
-- (void)_redrawBackgroundImage {
-  UIGraphicsBeginImageContext(self.frame.size);
-  CGContextRef context = UIGraphicsGetCurrentContext();
-  if (_backgroundColor1) {
-    YKCGContextDrawShading(context, _backgroundColor1.CGColor, _backgroundColor2.CGColor, NULL, NULL, CGPointZero, CGPointMake(0, self.frame.size.height), YKUIShadingTypeLinear, NO, NO);
-  }
-  if (_topBorderColor) {
-    // Border is actually halved since the top half is cut off (this is on purpose).
-    YKCGContextDrawLine(context, 0, 0, self.frame.size.width, 0, _topBorderColor.CGColor, _borderWidth * 2);
-  }
-  if (_bottomBorderColor) {
-    // Border is actually halved since the bottom half is cut off (this is on purpose).
-    YKCGContextDrawLine(context, 0, self.frame.size.height, self.frame.size.width, self.frame.size.height, _bottomBorderColor.CGColor, _borderWidth * 2);
-  }
-  _backgroundImage = UIGraphicsGetImageFromCurrentImageContext();
-  [self setBackgroundImage:_backgroundImage forBarMetrics:UIBarMetricsDefault];
-  UIGraphicsEndImageContext();
-}
-
-- (void)setTopBorderColor:(UIColor *)topBorderColor {
-  [topBorderColor retain];
-  [_topBorderColor release];
-  _topBorderColor = topBorderColor;
-  [self _redrawBackgroundImage];
-}
-
-- (void)setBottomBorderColor:(UIColor *)bottomBorderColor {
-  [bottomBorderColor retain];
-  [_bottomBorderColor release];
-  _bottomBorderColor = bottomBorderColor;
-  [self _redrawBackgroundImage];
-}
-
-- (void)setBackgroundColor1:(UIColor *)backgroundColor1 {
-  [backgroundColor1 retain];
-  [_backgroundColor1 release];
-  _backgroundColor1 = backgroundColor1;
-  [self _redrawBackgroundImage];
-}
-
-- (void)setBackgroundColor2:(UIColor *)backgroundColor2 {
-  [backgroundColor2 retain];
-  [_backgroundColor2 release];
-  _backgroundColor2 = backgroundColor2;
-  [self _redrawBackgroundImage];
 }
 
 - (void)setNoShadow {

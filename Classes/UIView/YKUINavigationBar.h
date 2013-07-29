@@ -42,14 +42,9 @@ typedef enum {
 } YKUINavigationPosition;
 
 @interface YKUINavigationBar : UINavigationBar {
-  UIImage *_backgroundImage;
   
   CGSize _defaultContentViewSize;
 }
-@property (retain, nonatomic) UIColor *backgroundColor1 UI_APPEARANCE_SELECTOR;
-@property (retain, nonatomic) UIColor *backgroundColor2 UI_APPEARANCE_SELECTOR;
-@property (retain, nonatomic) UIColor *topBorderColor UI_APPEARANCE_SELECTOR;
-@property (retain, nonatomic) UIColor *bottomBorderColor UI_APPEARANCE_SELECTOR;
 @property (assign, nonatomic) CGFloat borderWidth;
 
 /*!
