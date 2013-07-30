@@ -101,9 +101,9 @@
 
 }
 
-+ (id)objectForData:(NSData *)data error:(YKError **)error {
++ (id)objectForData:(NSData *)data error:(YKError **)error options:(NSJSONReadingOptions)options {
   NSError *JSONError = nil;
-  id obj = [NSJSONSerialization JSONObjectWithData:data options:0 error:&JSONError];
+  id obj = [NSJSONSerialization JSONObjectWithData:data options:options error:&JSONError];
   if (!obj) {
     if (error) {
       *error = [YKError errorWithError:JSONError];
@@ -113,8 +113,8 @@
   return obj;
 }
 
-+ (id)objectForString:(NSString *)string error:(YKError **)error {
-  return [self objectForData:[string dataUsingEncoding:NSUTF8StringEncoding] error:error];
++ (id)objectForString:(NSString *)string error:(YKError **)error options:(NSJSONReadingOptions)options {
+  return [self objectForData:[string dataUsingEncoding:NSUTF8StringEncoding] error:error options:options];
 }
 
 + (NSDictionary *)JSONDictionaryForData:(NSData *)data {

@@ -38,24 +38,42 @@
 @interface NSObject (YKJSON)
 
 /*!
- Convert an object to a JSON object representation.
- 
- Converts NSData -> Object Representation (NSDictionary, NSArray, etc.)
- Converts NSString -> Object Representation
- Converts Object Representation -> NSString
+ Convert an JSON object representation (NSDictionary, NSArray, etc.) to a JSON string representation.
  */
-- (id)yk_JSON;
+- (id)yk_JSONString;
 
 /*!
  Same as (id)yk_JSON, except that it allows you to pass in an error and receive data about an error in conversion of the object provided to a different representation.
  @param error An error object that will be modified if there are errors in JSON conversion
  */
-- (id)yk_JSON:(YKError **)error;
+- (id)yk_JSONString:(YKError **)error;
 
 /*!
  Same as (id)yk_JSON, except that it will change the string written in conversion from an object representation to a string.
  @param error An error object that will be modified if there are errors in JSON conversion
  @param options Options for how NSJSONSerialization should write the JSON String. i.e. NSJSONWritingPrettyPrinted generates a string with newlines
  */
-- (id)yk_JSON:(YKError **)error options:(NSJSONWritingOptions)options;
+- (id)yk_JSONString:(YKError **)error options:(NSJSONWritingOptions)options;
+
+/*!
+ Converts NSString and NSData to object representation (i.e. NSDictionary, NSArray)
+ */
+
+- (id)yk_JSONObject;
+
+/*!
+ Converts NSString and NSData to object representation (i.e. NSDictionary, NSArray)
+ @param error An error object that will be modified if there are errors in conversion of the JSON object to a string
+ */
+
+- (id)yk_JSONObject:(YKError **)error;
+
+/*!
+ Converts NSString and NSData to object representation (i.e. NSDictionary, NSArray)
+ @param error An error object that will be modified if there are errors in conversion of the JSON object to a string
+ @param options NSJSONReadingOptions that are applied during conversion of the string or data to an object representation
+ */
+
+- (id)yk_JSONObject:(YKError **)error options:(NSJSONReadingOptions)options;
+
 @end

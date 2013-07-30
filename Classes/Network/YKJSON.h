@@ -53,18 +53,20 @@
 /*!
  @param data The NSData to be converted to an object representation.  e.g. NSData from a YKURLRequest
  @param error Error that will be modified if there is a problem parsing data
+ @param options NSJSONReading options when reading the json data
  
  @result An object representation of NSData's JSON contents
  */
-+ (id)objectForData:(NSData *)data error:(YKError **)error;
++ (id)objectForData:(NSData *)data error:(YKError **)error options:(NSJSONReadingOptions)options;
 
 /*!
  @param data The NSData to be converted to an object representation.  e.g. NSData from a YKURLRequest
  @param error Error that will be modified if there is a problem parsing data
+ @param options NSJSONReading options when reading the json data
  
  @result An object representation of NSData's JSON contents
  */
-+ (id)objectForString:(NSString *)string error:(YKError **)error;
++ (id)objectForString:(NSString *)string error:(YKError **)error options:(NSJSONReadingOptions)options;
 
 /*!
 @param data The NSData to be converted to an NSDictionary

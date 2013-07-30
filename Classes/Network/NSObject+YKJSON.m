@@ -32,21 +32,37 @@
 
 @implementation NSObject (YKJSON)
 
-- (id)yk_JSON {
-  return [self yk_JSON:nil];
+- (id)yk_JSONString {
+  return [self yk_JSONString:nil];
 }
 
-- (id)yk_JSON:(YKError **)error {
-  return [self yk_JSON:error options:0];
+- (id)yk_JSONString:(YKError **)error {
+  return [self yk_JSONString:error options:0];
 }
 
-- (id)yk_JSON:(YKError **)error options:(NSJSONWritingOptions)options {
-  if (([self isKindOfClass:[NSData class]])) {
-    return [YKJSON objectForData:(NSData*)self error:error];
-  } else if ([self isKindOfClass:[NSString class]]) {
-    return [YKJSON objectForString:(NSString *)self error:error];
+- (id)yk_JSONString:(YKError **)error options:(NSJSONWritingOptions)options {
+  if ([self isKindOfClass:[NSData class]] | [self isKindOfClass:[NSString class]]) {
+    return nil;
   }
   return [YKJSON JSONFromObject:self options:options encoding:NSUTF8StringEncoding error:error];
+}
+
+- (id)yk_JSONObject {
+  return [self yk_JSONObject:nil];
+}
+
+- (id)yk_JSONObject:(YKError **)error {
+  return [self yk_JSONObject:error options:0];
+}
+
+- (id)yk_JSONObject:(YKError **)error options:(NSJSONReadingOptions)options {
+  if (([self isKindOfClass:[NSData class]])) {
+    return [YKJSON objectForData:(NSData*)self error:error options:options];
+  } else if ([self isKindOfClass:[NSString class]]) {
+    return [YKJSON objectForString:(NSString *)self error:error options:options];
+  } else {
+    return nil;
+  }
 }
 
 @end
