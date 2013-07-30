@@ -110,10 +110,29 @@
 }
 
 - (void)setContentView:(UIView *)contentView animated:(BOOL)animated {
+  UIView *oldContentView = _contentView;
   _contentView = contentView;
-  [_navigationItem setTitleView:contentView];
-  if (contentView) {
-    contentView.contentMode = UIViewContentModeCenter;
+  if (animated) {
+    CGRect oldContentFrame = _navigationItem.titleView.frame;
+    _navigationItem.titleView = _contentView;
+    CGRect newContentFrame = _navigationItem.titleView.frame;
+    [self addSubview:_contentView];
+    [_contentView setFrame:newContentFrame];
+    [self addSubview:oldContentView];
+    [oldContentView setFrame:oldContentFrame];
+    oldContentView.alpha = 1.0;
+    _contentView.alpha = 0.0;
+    [UIView animateWithDuration:0.3
+                     animations:^{
+                       _contentView.alpha = 1.0;
+                       oldContentView.alpha = 0.0;
+                     }
+                     completion:^(BOOL finished) {
+                       [oldContentView removeFromSuperview];
+                       _navigationItem.titleView = _contentView;
+                     }];
+  } else {
+    _navigationItem.titleView = _contentView;
   }
 }
 
