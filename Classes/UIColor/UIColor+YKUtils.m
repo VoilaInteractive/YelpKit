@@ -58,4 +58,15 @@
   return [UIColor colorWithRed:red green:green blue:blue alpha:alpha];
 }
 
++ (UIColor *)colorWithRGBA:(NSArray *)color {
+  if (color == nil) {
+    return nil;
+  } else {
+    return [UIColor colorWithRed:([color[0] floatValue]/255.0)
+                           green:([color[1] floatValue]/255.0)
+                            blue:([color[2] floatValue]/255.0)
+                           alpha:[color[3] floatValue]];
+  }
+}
+
 @end
