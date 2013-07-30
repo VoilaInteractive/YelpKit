@@ -47,6 +47,8 @@
   self.opaque = YES;
   self.backgroundColor = [UIColor clearColor];
   self.contentMode = UIViewContentModeRedraw;
+  self.accessibilityTraits |= UIAccessibilityTraitButton;
+  self.isAccessibilityElement = YES;
   _titleAlignment = UITextAlignmentCenter;
   _insets = UIEdgeInsetsZero;
   _titleInsets = UIEdgeInsetsZero;
@@ -61,7 +63,6 @@
   _titleColor = [[UIColor blackColor] retain];
   _titleFont = [[UIFont boldSystemFontOfSize:14.0] retain];
   _titleShadowOffset = CGSizeZero;
-  self.accessibilityTraits |= UIAccessibilityTraitButton;
 }
 
 - (id)initWithFrame:(CGRect)frame title:(NSString *)title target:(id)target action:(SEL)action {
@@ -314,6 +315,9 @@
   [title retain];
   [_title release];
   _title = title;
+  if ([NSString gh_isBlank:self.accessibilityLabel]) {
+    self.accessibilityLabel = title;
+  }
   [self didChangeValueForKey:@"title"];
 }
 
