@@ -113,6 +113,7 @@
   UIView *oldContentView = _contentView;
   _contentView = contentView;
   if (animated) {
+    // In order to position the views properly, we get their frames in the titleView (which lies in the NavigationBar) and then put them both into the NavigationBar with centered frames for animating.
     CGRect oldContentFrame = _navigationItem.titleView.frame;
     _navigationItem.titleView = _contentView;
     CGRect newContentFrame = _navigationItem.titleView.frame;
