@@ -29,10 +29,10 @@
 
 @interface UIColor (YKUtils)
 
-- (UIColor *)colorByAddingRed:(CGFloat)red green:(CGFloat)green blue:(CGFloat)blue alpha:(CGFloat)alpha;
+- (UIColor *)yk_colorByAddingRed:(CGFloat)red green:(CGFloat)green blue:(CGFloat)blue alpha:(CGFloat)alpha;
 
-- (UIColor *)colorByMultiplyingRed:(CGFloat)red green:(CGFloat)green blue:(CGFloat)blue alpha:(CGFloat)alpha;
+- (UIColor *)yk_colorByMultiplyingRed:(CGFloat)red green:(CGFloat)green blue:(CGFloat)blue alpha:(CGFloat)alpha;
 
-+ (UIColor *)colorWithRGBA:(NSArray *)color;
++ (UIColor *)yk_colorWithRGBA:(NSArray *)color;
 
 @end

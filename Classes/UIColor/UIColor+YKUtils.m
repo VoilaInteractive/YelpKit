@@ -32,7 +32,7 @@
 
 @implementation UIColor (YKUtils)
 
-- (UIColor *)colorByAddingRed:(CGFloat)red green:(CGFloat)green blue:(CGFloat)blue alpha:(CGFloat)alpha {
+- (UIColor *)yk_colorByAddingRed:(CGFloat)red green:(CGFloat)green blue:(CGFloat)blue alpha:(CGFloat)alpha {
   const CGFloat* components = CGColorGetComponents(self.CGColor);
   CGFloat originalRed = components[0];
   CGFloat originalGreen = components[1];
@@ -45,7 +45,7 @@
   return [UIColor colorWithRed:red green:green blue:blue alpha:alpha];
 }
 
-- (UIColor *)colorByMultiplyingRed:(CGFloat)red green:(CGFloat)green blue:(CGFloat)blue alpha:(CGFloat)alpha {
+- (UIColor *)yk_colorByMultiplyingRed:(CGFloat)red green:(CGFloat)green blue:(CGFloat)blue alpha:(CGFloat)alpha {
   const CGFloat* components = CGColorGetComponents(self.CGColor);
   CGFloat originalRed = components[0];
   CGFloat originalGreen = components[1];
@@ -58,7 +58,7 @@
   return [UIColor colorWithRed:red green:green blue:blue alpha:alpha];
 }
 
-+ (UIColor *)colorWithRGBA:(NSArray *)color {
++ (UIColor *)yk_colorWithRGBA:(NSArray *)color {
   if (color == nil) {
     return nil;
   } else {
