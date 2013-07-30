@@ -116,18 +116,16 @@
     CGRect oldContentFrame = _navigationItem.titleView.frame;
     _navigationItem.titleView = _contentView;
     CGRect newContentFrame = _navigationItem.titleView.frame;
-    [self addSubview:_contentView];
-    [_contentView setFrame:newContentFrame];
-    [self addSubview:oldContentView];
-    [oldContentView setFrame:oldContentFrame];
-    oldContentView.alpha = 1.0;
+    _contentView.frame = newContentFrame;
+    oldContentView.frame = oldContentFrame;
     _contentView.alpha = 0.0;
+    [self addSubview:_contentView];
+    [self addSubview:oldContentView];
     [UIView animateWithDuration:0.3
                      animations:^{
                        _contentView.alpha = 1.0;
                        oldContentView.alpha = 0.0;
-                     }
-                     completion:^(BOOL finished) {
+                     } completion:^(BOOL finished) {
                        [oldContentView removeFromSuperview];
                        _navigationItem.titleView = _contentView;
                      }];

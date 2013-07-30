@@ -134,6 +134,7 @@
 		00E928B81524DEEC00E90AF1 /* YKUIActivityView.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E928B61524DEEC00E90AF1 /* YKUIActivityView.m */; };
 		00F882E61527C92A000FF1AB /* YKUIActionSheet.h in Headers */ = {isa = PBXBuildFile; fileRef = 00F882E41527C92A000FF1AB /* YKUIActionSheet.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		00F882E71527C92A000FF1AB /* YKUIActionSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = 00F882E51527C92A000FF1AB /* YKUIActionSheet.m */; };
+		217A2B8D17A8698D007C6D28 /* YKUINavigationBarTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 217A2B8517A86979007C6D28 /* YKUINavigationBarTest.m */; };
 		420E62B7153F44FF00F114DC /* NSDictionary+YKValidation.h in Headers */ = {isa = PBXBuildFile; fileRef = 420E62B5153F44FF00F114DC /* NSDictionary+YKValidation.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		420E62B8153F44FF00F114DC /* NSDictionary+YKValidation.m in Sources */ = {isa = PBXBuildFile; fileRef = 420E62B6153F44FF00F114DC /* NSDictionary+YKValidation.m */; };
 		4227623E150FFDC1002E177D /* UIColor+YKUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 4227623C150FFDC1002E177D /* UIColor+YKUtils.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -401,6 +402,8 @@
 		00E928B61524DEEC00E90AF1 /* YKUIActivityView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = YKUIActivityView.m; path = Classes/UIView/YKUIActivityView.m; sourceTree = SOURCE_ROOT; };
 		00F882E41527C92A000FF1AB /* YKUIActionSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YKUIActionSheet.h; sourceTree = "<group>"; };
 		00F882E51527C92A000FF1AB /* YKUIActionSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YKUIActionSheet.m; sourceTree = "<group>"; };
+		217A2B8417A86979007C6D28 /* YKUINavigationBarTest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YKUINavigationBarTest.h; sourceTree = "<group>"; };
+		217A2B8517A86979007C6D28 /* YKUINavigationBarTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YKUINavigationBarTest.m; sourceTree = "<group>"; };
 		420E62B5153F44FF00F114DC /* NSDictionary+YKValidation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+YKValidation.h"; sourceTree = "<group>"; };
 		420E62B6153F44FF00F114DC /* NSDictionary+YKValidation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+YKValidation.m"; sourceTree = "<group>"; };
 		4227623C150FFDC1002E177D /* UIColor+YKUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+YKUtils.h"; sourceTree = "<group>"; };
@@ -848,6 +851,8 @@
 		84EB1E7F177133FE00479F80 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				217A2B8417A86979007C6D28 /* YKUINavigationBarTest.h */,
+				217A2B8517A86979007C6D28 /* YKUINavigationBarTest.m */,
 				84EB1E9B177135E300479F80 /* GHUnitYelpKitTestMain.m */,
 				84EB1EB0177137B600479F80 /* YKApplicationTestRunner.h */,
 				84EB1EB1177137B600479F80 /* YKApplicationTestRunner.m */,
@@ -1255,6 +1260,7 @@
 				84CCB7FF1778F04B004B8FD2 /* YKUIButtonViewTest.m in Sources */,
 				84CCB8021778F954004B8FD2 /* YKUIButtonViewTest_DefaultTest.m in Sources */,
 				84CCB8041778F9B6004B8FD2 /* YKUIButtonViewTest_Borders.m in Sources */,
+				217A2B8D17A8698D007C6D28 /* YKUINavigationBarTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
