@@ -33,6 +33,10 @@
 
 - (UIColor *)yk_colorByMultiplyingRed:(CGFloat)red green:(CGFloat)green blue:(CGFloat)blue alpha:(CGFloat)alpha;
 
+/*!
+ @param color A 4-value array (R,G,B,A) where RGB are all NSNumbers from 0-255, and A is a float from 0-1
+ @discussion Provides a convenience so that you can store colors as array literals (which is more human readable), and get back a color by doing [UIColor yk_colorWithRGBA:@[@255, @155, @10, @1.0]];
+ */
 + (UIColor *)yk_colorWithRGBA:(NSArray *)color;
 
 @end
