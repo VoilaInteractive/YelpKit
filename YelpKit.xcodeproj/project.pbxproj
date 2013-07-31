@@ -135,6 +135,8 @@
 		00F882E61527C92A000FF1AB /* YKUIActionSheet.h in Headers */ = {isa = PBXBuildFile; fileRef = 00F882E41527C92A000FF1AB /* YKUIActionSheet.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		00F882E71527C92A000FF1AB /* YKUIActionSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = 00F882E51527C92A000FF1AB /* YKUIActionSheet.m */; };
 		217A2B8D17A8698D007C6D28 /* YKUINavigationBarTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 217A2B8517A86979007C6D28 /* YKUINavigationBarTest.m */; };
+		21F5B49D17A9B9860004B396 /* UIColor+YKUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 4227623D150FFDC1002E177D /* UIColor+YKUtils.m */; };
+		21F5B4A417A9B9890004B396 /* UIColor+YKUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 4227623D150FFDC1002E177D /* UIColor+YKUtils.m */; };
 		420E62B7153F44FF00F114DC /* NSDictionary+YKValidation.h in Headers */ = {isa = PBXBuildFile; fileRef = 420E62B5153F44FF00F114DC /* NSDictionary+YKValidation.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		420E62B8153F44FF00F114DC /* NSDictionary+YKValidation.m in Sources */ = {isa = PBXBuildFile; fileRef = 420E62B6153F44FF00F114DC /* NSDictionary+YKValidation.m */; };
 		4227623E150FFDC1002E177D /* UIColor+YKUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 4227623C150FFDC1002E177D /* UIColor+YKUtils.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1245,6 +1247,7 @@
 				00B1B13A15CB11F60021140B /* YKCatalogViewStack.m in Sources */,
 				00B1B13D15CB13430021140B /* YKCatalogTestView.m in Sources */,
 				00A4D93015CB24CC0035E64B /* YKCatalogButtons.m in Sources */,
+				21F5B49D17A9B9860004B396 /* UIColor+YKUtils.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1261,6 +1264,7 @@
 				84CCB8021778F954004B8FD2 /* YKUIButtonViewTest_DefaultTest.m in Sources */,
 				84CCB8041778F9B6004B8FD2 /* YKUIButtonViewTest_Borders.m in Sources */,
 				217A2B8D17A8698D007C6D28 /* YKUINavigationBarTest.m in Sources */,
+				21F5B4A417A9B9890004B396 /* UIColor+YKUtils.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

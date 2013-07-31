@@ -30,6 +30,16 @@
 #import "UIColor+YKUtils.h"
 #import "YKDefines.h"
 
+YKRGBAColor YKRGBAColorMake(uint8_t red, uint8_t green, uint8_t blue, CGFloat alpha) {
+  YKRGBAColor color = { .red = red, .green = green, .blue = blue, .alpha = alpha };
+  return color;
+}
+
+YKRGBAColor YKRGBAColorMakeWithWhite(uint8_t white, CGFloat alpha) {
+  YKRGBAColor color = { .red = white, .green = white, .blue = white, .alpha = alpha };
+  return color;
+}
+
 @implementation UIColor (YKUtils)
 
 - (UIColor *)yk_colorByAddingRed:(CGFloat)red green:(CGFloat)green blue:(CGFloat)blue alpha:(CGFloat)alpha {
@@ -58,14 +68,8 @@
   return [UIColor colorWithRed:red green:green blue:blue alpha:alpha];
 }
 
-+ (UIColor *)yk_colorWithRGBA:(NSArray *)color {
-  if (!color || [color count] != 4) {
-    return nil;
-  }
-  return [UIColor colorWithRed:([color[0] floatValue]/255.0)
-                         green:([color[1] floatValue]/255.0)
-                          blue:([color[2] floatValue]/255.0)
-                         alpha:[color[3] floatValue]];
++ (UIColor *)yk_colorWithRGBA:(YKRGBAColor)color {
+  return [UIColor colorWithRed:color.red / 255.0 green:color.green / 255.0 blue:color.blue / 255.0 alpha:color.alpha];
 }
 
 @end
