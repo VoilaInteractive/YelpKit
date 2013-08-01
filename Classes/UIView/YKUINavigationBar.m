@@ -112,6 +112,11 @@
 - (void)setContentView:(UIView *)contentView animated:(BOOL)animated {
   UIView *oldContentView = _contentView;
   _contentView = contentView;
+  if (_navigationItem.titleView == _contentView) {
+    // A small UIKit nitpick: If titleView is set to the same pointer, the titleView setter appears to not re-set the titleView value.  This is a problem if you have multiple nav bars that all use the same titleView and each of them take control of it at some point.
+    _navigationItem.titleView = nil;
+    animated = NO;
+  }
   if (animated) {
     // In order to position the views properly, we get their frames in the titleView (which lies in the NavigationBar) and then put them both into the NavigationBar with centered frames for animating.
     CGRect oldContentFrame = _navigationItem.titleView.frame;
