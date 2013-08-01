@@ -49,8 +49,6 @@ static UIImage *gYKImageLoaderMockImage = NULL;
 
 @implementation YKImageLoader
 
-@synthesize URL=_URL, image=_image, loadingImage=_loadingImage, defaultImage=_defaultImage, errorImage=_errorImage, delegate=_delegate;
-
 + (YKImageLoader *)imageLoaderWithURLString:(NSString *)URLString loadingImage:(UIImage *)loadingImage defaultImage:(UIImage *)defaultImage errorImage:(UIImage *)errorImage delegate:(id<YKImageLoaderDelegate>)delegate {
   YKImageLoader *imageLoader = [[YKImageLoader alloc] initWithLoadingImage:loadingImage defaultImage:defaultImage errorImage:errorImage delegate:delegate];
   [imageLoader setURLString:URLString];
@@ -80,10 +78,10 @@ static UIImage *gYKImageLoaderMockImage = NULL;
 
 - (id)initWithLoadingImage:(UIImage *)loadingImage defaultImage:(UIImage *)defaultImage errorImage:(UIImage *)errorImage delegate:(id<YKImageLoaderDelegate>)delegate {
   if ((self = [self init])) {
-    _loadingImage = [loadingImage retain];
-    _defaultImage = [defaultImage retain];
-    _errorImage = [errorImage retain];
-    _delegate = delegate;
+    self.loadingImage = loadingImage;
+    self.defaultImage = defaultImage;
+    self.errorImage = errorImage;
+    self.delegate = delegate;
   }
   return self;
 }
@@ -129,9 +127,8 @@ static UIImage *gYKImageLoaderMockImage = NULL;
   [self cancel];
   [URL retain];
   [_URL release];
-  _URL = URL;  
-  [_image release];
-  _image = nil;
+  _URL = URL;
+  self.image = nil;
    
 #if YP_DEBUG
   self.URL.cacheDisabled = [[NSUserDefaults standardUserDefaults] boolForKey:@"YKImageLoaderCacheDisabled"];
@@ -225,10 +222,7 @@ static UIImage *gYKImageLoaderMockImage = NULL;
 }
 
 - (void)setImage:(UIImage *)image status:(YKImageLoaderStatus)status {
-  //if (image == _image) return;
-  [image retain];
-  [_image release];
-  _image = image;  
+  self.image = image;
   //YKDebug(@"Update image for %@", _URL);
   YKAssertMainThread();
   [_delegate imageLoader:self didUpdateStatus:status image:image];
