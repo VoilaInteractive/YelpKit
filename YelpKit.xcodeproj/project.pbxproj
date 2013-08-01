@@ -26,8 +26,6 @@
 		004127211536716D0090F268 /* YKLBaseView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0041271F1536716D0090F268 /* YKLBaseView.m */; };
 		00412724153673410090F268 /* YKLImage.h in Headers */ = {isa = PBXBuildFile; fileRef = 00412722153673400090F268 /* YKLImage.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		00412725153673410090F268 /* YKLImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 00412723153673400090F268 /* YKLImage.m */; };
-		004628501593969C00C8E3C1 /* YKImageLoaderQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 0046284E1593969C00C8E3C1 /* YKImageLoaderQueue.h */; };
-		004628511593969C00C8E3C1 /* YKImageLoaderQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 0046284F1593969C00C8E3C1 /* YKImageLoaderQueue.m */; };
 		005592EC140B0085001E9C43 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 005592EB140B0085001E9C43 /* Foundation.framework */; };
 		00559329140B00F6001E9C43 /* YKImageLoader.h in Headers */ = {isa = PBXBuildFile; fileRef = 00559300140B00F6001E9C43 /* YKImageLoader.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		0055932A140B00F6001E9C43 /* YKImageLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 00559301140B00F6001E9C43 /* YKImageLoader.m */; };
@@ -283,8 +281,6 @@
 		0041271F1536716D0090F268 /* YKLBaseView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YKLBaseView.m; sourceTree = "<group>"; };
 		00412722153673400090F268 /* YKLImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YKLImage.h; sourceTree = "<group>"; };
 		00412723153673400090F268 /* YKLImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YKLImage.m; sourceTree = "<group>"; };
-		0046284E1593969C00C8E3C1 /* YKImageLoaderQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YKImageLoaderQueue.h; sourceTree = "<group>"; };
-		0046284F1593969C00C8E3C1 /* YKImageLoaderQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YKImageLoaderQueue.m; sourceTree = "<group>"; };
 		005592E8140B0085001E9C43 /* libYelpKit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libYelpKit.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		005592EB140B0085001E9C43 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		00559300140B00F6001E9C43 /* YKImageLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YKImageLoader.h; sourceTree = "<group>"; };
@@ -573,8 +569,6 @@
 			children = (
 				00559300140B00F6001E9C43 /* YKImageLoader.h */,
 				00559301140B00F6001E9C43 /* YKImageLoader.m */,
-				0046284E1593969C00C8E3C1 /* YKImageLoaderQueue.h */,
-				0046284F1593969C00C8E3C1 /* YKImageLoaderQueue.m */,
 			);
 			path = ImageLoader;
 			sourceTree = "<group>";
@@ -950,7 +944,6 @@
 				00924AAD15785715000546DA /* YKJSONRequest.h in Headers */,
 				00924AB21578574A000546DA /* YKUIAlertView.h in Headers */,
 				00576532158C3A28008A1AF2 /* YKUIActivityCell.h in Headers */,
-				004628501593969C00C8E3C1 /* YKImageLoaderQueue.h in Headers */,
 				0085A686159AB5620032E7BB /* YKUISwitchButton.h in Headers */,
 				00C9CC5C15A6C4360045CBE7 /* YKSUIInternalView.h in Headers */,
 				00C9CC5E15A6C4360045CBE7 /* YKUIViewStack.h in Headers */,
@@ -1219,7 +1212,6 @@
 				00924AAE15785715000546DA /* YKJSONRequest.m in Sources */,
 				00924AB31578574A000546DA /* YKUIAlertView.m in Sources */,
 				00576533158C3A28008A1AF2 /* YKUIActivityCell.m in Sources */,
-				004628511593969C00C8E3C1 /* YKImageLoaderQueue.m in Sources */,
 				0085A687159AB5620032E7BB /* YKUISwitchButton.m in Sources */,
 				00C9CC5D15A6C4360045CBE7 /* YKSUIInternalView.m in Sources */,
 				00C9CC5F15A6C4360045CBE7 /* YKUIViewStack.m in Sources */,

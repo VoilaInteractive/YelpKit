@@ -32,21 +32,24 @@
 #import "YKImageMemoryCache.h"
 #import "YKResource.h"
 #import "YKDefines.h"
-#import "YKImageLoaderQueue.h"
 
 @interface YKImageLoader ()
+
+@property (retain, nonatomic) UIImage *image;
+@property (retain, nonatomic) YKURLRequest *request;
 @property (retain, nonatomic) YKURL *URL;
+
 - (void)setImage:(UIImage *)image status:(YKImageLoaderStatus)status;
+
 @end
 
 #define kExpiresAge YKTimeIntervalWeek
 
 static UIImage *gYKImageLoaderMockImage = NULL;
-static dispatch_queue_t gYKImageLoaderDiskCacheQueue = NULL;
 
 @implementation YKImageLoader
 
-@synthesize URL=_URL, image=_image, loadingImage=_loadingImage, defaultImage=_defaultImage, errorImage=_errorImage, delegate=_delegate, queue=_queue;
+@synthesize URL=_URL, image=_image, loadingImage=_loadingImage, defaultImage=_defaultImage, errorImage=_errorImage, delegate=_delegate;
 
 + (YKImageLoader *)imageLoaderWithURLString:(NSString *)URLString loadingImage:(UIImage *)loadingImage defaultImage:(UIImage *)defaultImage errorImage:(UIImage *)errorImage delegate:(id<YKImageLoaderDelegate>)delegate {
   YKImageLoader *imageLoader = [[YKImageLoader alloc] initWithLoadingImage:loadingImage defaultImage:defaultImage errorImage:errorImage delegate:delegate];
@@ -63,10 +66,12 @@ static dispatch_queue_t gYKImageLoaderDiskCacheQueue = NULL;
 + (dispatch_queue_t)diskCacheQueue {
   // We assert main thread as a way to ensure this is thread safe
   YKAssertMainThread();
-  if (!gYKImageLoaderDiskCacheQueue) {
-    gYKImageLoaderDiskCacheQueue = dispatch_queue_create("com.YelpKit.YKImageLoader.diskCacheQueue", 0);
-  }
-  return gYKImageLoaderDiskCacheQueue;
+  static dispatch_once_t onceToken;
+  static dispatch_queue_t imageLoaderDiskCacheQueue = nil;
+  dispatch_once(&onceToken, ^{
+    imageLoaderDiskCacheQueue = dispatch_queue_create("com.YelpKit.YKImageLoader.diskCacheQueue", DISPATCH_QUEUE_SERIAL);
+  });
+  return imageLoaderDiskCacheQueue;
 }
 
 - (id)initWithLoadingImage:(UIImage *)loadingImage defaultImage:(UIImage *)defaultImage delegate:(id<YKImageLoaderDelegate>)delegate {
@@ -110,21 +115,16 @@ static dispatch_queue_t gYKImageLoaderDiskCacheQueue = NULL;
 }
 
 - (void)setURL:(YKURL *)URL {
-  // Use queue by default
-  [self setURL:URL queue:[YKImageLoaderQueue sharedQueue]];
-}
-
-- (void)setURL:(YKURL *)URL queue:(YKImageLoaderQueue *)queue {  
   if (![NSThread isMainThread]) {
     dispatch_async(dispatch_get_main_queue(), ^{
-      [self _setURL:URL queue:queue];
+      [self _setURL:URL];
     });
   } else {
-    [self _setURL:URL queue:queue];
+    [self _setURL:URL];
   }
 }
   
-- (void)_setURL:(YKURL *)URL queue:(YKImageLoaderQueue *)queue {  
+- (void)_setURL:(YKURL *)URL {
   YKAssertMainThread();
   [self cancel];
   [URL retain];
@@ -132,7 +132,6 @@ static dispatch_queue_t gYKImageLoaderDiskCacheQueue = NULL;
   _URL = URL;  
   [_image release];
   _image = nil;
-  _queue = queue;
    
 #if YP_DEBUG
   self.URL.cacheDisabled = [[NSUserDefaults standardUserDefaults] boolForKey:@"YKImageLoaderCacheDisabled"];
@@ -172,7 +171,7 @@ static dispatch_queue_t gYKImageLoaderDiskCacheQueue = NULL;
     // Notify the delegate that we're loading the image
     if ([_delegate respondsToSelector:@selector(imageLoaderDidStart:)])
       [_delegate imageLoaderDidStart:self];
-    dispatch_async([YKImageLoader diskCacheQueue], ^{
+    dispatch_async([[self class] diskCacheQueue], ^{
       UIImage *cachedImage = [[YKURLCache sharedCache] diskCachedImageForURLString:URL.cacheableURLString expires:kExpiresAge];
       if (cachedImage) {
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -199,12 +198,7 @@ static dispatch_queue_t gYKImageLoaderDiskCacheQueue = NULL;
 - (void)_loadImageForURL:(YKURL *)URL {
   // Put the loading image in place while waiting for the request to load
   [self setImage:_loadingImage status:YKImageLoaderStatusLoading];
-  
-  if (_queue) {
-    [_queue enqueue:self];
-  } else {
-    [self load];
-  }
+  [self load];
 }
 
 - (void)load {
@@ -214,11 +208,12 @@ static dispatch_queue_t gYKImageLoaderDiskCacheQueue = NULL;
   _request.expiresAge = kExpiresAge;
 
   static NSDictionary *headers = nil;
-  if (!headers) {
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
     // Set the x-screen-scale header
     CGFloat scale = [[UIScreen mainScreen] scale];
     headers = [@{@"x-screen-scale": [NSString stringWithFormat:@"%0.1f", scale]} retain];
-  }
+  });
 
   [_request requestWithURL:_URL headers:headers delegate:self
             finishSelector:@selector(requestDidFinish:)
@@ -240,7 +235,6 @@ static dispatch_queue_t gYKImageLoaderDiskCacheQueue = NULL;
 }
 
 - (void)cancel {
-  [_queue dequeue:self];
   [_request cancel];
 }
 
@@ -266,7 +260,6 @@ static dispatch_queue_t gYKImageLoaderDiskCacheQueue = NULL;
         }
         [self setImage:image status:YKImageLoaderStatusLoaded];
       }
-      [_queue imageLoaderDidEnd:self];
     });
   });
 }
@@ -275,13 +268,11 @@ static dispatch_queue_t gYKImageLoaderDiskCacheQueue = NULL;
   [self setImage:_errorImage status:YKImageLoaderStatusErrored];
   if ([_delegate respondsToSelector:@selector(imageLoader:didError:)])
     [_delegate imageLoader:self didError:[YKError errorWithKey:YKErrorRequest error:error]];
-  [_queue imageLoaderDidEnd:self];
 }
 
 - (void)requestDidCancel:(YKURLRequest *)request {
   if ([_delegate respondsToSelector:@selector(imageLoaderDidCancel:)])
     [_delegate imageLoaderDidCancel:self];
-  [_queue imageLoaderDidEnd:self];
 }
 
 @end

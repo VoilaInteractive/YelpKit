@@ -31,7 +31,6 @@
 #import "YKError.h"
 
 @class YKImageLoader;
-@class YKImageLoaderQueue;
 
 typedef enum {
   YKImageLoaderStatusNone,
@@ -53,19 +52,7 @@ typedef enum {
  
  To disable the cache, set NSUserDefaults#boolForKey:@"YKImageLoaderCacheDisabled".
  */
-@interface YKImageLoader : NSObject {  
-  
-  YKURLRequest *_request; 
-  
-  YKURL *_URL;
-  UIImage *_image;
-  UIImage *_defaultImage;
-  UIImage *_loadingImage;
-  UIImage *_errorImage;
-  id<YKImageLoaderDelegate> _delegate; // weak
-  
-  YKImageLoaderQueue *_queue; // weak
-}
+@interface YKImageLoader : NSObject
 
 @property (readonly, retain, nonatomic) YKURL *URL;
 @property (readonly, nonatomic) UIImage *image;
@@ -73,7 +60,6 @@ typedef enum {
 @property (retain, nonatomic) UIImage *loadingImage;
 @property (retain, nonatomic) UIImage *errorImage;
 @property (assign, nonatomic) id<YKImageLoaderDelegate> delegate;
-@property (assign, nonatomic) YKImageLoaderQueue *queue;
 
 /*!
  Image loader with loading image and default image.
@@ -115,13 +101,6 @@ typedef enum {
  @param URL URL
  */
 - (void)setURL:(YKURL *)URL;
-
-/*!
- Load URL.
- @param URL URL
- @param queue Loader queue
- */
-- (void)setURL:(YKURL *)URL queue:(YKImageLoaderQueue *)queue;
 
 /*!
  Load URL string.
