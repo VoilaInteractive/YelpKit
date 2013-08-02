@@ -64,14 +64,14 @@
   CGSize lineSize = CGSizeZero;
   CGSize textLabelSize = CGSizeZero;
   if (![NSString gh_isBlank:_textLabel.text]) {
-    textLabelSize = [_textLabel.text sizeWithFont:_textLabel.font constrainedToSize:size lineBreakMode:UILineBreakModeTailTruncation];    
+    textLabelSize = [_textLabel.text gh_sizeWithFont:_textLabel.font constrainedToSize:size lineBreakMode:NSLineBreakByTruncatingTail];
     lineSize.width += textLabelSize.width;
     lineSize.height += textLabelSize.height;
   }
   
   CGSize detailLabelSize = CGSizeZero;
   if (![NSString gh_isBlank:_detailLabel.text]) {
-    detailLabelSize = [_detailLabel.text sizeWithFont:_detailLabel.font constrainedToSize:size lineBreakMode:UILineBreakModeTailTruncation];    
+    detailLabelSize = [_detailLabel.text gh_sizeWithFont:_detailLabel.font constrainedToSize:size lineBreakMode:NSLineBreakByTruncatingTail];
     lineSize.height += detailLabelSize.height + 2;
   }
   

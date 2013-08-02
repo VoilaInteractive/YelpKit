@@ -65,11 +65,11 @@
 }
 
 + (YKLText *)text:(NSString *)text font:(UIFont *)font {
-  return [self text:text font:font textColor:nil lineBreakMode:NSUIntegerMax];
+  return [self text:text font:font textColor:nil lineBreakMode:-1];
 }
 
 + (YKLText *)text:(NSString *)text font:(UIFont *)font textColor:(UIColor *)textColor {
-  return [self text:text font:font textColor:textColor lineBreakMode:NSUIntegerMax];
+  return [self text:text font:font textColor:textColor lineBreakMode:-1];
 }
 
 + (YKLText *)text:(NSString *)text font:(UIFont *)font textColor:(UIColor *)textColor lineBreakMode:(UILineBreakMode)lineBreakMode {
@@ -126,16 +126,16 @@
   }
 
   if (YKCGSizeIsZero(constrainedToSize)) {
-    if (_lineBreakMode == NSUIntegerMax) {
-      _sizeThatFits = [_text sizeWithFont:_font];
+    if ((NSInteger)_lineBreakMode == -1) {
+      _sizeThatFits = [_text gh_sizeWithFont:_font];
     } else {
-      _sizeThatFits = [_text sizeWithFont:_font forWidth:size.width lineBreakMode:_lineBreakMode];
+      _sizeThatFits = [_text gh_sizeWithFont:_font forWidth:size.width lineBreakMode:_lineBreakMode];
     }
   } else {
-    if (_lineBreakMode == NSUIntegerMax) {
-      _sizeThatFits = [_text sizeWithFont:_font constrainedToSize:constrainedToSize];
+    if ((NSInteger)_lineBreakMode == -1) {
+      _sizeThatFits = [_text gh_sizeWithFont:_font constrainedToSize:constrainedToSize];
     } else {
-      _sizeThatFits = [_text sizeWithFont:_font constrainedToSize:constrainedToSize lineBreakMode:_lineBreakMode];
+      _sizeThatFits = [_text gh_sizeWithFont:_font constrainedToSize:constrainedToSize lineBreakMode:_lineBreakMode];
     }
   }
   

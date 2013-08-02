@@ -95,8 +95,8 @@
   CGFloat height = _pullHeight;
   CGFloat y = self.frame.size.height - _pullHeight;
   
-  CGFloat activityLabelWidth = MAX([YKLocalizedString(@"Release to refresh...") sizeWithFont:_activityLabel.textLabel.font].width,
-                                   [YKLocalizedString(@"Pull down to refresh...") sizeWithFont:_activityLabel.textLabel.font].width);
+  CGFloat activityLabelWidth = MAX([YKLocalizedString(@"Release to refresh...") gh_sizeWithFont:_activityLabel.textLabel.font].width,
+                                   [YKLocalizedString(@"Pull down to refresh...") gh_sizeWithFont:_activityLabel.textLabel.font].width);
 
   _activityLabel.frame = CGRectMake(roundf((self.frame.size.width - activityLabelWidth) / 2.0), y, roundf(activityLabelWidth), height);
   
