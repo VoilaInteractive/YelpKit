@@ -28,6 +28,7 @@
 //
 
 #import "UILabel+YKUtils.h"
+#import "NSString+Drawing.h"
 
 @implementation UILabel (YKUtils)
 
@@ -55,7 +56,7 @@
 }
 
 - (CGSize)yk_multilineSizeThatFits:(CGSize)size {
-  return [self.text gh_sizeWithFont:self.font constrainedToSize:size lineBreakMode:self.lineBreakMode];
+  return [self.text yk_sizeWithFont:self.font constrainedToSize:size lineBreakMode:self.lineBreakMode];
 }
 
 - (void)yk_draw {

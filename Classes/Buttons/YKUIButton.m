@@ -30,7 +30,7 @@
 #import "YKUIButton.h"
 #import "YKDefines.h"
 #import "YKUIImageView.h"
-
+#import "NSString+Drawing.h"
 
 @implementation YKUIButton
 
@@ -147,14 +147,14 @@
 
 - (CGSize)_sizeForTitle:(NSString *)title constrainedToSize:(CGSize)constrainedToSize {
   if (_maxLineCount > 0) {
-    CGSize lineSize = [@" " gh_sizeWithFont:_titleFont];
+    CGSize lineSize = [@" " yk_sizeWithFont:_titleFont];
     constrainedToSize.height = lineSize.height * _maxLineCount;
   }
 
   CGSize titleSize = CGSizeZero;
 
   if (title) {
-    titleSize = [title gh_sizeWithFont:_titleFont constrainedToSize:constrainedToSize lineBreakMode:NSLineBreakByTruncatingTail];
+    titleSize = [title yk_sizeWithFont:_titleFont constrainedToSize:constrainedToSize lineBreakMode:NSLineBreakByTruncatingTail];
     // TODO: Probably need this because sizeWithFont and draw methods produce different sizing
     titleSize.width += 2;
   }
@@ -162,13 +162,13 @@
   if (_secondaryTitle) {
     if (_secondaryTitlePosition == YKUIButtonSecondaryTitlePositionDefault || _secondaryTitlePosition == YKUIButtonSecondaryTitlePositionRightAlign) {
       constrainedToSize.width -= roundf(titleSize.width);
-      CGSize secondaryTitleSize = [_secondaryTitle gh_sizeWithFont:(_secondaryTitleFont ? _secondaryTitleFont : _titleFont) constrainedToSize:constrainedToSize lineBreakMode:NSLineBreakByTruncatingTail];
+      CGSize secondaryTitleSize = [_secondaryTitle yk_sizeWithFont:(_secondaryTitleFont ? _secondaryTitleFont : _titleFont) constrainedToSize:constrainedToSize lineBreakMode:NSLineBreakByTruncatingTail];
       titleSize.width += roundf(secondaryTitleSize.width);
     } else if (_secondaryTitlePosition == YKUIButtonSecondaryTitlePositionBottom) {
-      CGSize secondaryTitleSize = [_secondaryTitle gh_sizeWithFont:(_secondaryTitleFont ? _secondaryTitleFont : _titleFont) constrainedToSize:constrainedToSize lineBreakMode:NSLineBreakByTruncatingTail];
+      CGSize secondaryTitleSize = [_secondaryTitle yk_sizeWithFont:(_secondaryTitleFont ? _secondaryTitleFont : _titleFont) constrainedToSize:constrainedToSize lineBreakMode:NSLineBreakByTruncatingTail];
       titleSize.height += roundf(secondaryTitleSize.height);
     } else if (_secondaryTitlePosition == YKUIButtonSecondaryTitlePositionBottomLeftSingle) {
-      CGSize secondaryTitleSize = [_secondaryTitle gh_sizeWithFont:(_secondaryTitleFont ? _secondaryTitleFont : _titleFont)];
+      CGSize secondaryTitleSize = [_secondaryTitle yk_sizeWithFont:(_secondaryTitleFont ? _secondaryTitleFont : _titleFont)];
       titleSize.height += roundf(secondaryTitleSize.height);
     }
   }
@@ -598,7 +598,7 @@
 
   // Check if we need to use abbreviated title
   if (_abbreviatedTitle) {
-    CGSize titleSizeAbbreviated = [_title gh_sizeWithFont:_titleFont];
+    CGSize titleSizeAbbreviated = [_title yk_sizeWithFont:_titleFont];
     if (titleSizeAbbreviated.width > _titleSize.width) {
       title = _abbreviatedTitle;
       titleSize = _abbreviatedTitleSize;
@@ -675,18 +675,18 @@
     } else if (_secondaryTitle) {
       if (_maxLineCount > 0) {
         // NOTE(nakoury): ideally this check would not be done here. instead _titleSize should be broken up into _titleSize and _secondaryTitleSize because currently _titleSize is doing a dual purpose. In some cases it is considered the size of _title + _secondaryTitle, but in this case it is considered just the size of _title. See _sizeForTitle:constrainedToSize for the logic behind _titleSize.
-        CGSize lineSize = [@" " gh_sizeWithFont:_titleFont];
+        CGSize lineSize = [@" " yk_sizeWithFont:_titleFont];
         titleSize.height = lineSize.height * _maxLineCount;
       }
 
-      CGSize titleSizeAdjusted = [title gh_sizeWithFont:_titleFont constrainedToSize:titleSize lineBreakMode:NSLineBreakByTruncatingTail];
+      CGSize titleSizeAdjusted = [title yk_sizeWithFont:_titleFont constrainedToSize:titleSize lineBreakMode:NSLineBreakByTruncatingTail];
       titleSizeAdjusted = [title drawInRect:CGRectMake(x, y, titleSizeAdjusted.width, titleSizeAdjusted.height) withFont:font lineBreakMode:UILineBreakModeTailTruncation alignment:_titleAlignment];
       if (_secondaryTitleColor) [_secondaryTitleColor set];
       if (_secondaryTitleFont) font = _secondaryTitleFont;
       if (_secondaryTitlePosition == YKUIButtonSecondaryTitlePositionDefault) {
         x += titleSizeAdjusted.width;
         CGFloat secondaryTitleWidth = size.width - x - _insets.right - titleInsets.right;
-        CGSize secondaryTitleSize = [_secondaryTitle gh_sizeWithFont:font forWidth:secondaryTitleWidth lineBreakMode:NSLineBreakByTruncatingTail];
+        CGSize secondaryTitleSize = [_secondaryTitle yk_sizeWithFont:font forWidth:secondaryTitleWidth lineBreakMode:NSLineBreakByTruncatingTail];
         [_secondaryTitle drawInRect:CGRectMake(x, y, secondaryTitleSize.width, secondaryTitleSize.height) withFont:font lineBreakMode:NSLineBreakByTruncatingTail];
       } else if (_secondaryTitlePosition == YKUIButtonSecondaryTitlePositionRightAlign) {
         x += titleSizeAdjusted.width;

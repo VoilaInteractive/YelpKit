@@ -30,6 +30,7 @@
 #import "YKLText.h"
 #import "YKCGUtils.h"
 #import "YKLImage.h"
+#import "NSString+Drawing.h"
 
 @implementation YKLText
 
@@ -127,15 +128,15 @@
 
   if (YKCGSizeIsZero(constrainedToSize)) {
     if ((NSInteger)_lineBreakMode == -1) {
-      _sizeThatFits = [_text gh_sizeWithFont:_font];
+      _sizeThatFits = [_text yk_sizeWithFont:_font];
     } else {
-      _sizeThatFits = [_text gh_sizeWithFont:_font forWidth:size.width lineBreakMode:_lineBreakMode];
+      _sizeThatFits = [_text yk_sizeWithFont:_font forWidth:size.width lineBreakMode:_lineBreakMode];
     }
   } else {
     if ((NSInteger)_lineBreakMode == -1) {
-      _sizeThatFits = [_text gh_sizeWithFont:_font constrainedToSize:constrainedToSize];
+      _sizeThatFits = [_text yk_sizeWithFont:_font constrainedToSize:constrainedToSize];
     } else {
-      _sizeThatFits = [_text gh_sizeWithFont:_font constrainedToSize:constrainedToSize lineBreakMode:_lineBreakMode];
+      _sizeThatFits = [_text yk_sizeWithFont:_font constrainedToSize:constrainedToSize lineBreakMode:_lineBreakMode];
     }
   }
   

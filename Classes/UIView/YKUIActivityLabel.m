@@ -27,6 +27,7 @@
 #import "YKUIActivityLabel.h"
 #import "YKCGUtils.h"
 #import "YKLocalized.h"
+#import "NSString+Drawing.h"
 
 @implementation YKUIActivityLabel
 
@@ -64,14 +65,14 @@
   CGSize lineSize = CGSizeZero;
   CGSize textLabelSize = CGSizeZero;
   if (![NSString gh_isBlank:_textLabel.text]) {
-    textLabelSize = [_textLabel.text gh_sizeWithFont:_textLabel.font constrainedToSize:size lineBreakMode:NSLineBreakByTruncatingTail];
+    textLabelSize = [_textLabel.text yk_sizeWithFont:_textLabel.font constrainedToSize:size lineBreakMode:NSLineBreakByTruncatingTail];
     lineSize.width += textLabelSize.width;
     lineSize.height += textLabelSize.height;
   }
   
   CGSize detailLabelSize = CGSizeZero;
   if (![NSString gh_isBlank:_detailLabel.text]) {
-    detailLabelSize = [_detailLabel.text gh_sizeWithFont:_detailLabel.font constrainedToSize:size lineBreakMode:NSLineBreakByTruncatingTail];
+    detailLabelSize = [_detailLabel.text yk_sizeWithFont:_detailLabel.font constrainedToSize:size lineBreakMode:NSLineBreakByTruncatingTail];
     lineSize.height += detailLabelSize.height + 2;
   }
   
