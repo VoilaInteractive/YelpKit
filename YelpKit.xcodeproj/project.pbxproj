@@ -151,7 +151,7 @@
 		477B982C16E683F60010BEE6 /* NSDate+YKUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 477B982A16E683F60010BEE6 /* NSDate+YKUtils.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6E6DC674156450F400D95455 /* YKImageMemoryCache.h in Headers */ = {isa = PBXBuildFile; fileRef = 6E6DC672156450F400D95455 /* YKImageMemoryCache.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6E6DC675156450F400D95455 /* YKImageMemoryCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E6DC673156450F400D95455 /* YKImageMemoryCache.m */; };
-		8456FC9117AC749600DFDAA5 /* NSString+Drawing.h in Headers */ = {isa = PBXBuildFile; fileRef = 8456FC8F17AC749600DFDAA5 /* NSString+Drawing.h */; };
+		8456FC9117AC749600DFDAA5 /* NSString+Drawing.h in Headers */ = {isa = PBXBuildFile; fileRef = 8456FC8F17AC749600DFDAA5 /* NSString+Drawing.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8456FC9217AC749600DFDAA5 /* NSString+Drawing.m in Sources */ = {isa = PBXBuildFile; fileRef = 8456FC9017AC749600DFDAA5 /* NSString+Drawing.m */; };
 		8456FC9317AC749600DFDAA5 /* NSString+Drawing.m in Sources */ = {isa = PBXBuildFile; fileRef = 8456FC9017AC749600DFDAA5 /* NSString+Drawing.m */; };
 		8456FC9417AC749600DFDAA5 /* NSString+Drawing.m in Sources */ = {isa = PBXBuildFile; fileRef = 8456FC9017AC749600DFDAA5 /* NSString+Drawing.m */; };
