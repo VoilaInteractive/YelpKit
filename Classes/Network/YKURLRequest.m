@@ -539,7 +539,6 @@ static id<YKCompressor> gCompressor = NULL;
 #pragma mark -
 
 + (void)setCacheEnabled:(BOOL)cacheEnabled {
-  gYKURLRequestCacheEnabled = cacheEnabled;
 }
 
 + (void)setCacheAsyncEnabled:(BOOL)cacheAsyncEnabled {
