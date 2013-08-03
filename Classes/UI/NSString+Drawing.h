@@ -5,9 +5,6 @@
 //  Created by Allen Cheung on 8/2/13.
 //  Copyright (c) 2013 Yelp. All rights reserved.
 //
-//  Created by Gabriel Handford on 12/30/08.
-//  Copyright 2008 Yelp. All rights reserved.
-//
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
 //  files (the "Software"), to deal in the Software without
@@ -29,6 +26,15 @@
 //  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
+
+/*!
+ NSString category wrapping deprecated (in iOS7) sizing methods.  Calls the 
+ recommended method if the receiver responds to the selector, otherwise calls
+ the old method.
+ 
+ In addition sizes are ceilf to fix the issue where fractional sizes cause UI
+ glitches.
+ */
 
 @interface NSString (Drawing)
 
