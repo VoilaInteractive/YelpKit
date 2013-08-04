@@ -28,6 +28,7 @@
 //
 
 #import "NSString+Drawing.h"
+#import "YKCGUtils.h"
 
 @implementation NSString (Drawing)
 
@@ -41,9 +42,7 @@
   } else {
     retSize = [self sizeWithFont:font];
   }
-  retSize.width = ceilf(retSize.width);
-  retSize.height = ceilf(retSize.height);
-  return retSize;
+  return YKCGSizeCeil(retSize);
 }
 
 - (CGSize)yk_sizeWithFont:(UIFont *)font constrainedToSize:(CGSize)size {
@@ -70,9 +69,7 @@
       retSize = [self sizeWithFont:font constrainedToSize:size lineBreakMode:lineBreakMode];
     }
   }
-  retSize.width = ceilf(retSize.width);
-  retSize.height = ceilf(retSize.height);
-  return retSize;
+  return YKCGSizeCeil(retSize);
 }
 
 @end
