@@ -1,9 +1,9 @@
 //
-//  YelpKit.h
+//  NSString+Drawing.h
 //  YelpKit
 //
-//  Created by Gabriel Handford on 5/1/12.
-//  Copyright (c) 2012 Yelp. All rights reserved.
+//  Created by Allen Cheung on 8/2/13.
+//  Copyright (c) 2013 Yelp. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -27,40 +27,23 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "YKLayout.h"
-#import "YKUILayoutView.h"
+/*!
+ NSString category wrapping deprecated (in iOS7) sizing methods.  Calls the 
+ recommended method if the receiver responds to the selector, otherwise calls
+ the old method.
+ 
+ In addition sizes are ceilf to fix the issue where fractional sizes cause UI
+ glitches.
+ */
 
-#import "YKDefines.h"
-#import "YKError.h"
+@interface NSString (Drawing)
 
-#import "YKURL.h"
-#import "YKURLRequest.h"
-#import "YKJSONRequest.h"
+- (CGSize)yk_sizeWithFont:(UIFont *)font;
 
-#import "YKUIActivityLabel.h"
-#import "YKUIButton.h"
-#import "YKUIButtons.h"
-#import "YKUILayoutView.h"
-#import "YKUIActivityView.h"
-#import "YKUIListView.h"
-#import "YKUIAlertView.h"
-#import "YKUIActionSheet.h"
-#import "YKUIImageView.h"
-#import "YKUINavigationBar.h"
-#import "YKUIRefreshScrollView.h"
-#import "YKUIScrollView.h"
-#import "YKUIBorder.h"
-#import "YKUISwitchButton.h"
+- (CGSize)yk_sizeWithFont:(UIFont *)font constrainedToSize:(CGSize)size;
 
-#import "YKTableIndexedView.h"
-#import "YKTableViewCell.h"
-#import "YKUIActivityCell.h"
-#import "YKUIButtonCell.h"
+- (CGSize)yk_sizeWithFont:(UIFont *)font forWidth:(CGFloat)width lineBreakMode:(NSLineBreakMode)lineBreakMode;
 
-#import "YKSUIView.h"
-#import "YKUIViewStack.h"
+- (CGSize)yk_sizeWithFont:(UIFont *)font constrainedToSize:(CGSize)size lineBreakMode:(NSLineBreakMode)lineBreakMode;
 
-#import "YKUtils.h"
-
-#import "NSString+Drawing.h"
-
+@end
