@@ -175,7 +175,7 @@
 		84EB1EB5177137E100479F80 /* YKUITestApplicationDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 84EB1EB4177137E100479F80 /* YKUITestApplicationDelegate.m */; };
 		84EB1EB81772256100479F80 /* YKViewTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 84EB1EB71772256000479F80 /* YKViewTestCase.m */; };
 		84EB1EBF1772266600479F80 /* libYelpKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 005592E8140B0085001E9C43 /* libYelpKit.a */; };
-		84EBFC2C17B050FD00B2C093 /* NSString+YKDrawing.h in Headers */ = {isa = PBXBuildFile; fileRef = 84EBFC2A17B050FD00B2C093 /* NSString+YKDrawing.h */; };
+		84EBFC2C17B050FD00B2C093 /* NSString+YKDrawing.h in Headers */ = {isa = PBXBuildFile; fileRef = 84EBFC2A17B050FD00B2C093 /* NSString+YKDrawing.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		84EBFC2D17B050FD00B2C093 /* NSString+YKDrawing.m in Sources */ = {isa = PBXBuildFile; fileRef = 84EBFC2B17B050FD00B2C093 /* NSString+YKDrawing.m */; };
 		84EBFC2E17B050FD00B2C093 /* NSString+YKDrawing.m in Sources */ = {isa = PBXBuildFile; fileRef = 84EBFC2B17B050FD00B2C093 /* NSString+YKDrawing.m */; };
 		84EBFC2F17B050FD00B2C093 /* NSString+YKDrawing.m in Sources */ = {isa = PBXBuildFile; fileRef = 84EBFC2B17B050FD00B2C093 /* NSString+YKDrawing.m */; };
