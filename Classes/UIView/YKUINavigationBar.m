@@ -32,6 +32,8 @@
 #import "YKUIButton.h"
 #import "UILabel+YKUtils.h"
 
+CGFloat const kYKUINavigationBarTitelAnimationDuration = 0.3;
+
 @implementation YKUINavigationBar
 
 - (void)sharedInit { 
@@ -127,7 +129,7 @@
     _contentView.alpha = 0.0;
     [self addSubview:_contentView];
     [self addSubview:oldContentView];
-    [UIView animateWithDuration:0.3
+    [UIView animateWithDuration:kYKUINavigationBarTitelAnimationDuration
                      animations:^{
                        _contentView.alpha = 1.0;
                        oldContentView.alpha = 0.0;

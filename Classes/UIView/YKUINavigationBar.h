@@ -27,6 +27,8 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
+extern CGFloat const kYKUINavigationBarTitleAnimationDuration;
+
 typedef enum {
   YKUINavigationButtonStyleDefault = 0,
   YKUINavigationButtonStyleClose,
