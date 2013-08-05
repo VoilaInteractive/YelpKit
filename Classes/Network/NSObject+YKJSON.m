@@ -41,7 +41,7 @@
 }
 
 - (id)yk_JSONString:(YKError **)error options:(NSJSONWritingOptions)options {
-  if ([self isKindOfClass:[NSData class]] | [self isKindOfClass:[NSString class]]) {
+  if ([self isKindOfClass:[NSData class]] || [self isKindOfClass:[NSString class]]) {
     return nil;
   }
   return [YKJSON stringFromObject:self options:options encoding:NSUTF8StringEncoding error:error];

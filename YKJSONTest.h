@@ -9,6 +9,5 @@
 #import <GHUnitIOS/GHUnit.h>
 
 @interface YKJSONTest : GHTestCase
-{
-}
+
 @end
