@@ -62,5 +62,5 @@
 
 #import "YKUtils.h"
 
-#import "NSString+Drawing.h"
+#import "NSString+YKDrawing.h"
 
