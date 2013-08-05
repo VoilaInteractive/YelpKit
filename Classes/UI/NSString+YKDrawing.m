@@ -1,5 +1,5 @@
 //
-//  NSString+Drawing.m
+//  NSString+YKDrawing.m
 //  YelpKit
 //
 //  Created by Allen Cheung on 8/2/13.
@@ -27,47 +27,51 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "NSString+Drawing.h"
+#import "NSString+YKDrawing.h"
 #import "YKCGUtils.h"
 
-@implementation NSString (Drawing)
+// Only need to declare if buildng agains iOS 6 SDK on Xcode4
+#if !(__IPHONE_OS_VERSION_MAX_ALLOWED >= 70000)
+@interface NSString ()
+- (CGSize)sizeWithAttributes:(NSDictionary *)attrs;
+- (CGRect)boundingRectWithSize:(CGSize)size options:(NSStringDrawingOptions)options attributes:(NSDictionary *)attributes context:(NSStringDrawingContext *)context;
+@end
+#endif
+
+@implementation NSString (YKDrawing)
 
 - (CGSize)yk_sizeWithFont:(UIFont *)font {
   CGSize retSize;
   if ([self respondsToSelector:@selector(sizeWithAttributes:)]) {
-    // iOS7 only
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
     retSize = [self sizeWithAttributes:@{NSFontAttributeName: font}];
-#endif
   } else {
+    // If running on iOS 6, call the deprecated method
     retSize = [self sizeWithFont:font];
   }
   return YKCGSizeCeil(retSize);
 }
 
 - (CGSize)yk_sizeWithFont:(UIFont *)font constrainedToSize:(CGSize)size {
-  // Passing -1 as a "special" flag not to use lineBreakMode
-  return [self yk_sizeWithFont:font constrainedToSize:size lineBreakMode:-1];
+  // From Apple's docs on sizeWithFont:constrainedToSize:  "This method computes the metrics needed to draw the specified string. This method lays out the receiver’s text and attempts to make it fit the specified size using the specified font and the NSLineBreakByWordWrapping line break option."
+  return [self yk_sizeWithFont:font constrainedToSize:size lineBreakMode:NSLineBreakByWordWrapping];
 }
 
 - (CGSize)yk_sizeWithFont:(UIFont *)font forWidth:(CGFloat)width lineBreakMode:(NSLineBreakMode)lineBreakMode {
-  // Use CGFLOAT_MAX as a flag for size with width
+  // Use CGFLOAT_MAX as the height when the user only specifies width
   return [self yk_sizeWithFont:font constrainedToSize:CGSizeMake(width, CGFLOAT_MAX) lineBreakMode:lineBreakMode];
 }
 
 - (CGSize)yk_sizeWithFont:(UIFont *)font constrainedToSize:(CGSize)size lineBreakMode:(NSLineBreakMode)lineBreakMode {
   CGSize retSize;
   if ([self respondsToSelector:@selector(boundingRectWithSize:options:attributes:context:)]) {
-    // iOS7 only
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
-    retSize = [self boundingRectWithSize:size options:(NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingTruncatesLastVisibleLine) attributes:@{NSFontAttributeName: font} context:nil].size;
-#endif
+    // It should be sufficient to leave the rest of the paragraph style attributes uninitialized, text alignment for example doesn't matter, because we are only using the returned size, not the rect itself
+    NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
+    style.lineBreakMode = lineBreakMode;
+    retSize = [self boundingRectWithSize:size options:(NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingTruncatesLastVisibleLine) attributes:@{NSFontAttributeName: font, NSParagraphStyleAttributeName: style} context:nil].size;
+    [style release];
   } else {
-    if ((NSInteger)lineBreakMode == -1) {
-      retSize = [self sizeWithFont:font constrainedToSize:size];
-    } else {
-      retSize = [self sizeWithFont:font constrainedToSize:size lineBreakMode:lineBreakMode];
-    }
+    // If running on iOS 6, call the deprecated method
+    retSize = [self sizeWithFont:font constrainedToSize:size lineBreakMode:lineBreakMode];
   }
   return YKCGSizeCeil(retSize);
 }

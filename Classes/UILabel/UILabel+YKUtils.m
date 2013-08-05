@@ -28,7 +28,7 @@
 //
 
 #import "UILabel+YKUtils.h"
-#import "NSString+Drawing.h"
+#import "NSString+YKDrawing.h"
 
 @implementation UILabel (YKUtils)
 
