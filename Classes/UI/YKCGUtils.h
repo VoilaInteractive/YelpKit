@@ -364,6 +364,16 @@ CGFloat YKCGDistanceBetween(CGPoint pointA, CGPoint pointB);
  */
 CGRect YKCGRectWithInsets(CGSize size, UIEdgeInsets insets);
 
+/*!
+ Returns a rect whose size width and height are rounded up.
+ */
+CGRect YKCGRectCeil(CGRect rect);
+
+/*!
+ Returns a size whose width and height are rounded up.
+ */
+CGSize YKCGSizeCeil(CGSize size);
+
 #pragma mark Border Styles
 
 // Border styles:

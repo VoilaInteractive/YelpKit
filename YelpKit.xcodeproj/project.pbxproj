@@ -166,6 +166,10 @@
 		477B982C16E683F60010BEE6 /* NSDate+YKUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 477B982A16E683F60010BEE6 /* NSDate+YKUtils.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6E6DC674156450F400D95455 /* YKImageMemoryCache.h in Headers */ = {isa = PBXBuildFile; fileRef = 6E6DC672156450F400D95455 /* YKImageMemoryCache.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6E6DC675156450F400D95455 /* YKImageMemoryCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E6DC673156450F400D95455 /* YKImageMemoryCache.m */; };
+		8456FC9117AC749600DFDAA5 /* NSString+Drawing.h in Headers */ = {isa = PBXBuildFile; fileRef = 8456FC8F17AC749600DFDAA5 /* NSString+Drawing.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8456FC9217AC749600DFDAA5 /* NSString+Drawing.m in Sources */ = {isa = PBXBuildFile; fileRef = 8456FC9017AC749600DFDAA5 /* NSString+Drawing.m */; };
+		8456FC9317AC749600DFDAA5 /* NSString+Drawing.m in Sources */ = {isa = PBXBuildFile; fileRef = 8456FC9017AC749600DFDAA5 /* NSString+Drawing.m */; };
+		8456FC9417AC749600DFDAA5 /* NSString+Drawing.m in Sources */ = {isa = PBXBuildFile; fileRef = 8456FC9017AC749600DFDAA5 /* NSString+Drawing.m */; };
 		84CCB7E41778C229004B8FD2 /* button_accessory_image.png in Resources */ = {isa = PBXBuildFile; fileRef = 00A4D93215CB27BE0035E64B /* button_accessory_image.png */; };
 		84CCB7E51778C229004B8FD2 /* button_accessory_image@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 00A4D93315CB27BE0035E64B /* button_accessory_image@2x.png */; };
 		84CCB7E61778C229004B8FD2 /* button_accessory_image_selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 00A4D93415CB27BE0035E64B /* button_accessory_image_selected.png */; };
@@ -438,6 +442,8 @@
 		477B982A16E683F60010BEE6 /* NSDate+YKUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+YKUtils.h"; sourceTree = "<group>"; };
 		6E6DC672156450F400D95455 /* YKImageMemoryCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YKImageMemoryCache.h; sourceTree = "<group>"; };
 		6E6DC673156450F400D95455 /* YKImageMemoryCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YKImageMemoryCache.m; sourceTree = "<group>"; };
+		8456FC8F17AC749600DFDAA5 /* NSString+Drawing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Drawing.h"; sourceTree = "<group>"; };
+		8456FC9017AC749600DFDAA5 /* NSString+Drawing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Drawing.m"; sourceTree = "<group>"; };
 		84CCB7FA1778EFDD004B8FD2 /* YKUIButtonViewTest_CategoryButtons.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YKUIButtonViewTest_CategoryButtons.m; sourceTree = "<group>"; };
 		84CCB7FE1778F04B004B8FD2 /* YKUIButtonViewTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YKUIButtonViewTest.m; sourceTree = "<group>"; };
 		84CCB8001778F094004B8FD2 /* YKUIButtonViewTest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YKUIButtonViewTest.h; sourceTree = "<group>"; };
@@ -801,6 +807,8 @@
 			children = (
 				00D575661457C35C00DE6487 /* YKCGUtils.h */,
 				00D575671457C35C00DE6487 /* YKCGUtils.m */,
+				8456FC8F17AC749600DFDAA5 /* NSString+Drawing.h */,
+				8456FC9017AC749600DFDAA5 /* NSString+Drawing.m */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -989,6 +997,7 @@
 				21BF77791794D52500A46427 /* YKJSON.h in Headers */,
 				21BF777D1795BC8900A46427 /* YKJSONTest.h in Headers */,
 				21BF777E1795BE6600A46427 /* YKError.h in Headers */,
+				8456FC9117AC749600DFDAA5 /* NSString+Drawing.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1262,6 +1271,7 @@
 				477B982B16E683F60010BEE6 /* NSDate+YKUtils.m in Sources */,
 				21BF776E1794C06000A46427 /* NSObject+YKJSON.m in Sources */,
 				21BF77711794C38E00A46427 /* YKJSON.m in Sources */,
+				8456FC9217AC749600DFDAA5 /* NSString+Drawing.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1277,6 +1287,7 @@
 				00A4D93015CB24CC0035E64B /* YKCatalogButtons.m in Sources */,
 				21BF776F1794C06000A46427 /* NSObject+YKJSON.m in Sources */,
 				21BF77801795BED900A46427 /* YKError.m in Sources */,
+				8456FC9317AC749600DFDAA5 /* NSString+Drawing.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1297,6 +1308,7 @@
 				21BF777C1795BC1D00A46427 /* YKJSONTest.m in Sources */,
 				21BF777F1795BECF00A46427 /* YKError.m in Sources */,
 				21BF77811795BF5700A46427 /* YKLocalized.m in Sources */,
+				8456FC9417AC749600DFDAA5 /* NSString+Drawing.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
