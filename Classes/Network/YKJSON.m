@@ -32,7 +32,7 @@
 
 @implementation YKJSON
 
-+ (NSString *)JSONFromObject:(id)obj options:(NSJSONWritingOptions)options encoding:(NSStringEncoding)encoding error:(YKError **)error {
++ (NSString *)stringFromObject:(id)obj options:(NSJSONWritingOptions)options encoding:(NSStringEncoding)encoding error:(YKError **)error {
   NSString *result = nil;
   @autoreleasepool {
       result = [[self _JSONFromObject:obj options:options encoding:encoding error:error] retain];
@@ -117,7 +117,7 @@
   return [self objectForData:[string dataUsingEncoding:NSUTF8StringEncoding] error:error options:options];
 }
 
-+ (NSDictionary *)JSONDictionaryForData:(NSData *)data {
++ (NSDictionary *)dictionaryForData:(NSData *)data {
   id JSONDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
   if ([JSONDictionary isKindOfClass:[NSDictionary class]]) {
     NSDictionary *errorDict = [JSONDictionary gh_objectMaybeNilForKey:@"error"];
@@ -126,8 +126,8 @@
   return nil;
 }
 
-+ (NSDictionary *)JSONDictionaryForString:(NSString *)string {
-  return [self JSONDictionaryForData:[string dataUsingEncoding:NSUTF8StringEncoding]];
++ (NSDictionary *)dictionaryForString:(NSString *)string {
+  return [self dictionaryForData:[string dataUsingEncoding:NSUTF8StringEncoding]];
 }
 
 @end

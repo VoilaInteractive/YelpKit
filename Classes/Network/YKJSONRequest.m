@@ -12,7 +12,7 @@
 @implementation YKJSONRequest
 
 - (id)objectForData:(NSData *)data error:(YKError **)error {
-  return [YKJSON objectForData:data error:error];
+  return [YKJSON objectForData:data error:error options:0];
 }
 
 - (YKHTTPError *)errorForHTTPStatus:(NSInteger)HTTPStatus data:(NSData *)data {

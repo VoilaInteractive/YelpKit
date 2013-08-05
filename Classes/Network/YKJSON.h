@@ -48,7 +48,7 @@
  
  @result JSON NSString representation of obj
  */
-+ (NSString *)JSONFromObject:(id)obj options:(NSJSONWritingOptions)options encoding:(NSStringEncoding)encoding error:(YKError **)error;
++ (NSString *)stringFromObject:(id)obj options:(NSJSONWritingOptions)options encoding:(NSStringEncoding)encoding error:(YKError **)error;
 
 /*!
  @param data The NSData to be converted to an object representation.  e.g. NSData from a YKURLRequest
@@ -73,6 +73,13 @@
 
 @result An object representation of NSData's JSON contents, or a dictionary containing the error
 */
-+ (NSDictionary *)JSONDictionaryForData:(NSData *)data;
++ (NSDictionary *)dictionaryForData:(NSData *)data;
+
+/*!
+ @param data The NSString to be converted to an NSDictionary
+ 
+ @result An object representation of NSString's JSON contents, or a dictionary containing the error
+ */
++ (NSDictionary *)dictionaryForString:(NSData *)data;
 
 @end
