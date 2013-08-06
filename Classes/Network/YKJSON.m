@@ -51,50 +51,48 @@
 
 + (id)_JSONObjectFromObject:(id)obj {
   // Given an object (obj) that may or may not be serializable, we will try and turn it into an object that is serializable.  Objects that implement YKJSONSerializableObject protocol can return JSON representations of themselves.
- 
- if ([NSJSONSerialization isValidJSONObject:obj]) {
-   return obj;
- }
- if ([obj conformsToProtocol:@protocol(YKJSONSerializableObject)]) {
-   obj = [obj JSONSerializableObject];
-   if ([NSJSONSerialization isValidJSONObject:obj]) {
-     return obj;
-   }
- }
- id newJSONSerializableParent = obj;
- if ([obj isKindOfClass:[NSDictionary class]]) {
-   newJSONSerializableParent = [[NSMutableDictionary alloc] initWithCapacity:[obj count]];
-   for (id key in obj) {
-     // Loop through key/values and try and serialize all objects using YKJSON, because something could not be serialized by NSJSON
-     id value = [obj objectForKey:key];
-     if (![NSJSONSerialization isValidJSONObject:@[key]]) {
-       // Although perhaps uncommon for dictionaries, keys could be custom objects
-       key = [self _JSONObjectFromObject:key];
-     }
-     if ([NSJSONSerialization isValidJSONObject:@[value]]) {
-       [newJSONSerializableParent setValue:value forKey:key];
-     } else {
-       [newJSONSerializableParent setValue:[self _JSONObjectFromObject:value] forKey:key];
-     }
-   }
- } else if ([obj isKindOfClass:[NSArray class]]) {
-   newJSONSerializableParent = [[NSMutableArray alloc] initWithCapacity:[obj count]];
-   for (id value in obj) {
-     // Loop through values and try and serialize all objects using YKJSON, because something could not be serialized by NSJSON
-     if ([NSJSONSerialization isValidJSONObject:@[value]]) {
-       [newJSONSerializableParent addObject:value];
-     } else {
-       // We need to try custom serialization of value
-       [newJSONSerializableParent addObject:[self _JSONObjectFromObject:value]];
-     }
-   }
- }
- if (![NSJSONSerialization isValidJSONObject:newJSONSerializableParent]) {
-   [NSException raise:NSInvalidArgumentException format:@"YKJSON cannot serialize the object of class %@", NSStringFromClass([newJSONSerializableParent class])];
-   return nil;
- }
- return [newJSONSerializableParent autorelease];
-
+  if ([obj conformsToProtocol:@protocol(YKJSONSerializableObject)]) {
+    obj = [obj JSONSerializableObject];
+  }
+  if ([NSJSONSerialization isValidJSONObject:obj]) {
+    return obj;
+  }
+  
+  id newJSONSerializableParent = obj;
+  if ([obj isKindOfClass:[NSDictionary class]]) {
+    newJSONSerializableParent = [[NSMutableDictionary alloc] initWithCapacity:[obj count]];
+    for (id key in obj) {
+      // Loop through key/values and try and serialize all objects using YKJSON, because something could  not be serialized by NSJSON
+      id value = [obj objectForKey:key];
+      if (![NSJSONSerialization isValidJSONObject:@[key]]) {
+        // Although perhaps uncommon for dictionaries, keys could be custom objects
+        key = [self _JSONObjectFromObject:key];
+      }
+      if ([NSJSONSerialization isValidJSONObject:@[value]]) {
+        [newJSONSerializableParent setValue:value forKey:key];
+      } else {
+        [newJSONSerializableParent setValue:[self _JSONObjectFromObject:value] forKey:key];
+      }
+    }
+  } else if ([obj isKindOfClass:[NSArray class]]) {
+    newJSONSerializableParent = [[NSMutableArray alloc] initWithCapacity:[obj count]];
+    for (id value in obj) {
+      // Loop through values and try and serialize all objects using YKJSON, because something could not be serialized by NSJSON
+      if ([NSJSONSerialization isValidJSONObject:@[value]]) {
+        [newJSONSerializableParent addObject:value];
+      } else {
+        // We need to try custom serialization of value
+        [newJSONSerializableParent addObject:[self _JSONObjectFromObject:value]];
+      }
+    }
+  } else {
+    [NSException raise:NSInvalidArgumentException format:@"YKJSON cannot serialize the object of class %@", NSStringFromClass([newJSONSerializableParent class])];
+  }
+  if (![NSJSONSerialization isValidJSONObject:newJSONSerializableParent]) {
+    [NSException raise:NSInvalidArgumentException format:@"YKJSON cannot serialize the object of class %@", NSStringFromClass([newJSONSerializableParent class])];
+    return nil;
+  }
+  return [newJSONSerializableParent autorelease];
 }
 
 + (id)objectForData:(NSData *)data error:(YKError **)error options:(NSJSONReadingOptions)options {
