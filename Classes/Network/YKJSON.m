@@ -72,27 +72,26 @@
    [NSException raise:NSInvalidArgumentException format:@"YKJSON cannot serialize the object of class %@", NSStringFromClass([newJSONSerializableParent class])];
  }
  for (id key in obj) {
-   id value = key;
    if (isDictionary) {
-     value = [obj objectForKey:key];
-   }
-   if (![NSJSONSerialization isValidJSONObject:@[key]]) {
-     // Although perhaps uncommon for dictionaries, keys could be dicts, arrays, or custom objects
+     // NSMutableDictionary
+     id value = [obj objectForKey:key];
+     if (![NSJSONSerialization isValidJSONObject:@[key]]) {
+     // Although perhaps uncommon for dictionaries, keys could be custom objects
       key = [self _JSONObjectFromObject:key];
-   }
-   if ([NSJSONSerialization isValidJSONObject:@[value]]) {
-     if (isDictionary) {
+     }
+     if ([NSJSONSerialization isValidJSONObject:@[value]]) {
        [newJSONSerializableParent setValue:value forKey:key];
      } else {
-       [newJSONSerializableParent addObject:value];
+       [newJSONSerializableParent setValue:[self _JSONObjectFromObject:value] forKey:key];
      }
    } else {
-     // We need to try custom serialization of value
-     NSString *result = [self _JSONObjectFromObject:value];
-     if (isDictionary) {
-       [newJSONSerializableParent setValue:result forKey:key];
+     id value = key;
+     // NSMutableArray
+     if ([NSJSONSerialization isValidJSONObject:@[value]]) {
+       [newJSONSerializableParent addObject:value];
      } else {
-       [newJSONSerializableParent addObject:result];
+       // We need to try custom serialization of value
+       [newJSONSerializableParent addObject:[self _JSONObjectFromObject:value]];
      }
    }
  }

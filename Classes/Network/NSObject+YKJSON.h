@@ -55,21 +55,25 @@
  */
 - (NSString *)yk_JSONString:(YKError **)error options:(NSJSONWritingOptions)options;
 
+@end
+
+@interface NSString (YKJSON)
+
 /*!
- Converts NSString and NSData to object representation (i.e. NSDictionary, NSArray)
+ Converts NSString to object representation (i.e. NSDictionary, NSArray)
  */
 
 - (id)yk_JSONObject;
 
 /*!
- Converts NSString and NSData to object representation (i.e. NSDictionary, NSArray)
+ Converts NSString to object representation (i.e. NSDictionary, NSArray)
  @param error An error object that will be modified if there are errors in conversion of the JSON object to a string
  */
 
 - (id)yk_JSONObject:(YKError **)error;
 
 /*!
- Converts NSString and NSData to object representation (i.e. NSDictionary, NSArray)
+ Converts NSString to object representation (i.e. NSDictionary, NSArray)
  @param error An error object that will be modified if there are errors in conversion of the JSON object to a string
  @param options NSJSONReadingOptions that are applied during conversion of the string or data to an object representation
  */

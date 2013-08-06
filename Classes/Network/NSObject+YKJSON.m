@@ -47,6 +47,10 @@
   return [YKJSON stringFromObject:self options:options encoding:NSUTF8StringEncoding error:error];
 }
 
+@end
+
+@implementation NSString (YKJSON)
+
 - (id)yk_JSONObject {
   return [self yk_JSONObject:nil];
 }
