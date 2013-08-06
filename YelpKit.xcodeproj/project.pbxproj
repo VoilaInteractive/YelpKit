@@ -143,12 +143,11 @@
 		21BF77721794C38F00A46427 /* YKJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 21BF77601794B91600A46427 /* YKJSON.m */; };
 		21BF77781794D47C00A46427 /* NSObject+YKJSON.h in Headers */ = {isa = PBXBuildFile; fileRef = 21BF776B1794C06000A46427 /* NSObject+YKJSON.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		21BF77791794D52500A46427 /* YKJSON.h in Headers */ = {isa = PBXBuildFile; fileRef = 21BF775F1794B91600A46427 /* YKJSON.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		21BF777C1795BC1D00A46427 /* YKJSONTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 21BF777B1795BC1D00A46427 /* YKJSONTest.m */; };
-		21BF777D1795BC8900A46427 /* YKJSONTest.h in Headers */ = {isa = PBXBuildFile; fileRef = 21BF777A1795BC1D00A46427 /* YKJSONTest.h */; };
 		21BF777E1795BE6600A46427 /* YKError.h in Headers */ = {isa = PBXBuildFile; fileRef = 00559325140B00F6001E9C43 /* YKError.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		21BF777F1795BECF00A46427 /* YKError.m in Sources */ = {isa = PBXBuildFile; fileRef = 00559326140B00F6001E9C43 /* YKError.m */; };
 		21BF77801795BED900A46427 /* YKError.m in Sources */ = {isa = PBXBuildFile; fileRef = 00559326140B00F6001E9C43 /* YKError.m */; };
 		21BF77811795BF5700A46427 /* YKLocalized.m in Sources */ = {isa = PBXBuildFile; fileRef = 00559328140B00F6001E9C43 /* YKLocalized.m */; };
+		21E4473E17B17E5000FCE3D8 /* YKJSONTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 21E4473D17B17E5000FCE3D8 /* YKJSONTest.m */; };
 		420E62B7153F44FF00F114DC /* NSDictionary+YKValidation.h in Headers */ = {isa = PBXBuildFile; fileRef = 420E62B5153F44FF00F114DC /* NSDictionary+YKValidation.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		420E62B8153F44FF00F114DC /* NSDictionary+YKValidation.m in Sources */ = {isa = PBXBuildFile; fileRef = 420E62B6153F44FF00F114DC /* NSDictionary+YKValidation.m */; };
 		4227623E150FFDC1002E177D /* UIColor+YKUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 4227623C150FFDC1002E177D /* UIColor+YKUtils.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -424,8 +423,8 @@
 		21BF77601794B91600A46427 /* YKJSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = YKJSON.m; path = Classes/Network/YKJSON.m; sourceTree = SOURCE_ROOT; };
 		21BF776B1794C06000A46427 /* NSObject+YKJSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+YKJSON.h"; sourceTree = "<group>"; };
 		21BF776C1794C06000A46427 /* NSObject+YKJSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+YKJSON.m"; sourceTree = "<group>"; };
-		21BF777A1795BC1D00A46427 /* YKJSONTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = YKJSONTest.h; path = ../YKJSONTest.h; sourceTree = "<group>"; };
-		21BF777B1795BC1D00A46427 /* YKJSONTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = YKJSONTest.m; path = ../YKJSONTest.m; sourceTree = "<group>"; };
+		21E4473C17B17E5000FCE3D8 /* YKJSONTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YKJSONTest.h; sourceTree = "<group>"; };
+		21E4473D17B17E5000FCE3D8 /* YKJSONTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YKJSONTest.m; sourceTree = "<group>"; };
 		420E62B5153F44FF00F114DC /* NSDictionary+YKValidation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+YKValidation.h"; sourceTree = "<group>"; };
 		420E62B6153F44FF00F114DC /* NSDictionary+YKValidation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+YKValidation.m"; sourceTree = "<group>"; };
 		4227623C150FFDC1002E177D /* UIColor+YKUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+YKUtils.h"; sourceTree = "<group>"; };
@@ -881,13 +880,13 @@
 		84EB1E7F177133FE00479F80 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				21E4473C17B17E5000FCE3D8 /* YKJSONTest.h */,
+				21E4473D17B17E5000FCE3D8 /* YKJSONTest.m */,
 				84EB1E9B177135E300479F80 /* GHUnitYelpKitTestMain.m */,
 				84EB1EB0177137B600479F80 /* YKApplicationTestRunner.h */,
 				84EB1EB1177137B600479F80 /* YKApplicationTestRunner.m */,
 				84EB1EB3177137E100479F80 /* YKUITestApplicationDelegate.h */,
 				84EB1EB4177137E100479F80 /* YKUITestApplicationDelegate.m */,
-				21BF777A1795BC1D00A46427 /* YKJSONTest.h */,
-				21BF777B1795BC1D00A46427 /* YKJSONTest.m */,
 				84EB1EB61772256000479F80 /* YKViewTestCase.h */,
 				84EB1EB71772256000479F80 /* YKViewTestCase.m */,
 				84CCB8001778F094004B8FD2 /* YKUIButtonViewTest.h */,
@@ -995,7 +994,6 @@
 				477B982C16E683F60010BEE6 /* NSDate+YKUtils.h in Headers */,
 				21BF77781794D47C00A46427 /* NSObject+YKJSON.h in Headers */,
 				21BF77791794D52500A46427 /* YKJSON.h in Headers */,
-				21BF777D1795BC8900A46427 /* YKJSONTest.h in Headers */,
 				21BF777E1795BE6600A46427 /* YKError.h in Headers */,
 				8456FC9117AC749600DFDAA5 /* NSString+Drawing.h in Headers */,
 			);
@@ -1305,10 +1303,10 @@
 				84CCB8041778F9B6004B8FD2 /* YKUIButtonViewTest_Borders.m in Sources */,
 				21BF77701794C06000A46427 /* NSObject+YKJSON.m in Sources */,
 				21BF77721794C38F00A46427 /* YKJSON.m in Sources */,
-				21BF777C1795BC1D00A46427 /* YKJSONTest.m in Sources */,
 				21BF777F1795BECF00A46427 /* YKError.m in Sources */,
 				21BF77811795BF5700A46427 /* YKLocalized.m in Sources */,
 				8456FC9417AC749600DFDAA5 /* NSString+Drawing.m in Sources */,
+				21E4473E17B17E5000FCE3D8 /* YKJSONTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
