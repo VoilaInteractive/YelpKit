@@ -35,7 +35,7 @@
 + (NSString *)stringFromObject:(id)obj options:(NSJSONWritingOptions)options encoding:(NSStringEncoding)encoding error:(YKError **)error {
   NSString *result = nil;
   @autoreleasepool {
-      result = [[self _JSONFromObject:obj options:options encoding:encoding error:error] retain];
+    result = [[self _JSONFromObject:obj options:options encoding:encoding error:error] retain];
   }
   return [result autorelease];
 }
@@ -64,10 +64,6 @@
     for (id key in obj) {
       // Loop through key/values and try and serialize all objects using YKJSON, because something could  not be serialized by NSJSON
       id value = [obj objectForKey:key];
-      if (![NSJSONSerialization isValidJSONObject:@[key]]) {
-        // Although perhaps uncommon for dictionaries, keys could be custom objects
-        key = [self _JSONObjectFromObject:key];
-      }
       if ([NSJSONSerialization isValidJSONObject:@[value]]) {
         [newJSONSerializableParent setValue:value forKey:key];
       } else {
