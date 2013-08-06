@@ -30,8 +30,11 @@
 #import <Foundation/Foundation.h>
 @class YKError;
 
-@protocol YKJSONSerializable <NSObject>
-- (id)JSON;
+/*!
+ YKJSONSerialzableObject is a protocol that your custom objects should implement if they want to be serialized by YKJSON.  For example if you have some Class *bar, bar should conform to the protocol and implement [bar JSON], returning an object representation of itself (e.g. NSDictionary or NSArray).
+ */
+@protocol YKJSONSerializableObject <NSObject>
+-(id)JSONSerializableObject;
 @end
 
 /*!

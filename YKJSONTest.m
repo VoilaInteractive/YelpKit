@@ -7,10 +7,10 @@
 //
 
 #import "YKJSONTest.h"
+#import "YKJSON.h"
 #import "NSObject+YKJSON.h"
 
-@interface YKJSONTestSerializeable : NSObject
-{
+@interface YKJSONTestSerializeable : NSObject <YKJSONSerializableObject> {
   NSString *_identifier;
 }
 
@@ -26,7 +26,9 @@
   return self;
 }
 
-- (id)JSON {
+#pragma mark YKJSONSerializableObject
+
+- (id)JSONSerializableObject {
   return @{[NSString stringWithFormat:@"SerializedKey%@", _identifier]: @"SerializedValue"};
 }
 

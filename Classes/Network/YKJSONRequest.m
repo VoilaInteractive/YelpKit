@@ -27,7 +27,7 @@
 
 - (id)initWithHTTPStatus:(NSInteger)HTTPStatus data:(NSData *)data {
   
-  NSDictionary *JSONDictionary = [YKJSON JSONDictionaryForData:data];
+  NSDictionary *JSONDictionary = [YKJSON dictionaryForData:data];
   NSString *localizedDescription = [JSONDictionary gh_objectMaybeNilForKey:@"description"];
   
   if ((self = [super initWithHTTPStatus:HTTPStatus data:data localizedDescription:localizedDescription])) {

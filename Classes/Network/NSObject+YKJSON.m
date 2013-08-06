@@ -32,15 +32,15 @@
 
 @implementation NSObject (YKJSON)
 
-- (id)yk_JSONString {
+- (NSString *)yk_JSONString {
   return [self yk_JSONString:nil];
 }
 
-- (id)yk_JSONString:(YKError **)error {
+- (NSString *)yk_JSONString:(YKError **)error {
   return [self yk_JSONString:error options:0];
 }
 
-- (id)yk_JSONString:(YKError **)error options:(NSJSONWritingOptions)options {
+- (NSString *)yk_JSONString:(YKError **)error options:(NSJSONWritingOptions)options {
   if ([self isKindOfClass:[NSData class]] || [self isKindOfClass:[NSString class]]) {
     return nil;
   }

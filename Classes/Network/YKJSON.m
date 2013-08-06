@@ -50,13 +50,16 @@
 }
 
 + (id)_JSONObjectFromObject:(id)obj {
-  // Given an object (obj) that may or may not be serializable, we will try and turn it into an object that is serializable.  Objects that respond to the JSON selector can return JSON representations of themselves.
+  // Given an object (obj) that may or may not be serializable, we will try and turn it into an object that is serializable.  Objects that implement YKJSONSerializableObject protocl can return JSON representations of themselves.
  
  if ([NSJSONSerialization isValidJSONObject:obj]) {
    return obj;
  }
- if ([obj respondsToSelector:@selector(JSON)]) {
-   obj = [obj JSON];
+ if ([obj conformsToProtocol:@protocol(YKJSONSerializableObject)]) {
+   obj = [obj JSONSerializableObject];
+   if ([NSJSONSerialization isValidJSONObject:obj]) {
+     return obj;
+   }
  }
  id newJSONSerializableParent = obj;
  BOOL isDictionary = NO;
@@ -64,12 +67,18 @@
    isDictionary = YES;
    newJSONSerializableParent = [[NSMutableDictionary alloc] initWithCapacity:[obj count]];
  } else if ([obj isKindOfClass:[NSArray class]]) {
-   newJSONSerializableParent = [[NSMutableArray alloc] init];
+   newJSONSerializableParent = [[NSMutableArray alloc] initWithCapacity:[obj count]];
+ } else {
+   [NSException raise:NSInvalidArgumentException format:@"YKJSON cannot serialize the object of class %@", NSStringFromClass([newJSONSerializableParent class])];
  }
  for (id key in obj) {
    id value = key;
    if (isDictionary) {
      value = [obj objectForKey:key];
+   }
+   if (![NSJSONSerialization isValidJSONObject:@[key]]) {
+     // Although perhaps uncommon for dictionaries, keys could be dicts, arrays, or custom objects
+      key = [self _JSONObjectFromObject:key];
    }
    if ([NSJSONSerialization isValidJSONObject:@[value]]) {
      if (isDictionary) {
@@ -77,14 +86,8 @@
      } else {
        [newJSONSerializableParent addObject:value];
      }
-   } else if ([value respondsToSelector:@selector(JSON)]) {
-     if (isDictionary) {
-       [newJSONSerializableParent setValue:[self _JSONObjectFromObject:[value JSON]] forKey:key];
-     } else {
-       [newJSONSerializableParent addObject:[value JSON]];
-     }
    } else {
-     // We probably have a dictionary or array with objects that are unserializable or will respond to JSON method calls
+     // We need to try custom serialization of value
      NSString *result = [self _JSONObjectFromObject:value];
      if (isDictionary) {
        [newJSONSerializableParent setValue:result forKey:key];
