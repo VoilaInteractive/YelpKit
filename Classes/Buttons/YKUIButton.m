@@ -30,7 +30,7 @@
 #import "YKUIButton.h"
 #import "YKDefines.h"
 #import "YKUIImageView.h"
-
+#import "NSString+YKDrawing.h"
 
 @implementation YKUIButton
 
@@ -147,14 +147,14 @@
 
 - (CGSize)_sizeForTitle:(NSString *)title constrainedToSize:(CGSize)constrainedToSize {
   if (_maxLineCount > 0) {
-    CGSize lineSize = [@" " sizeWithFont:_titleFont];
+    CGSize lineSize = [@" " yk_sizeWithFont:_titleFont];
     constrainedToSize.height = lineSize.height * _maxLineCount;
   }
 
   CGSize titleSize = CGSizeZero;
 
   if (title) {
-    titleSize = [title sizeWithFont:_titleFont constrainedToSize:constrainedToSize lineBreakMode:UILineBreakModeTailTruncation];
+    titleSize = [title yk_sizeWithFont:_titleFont constrainedToSize:constrainedToSize lineBreakMode:NSLineBreakByTruncatingTail];
     // TODO: Probably need this because sizeWithFont and draw methods produce different sizing
     titleSize.width += 2;
   }
@@ -162,13 +162,13 @@
   if (_secondaryTitle) {
     if (_secondaryTitlePosition == YKUIButtonSecondaryTitlePositionDefault || _secondaryTitlePosition == YKUIButtonSecondaryTitlePositionRightAlign) {
       constrainedToSize.width -= roundf(titleSize.width);
-      CGSize secondaryTitleSize = [_secondaryTitle sizeWithFont:(_secondaryTitleFont ? _secondaryTitleFont : _titleFont) constrainedToSize:constrainedToSize lineBreakMode:UILineBreakModeTailTruncation];
+      CGSize secondaryTitleSize = [_secondaryTitle yk_sizeWithFont:(_secondaryTitleFont ? _secondaryTitleFont : _titleFont) constrainedToSize:constrainedToSize lineBreakMode:NSLineBreakByTruncatingTail];
       titleSize.width += roundf(secondaryTitleSize.width);
     } else if (_secondaryTitlePosition == YKUIButtonSecondaryTitlePositionBottom) {
-      CGSize secondaryTitleSize = [_secondaryTitle sizeWithFont:(_secondaryTitleFont ? _secondaryTitleFont : _titleFont) constrainedToSize:constrainedToSize lineBreakMode:UILineBreakModeTailTruncation];
+      CGSize secondaryTitleSize = [_secondaryTitle yk_sizeWithFont:(_secondaryTitleFont ? _secondaryTitleFont : _titleFont) constrainedToSize:constrainedToSize lineBreakMode:NSLineBreakByTruncatingTail];
       titleSize.height += roundf(secondaryTitleSize.height);
     } else if (_secondaryTitlePosition == YKUIButtonSecondaryTitlePositionBottomLeftSingle) {
-      CGSize secondaryTitleSize = [_secondaryTitle sizeWithFont:(_secondaryTitleFont ? _secondaryTitleFont : _titleFont)];
+      CGSize secondaryTitleSize = [_secondaryTitle yk_sizeWithFont:(_secondaryTitleFont ? _secondaryTitleFont : _titleFont)];
       titleSize.height += roundf(secondaryTitleSize.height);
     }
   }
@@ -392,15 +392,20 @@
   self.cornerRadius = cornerRadius;  
 }
 
-- (void)setIconImage:(UIImage *)iconImage {
+- (void)setIconImageView:(YKUIImageView *)iconImageView {
+  _externalIconImageView = !!(iconImageView);
+  [iconImageView retain];
   [_iconImageView release];
-  _iconImageView = [[YKUIImageView alloc] initWithImage:iconImage];
-  _iconImageView.contentMode = UIViewContentModeScaleToFill;
-  _iconImageView.backgroundColor = [UIColor clearColor];
+  _iconImageView = iconImageView;
 }
 
-- (UIImage *)iconImage {
-  return _iconImageView.image;
+- (YKUIImageView *)iconImageView {
+  if (!_iconImageView) {
+    _iconImageView = [[YKUIImageView alloc] init];
+    _iconImageView.contentMode = UIViewContentModeScaleToFill;
+    _iconImageView.backgroundColor = [UIColor clearColor];
+  }
+  return _iconImageView;
 }
 
 - (UIColor *)textColorForState:(UIControlState)state {
@@ -485,7 +490,7 @@
 
   UIColor *titleShadowColor = _titleShadowColor;
   CGSize titleShadowOffset = _titleShadowOffset;
-  UIImage *icon = _iconImageView.image;
+  UIImage *icon = _iconImage;
   UIImage *accessoryImage = _accessoryImage;
 
   if (isDisabled) {
@@ -519,13 +524,20 @@
     if (_highlightedImage) image = _highlightedImage;
     if (_selectedBorderShadowColor) borderShadowColor = _selectedBorderShadowColor;
     if (_selectedBorderShadowBlur) borderShadowBlur = _selectedBorderShadowBlur;
+    if (_selectedBorderColor) borderColor = _selectedBorderColor;
     if (_selectedIconImage) icon = _selectedIconImage;
     if (_selectedTitleShadowColor) titleShadowColor = _selectedTitleShadowColor;
     else if (_highlightedTitleShadowColor) titleShadowColor = _highlightedTitleShadowColor;
     if (!CGSizeEqualToSize(_selectedTitleShadowOffset, CGSizeZero)) titleShadowOffset = _selectedTitleShadowOffset;
     else if (!CGSizeEqualToSize(_highlightedTitleShadowOffset, CGSizeZero)) titleShadowOffset = _highlightedTitleShadowOffset;
   }
-
+  
+  if (_externalIconImageView) {
+    icon = _iconImageView.image;
+  } else {
+    self.iconImageView.image = icon;
+  }
+  
   // Set a sensible default
   if (borderShadowColor && borderShadowBlur == 0) borderShadowBlur = 3;
 
@@ -586,7 +598,7 @@
 
   // Check if we need to use abbreviated title
   if (_abbreviatedTitle) {
-    CGSize titleSizeAbbreviated = [_title sizeWithFont:_titleFont];
+    CGSize titleSizeAbbreviated = [_title yk_sizeWithFont:_titleFont];
     if (titleSizeAbbreviated.width > _titleSize.width) {
       title = _abbreviatedTitle;
       titleSize = _abbreviatedTitleSize;
@@ -630,7 +642,7 @@
         case YKUIButtonIconPositionTop: {
           CGPoint iconTop = YKCGPointToCenter(iconSize, size);
           [_iconImageView drawInRect:CGRectMake(iconTop.x, _insets.top, iconSize.width, iconSize.height)];
-          y = _insets.top + iconSize.height + titleInsets.top;
+          y = _insets.top + iconSize.height;
           break;
         }
         case YKUIButtonIconPositionCenter: {
@@ -638,7 +650,7 @@
           if (_iconOrigin.x != CGFLOAT_MAX) iconTop.x = _iconOrigin.x;
           if (_iconOrigin.y != CGFLOAT_MAX) iconTop.y = _iconOrigin.y;
           [_iconImageView drawInRect:CGRectMake(iconTop.x, iconTop.y + _insets.top, iconSize.width, iconSize.height)];
-          y = iconTop.y + _insets.top + iconSize.height + titleInsets.top;
+          y = iconTop.y + _insets.top + iconSize.height;
           break;
         }
       }
@@ -654,6 +666,7 @@
     CGContextSetShadowWithColor(context, titleShadowOffset, 0.0, titleShadowColor.CGColor);
 
     x += titleInsets.left;
+    y += titleInsets.top;
     if (y < _insets.top) y = _insets.top + titleInsets.top;
 
     // Draw title. If we have a secondary title, we'll need to adjust for alignment.
@@ -662,18 +675,18 @@
     } else if (_secondaryTitle) {
       if (_maxLineCount > 0) {
         // NOTE(nakoury): ideally this check would not be done here. instead _titleSize should be broken up into _titleSize and _secondaryTitleSize because currently _titleSize is doing a dual purpose. In some cases it is considered the size of _title + _secondaryTitle, but in this case it is considered just the size of _title. See _sizeForTitle:constrainedToSize for the logic behind _titleSize.
-        CGSize lineSize = [@" " sizeWithFont:_titleFont];
+        CGSize lineSize = [@" " yk_sizeWithFont:_titleFont];
         titleSize.height = lineSize.height * _maxLineCount;
       }
 
-      CGSize titleSizeAdjusted = [title sizeWithFont:_titleFont constrainedToSize:titleSize lineBreakMode:UILineBreakModeTailTruncation];
+      CGSize titleSizeAdjusted = [title yk_sizeWithFont:_titleFont constrainedToSize:titleSize lineBreakMode:NSLineBreakByTruncatingTail];
       titleSizeAdjusted = [title drawInRect:CGRectMake(x, y, titleSizeAdjusted.width, titleSizeAdjusted.height) withFont:font lineBreakMode:UILineBreakModeTailTruncation alignment:_titleAlignment];
       if (_secondaryTitleColor) [_secondaryTitleColor set];
       if (_secondaryTitleFont) font = _secondaryTitleFont;
       if (_secondaryTitlePosition == YKUIButtonSecondaryTitlePositionDefault) {
         x += titleSizeAdjusted.width;
         CGFloat secondaryTitleWidth = size.width - x - _insets.right - titleInsets.right;
-        CGSize secondaryTitleSize = [_secondaryTitle sizeWithFont:font forWidth:secondaryTitleWidth lineBreakMode:NSLineBreakByTruncatingTail];
+        CGSize secondaryTitleSize = [_secondaryTitle yk_sizeWithFont:font forWidth:secondaryTitleWidth lineBreakMode:NSLineBreakByTruncatingTail];
         [_secondaryTitle drawInRect:CGRectMake(x, y, secondaryTitleSize.width, secondaryTitleSize.height) withFont:font lineBreakMode:NSLineBreakByTruncatingTail];
       } else if (_secondaryTitlePosition == YKUIButtonSecondaryTitlePositionRightAlign) {
         x += titleSizeAdjusted.width;
@@ -688,7 +701,7 @@
         x = _insets.left + titleInsets.left + iconSize.width;
         y += titleSizeAdjusted.height;
         CGRect secondaryTitleRect = CGRectMake(x, y, size.width - x - _insets.right - titleInsets.right, 0);
-        [_secondaryTitle drawAtPoint:secondaryTitleRect.origin forWidth:secondaryTitleRect.size.width withFont:font lineBreakMode:UILineBreakModeTailTruncation];  
+        [_secondaryTitle drawAtPoint:secondaryTitleRect.origin forWidth:secondaryTitleRect.size.width withFont:font lineBreakMode:NSLineBreakByTruncatingTail];
       }
     }
   }

@@ -1,9 +1,9 @@
 //
-//  YelpKit.h
+//  NSObject+YKCompatibility.h
 //  YelpKit
 //
-//  Created by Gabriel Handford on 5/1/12.
-//  Copyright (c) 2012 Yelp. All rights reserved.
+//  Created by Allen Cheung on 8/6/13.
+//  Copyright (c) 2013 Yelp. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -27,43 +27,21 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "YKLayout.h"
-#import "YKUILayoutView.h"
+/*!
+ Wraps around gh_performIfRespondsToSelector and respondsToSelector.  
+ Adds no additional functionality.  The sole purpose of this class is
+ to explicitly name the iOS SDK a method is first available in, in 
+ order to support multiple iOS versions at runtime.
+ 
+ Once backward compatibility is no longer needed, methods here can be
+ removed / commented, and the compiler will flag all instances where
+ this is used.
+ */
 
-#import "YKDefines.h"
-#import "YKError.h"
+@interface NSObject (YKCompatibility)
 
-#import "YKURL.h"
-#import "YKURLRequest.h"
-#import "YKJSONRequest.h"
-#import "YKJSON.h"
-#import "NSObject+YKJSON.h"
+- (id)yk_performIfRespondsToOS7Selector:(SEL)selector;
 
-#import "YKUIActivityLabel.h"
-#import "YKUIButton.h"
-#import "YKUIButtons.h"
-#import "YKUILayoutView.h"
-#import "YKUIActivityView.h"
-#import "YKUIListView.h"
-#import "YKUIAlertView.h"
-#import "YKUIActionSheet.h"
-#import "YKUIImageView.h"
-#import "YKUINavigationBar.h"
-#import "YKUIRefreshScrollView.h"
-#import "YKUIScrollView.h"
-#import "YKUIBorder.h"
-#import "YKUISwitchButton.h"
+- (BOOL)yk_respondsToOS7Selector:(SEL)selector;
 
-#import "YKTableIndexedView.h"
-#import "YKTableViewCell.h"
-#import "YKUIActivityCell.h"
-#import "YKUIButtonCell.h"
-
-#import "YKSUIView.h"
-#import "YKUIViewStack.h"
-
-#import "YKUtils.h"
-
-#import "NSString+YKDrawing.h"
-#import "NSObject+YKCompatibility.h"
-
+@end

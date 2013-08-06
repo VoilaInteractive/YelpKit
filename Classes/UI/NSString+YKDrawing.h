@@ -1,8 +1,8 @@
 //
-//  NSDate+YKUtils.m
+//  NSString+YKDrawing.h
 //  YelpKit
 //
-//  Created by Nader Akoury on 3/5/13.
+//  Created by Allen Cheung on 8/2/13.
 //  Copyright (c) 2013 Yelp. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person
@@ -27,29 +27,36 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "NSDate+YKUtils.h"
+/*!
+ NSString category wrapping deprecated (in iOS7) sizing methods.  Calls the 
+ recommended method if the receiver responds to the selector, otherwise calls
+ the old method.  The recommended methods are only available in iOS7 which adds
+ some complications.
+ 
+ In addition sizes are ceilf to fix the issue where fractional sizes cause UI
+ glitches.
+ 
+ The logic needs to follow like this:
+ 
+    -  On iOS 6, call the old method, no matter which SDK we are building against.
+       Use respondsToSelector: to make this happen.
+ 
+    -  On iOS 7, call the new method
+ 
+    -  To build on Xcode4, declare the new methods in a category.
+ 
+ Needless to say, this should all be cleaned up once iOS7 and Xcode5 are released.
+ 
+ */
 
-@implementation NSDate(YKUtils)
+@interface NSString (YKDrawing)
 
-- (NSInteger)yk_dayDelta:(NSDate *)date {
-  return [self yk_dayDelta:date timeZone:nil];
-}
+- (CGSize)yk_sizeWithFont:(UIFont *)font;
 
-- (NSInteger)yk_dayDelta:(NSDate *)date timeZone:(NSTimeZone *)timeZone {
-  NSCalendar *cal = [NSCalendar currentCalendar];
-  NSUInteger flags = (NSEraCalendarUnit|NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit);
-  NSDate *ourDate = [cal dateFromComponents:[self gh_dateComponentsFromFlags:flags timeZone:timeZone]];
-  NSDate *theirDate = [cal dateFromComponents:[date gh_dateComponentsFromFlags:flags timeZone:timeZone]];
-  
-  return [[cal components:NSDayCalendarUnit fromDate:ourDate toDate:theirDate options:0] day];
-}
+- (CGSize)yk_sizeWithFont:(UIFont *)font constrainedToSize:(CGSize)size;
 
-- (BOOL)yk_isSameDay:(NSDate *)date {
-  return [self yk_isSameDay:date timeZone:nil];
-}
+- (CGSize)yk_sizeWithFont:(UIFont *)font forWidth:(CGFloat)width lineBreakMode:(NSLineBreakMode)lineBreakMode;
 
-- (BOOL)yk_isSameDay:(NSDate *)date timeZone:(NSTimeZone *)timeZone{
-  return [self yk_dayDelta:date timeZone:timeZone] == 0;
-}
+- (CGSize)yk_sizeWithFont:(UIFont *)font constrainedToSize:(CGSize)size lineBreakMode:(NSLineBreakMode)lineBreakMode;
 
 @end

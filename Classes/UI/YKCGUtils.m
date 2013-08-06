@@ -409,6 +409,20 @@ CGRect YKCGRectWithInsets(CGSize size, UIEdgeInsets insets) {
   return rect;
 }
 
+CGRect YKCGRectCeil(CGRect rect) {
+  CGRect ceilRect;
+  ceilRect.origin = rect.origin;
+  ceilRect.size = YKCGSizeCeil(rect.size);
+  return ceilRect;
+}
+
+CGSize YKCGSizeCeil(CGSize size) {
+  CGSize ceilSize;
+  ceilSize.width = ceilf(size.width);
+  ceilSize.height = ceilf(size.height);
+  return ceilSize;
+}
+
 #pragma mark Border Styles
 
 void YKCGContextAddStyledRect(CGContextRef context, CGRect rect, YKUIBorderStyle style, CGFloat strokeWidth, CGFloat cornerRadius) {  

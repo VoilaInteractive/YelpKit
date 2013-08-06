@@ -237,8 +237,6 @@ static BOOL gYKURLRequestCacheAsyncEnabled = YES; // Defaults to ON
   _request = [[NSMutableURLRequest requestWithURL:[NSURL URLWithString:[_URL URLString]] cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:_timeout] retain];
   _request.HTTPShouldHandleCookies = YES;
   
-  if ([[NSUserDefaults standardUserDefaults] boolForKey:@"YKURLRequestCookiesDisabled"]) _request.HTTPShouldHandleCookies = NO;
-
   // TODO(gabe): Investigate If-Modified-Since header
 //  NSDate *lastModifiedDate = [[self cache] lastModifiedDateForURLString:_URL.cacheableURLString];
 //  if (lastModifiedDate) {

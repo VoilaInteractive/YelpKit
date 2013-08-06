@@ -30,10 +30,9 @@
 #import "YKLText.h"
 #import "YKCGUtils.h"
 #import "YKLImage.h"
+#import "NSString+YKDrawing.h"
 
 @implementation YKLText
-
-@synthesize shadowColor=_shadowColor, shadowOffset=_shadowOffset, font=_font, textColor=_textColor, text=_text, lineBreakMode=_lineBreakMode, textAlignment=_textAlignment, constrainedToSize=_constrainedToSize;
 
 - (id)init {
   if ((self = [super init])) {
@@ -44,7 +43,7 @@
   return self;
 }
 
-- (id)initWithText:(NSString *)text font:(UIFont *)font textColor:(UIColor *)textColor lineBreakMode:(UILineBreakMode)lineBreakMode textAligment:(UITextAlignment)textAlignment {
+- (id)initWithText:(NSString *)text font:(UIFont *)font textColor:(UIColor *)textColor lineBreakMode:(NSLineBreakMode)lineBreakMode textAligment:(NSTextAlignment)textAlignment {
   if ((self = [self init])) {
     _text = [text retain];
     _font = [font retain];
@@ -65,18 +64,18 @@
 }
 
 + (YKLText *)text:(NSString *)text font:(UIFont *)font {
-  return [self text:text font:font textColor:nil lineBreakMode:NSUIntegerMax];
+  return [self text:text font:font textColor:nil lineBreakMode:-1];
 }
 
 + (YKLText *)text:(NSString *)text font:(UIFont *)font textColor:(UIColor *)textColor {
-  return [self text:text font:font textColor:textColor lineBreakMode:NSUIntegerMax];
+  return [self text:text font:font textColor:textColor lineBreakMode:-1];
 }
 
-+ (YKLText *)text:(NSString *)text font:(UIFont *)font textColor:(UIColor *)textColor lineBreakMode:(UILineBreakMode)lineBreakMode {
++ (YKLText *)text:(NSString *)text font:(UIFont *)font textColor:(UIColor *)textColor lineBreakMode:(NSLineBreakMode)lineBreakMode {
   return [[[YKLText alloc] initWithText:text font:font textColor:textColor lineBreakMode:lineBreakMode textAligment:UITextAlignmentLeft] autorelease];
 }
 
-+ (YKLText *)text:(NSString *)text font:(UIFont *)font textColor:(UIColor *)textColor lineBreakMode:(UILineBreakMode)lineBreakMode textAligment:(UITextAlignment)textAlignment {
++ (YKLText *)text:(NSString *)text font:(UIFont *)font textColor:(UIColor *)textColor lineBreakMode:(NSLineBreakMode)lineBreakMode textAligment:(NSTextAlignment)textAlignment {
   return [[[YKLText alloc] initWithText:text font:font textColor:textColor lineBreakMode:lineBreakMode textAligment:textAlignment] autorelease];
 }
 
@@ -126,16 +125,16 @@
   }
 
   if (YKCGSizeIsZero(constrainedToSize)) {
-    if (_lineBreakMode == NSUIntegerMax) {
-      _sizeThatFits = [_text sizeWithFont:_font];
+    if ((NSInteger)_lineBreakMode == -1) {
+      _sizeThatFits = [_text yk_sizeWithFont:_font];
     } else {
-      _sizeThatFits = [_text sizeWithFont:_font forWidth:size.width lineBreakMode:_lineBreakMode];
+      _sizeThatFits = [_text yk_sizeWithFont:_font forWidth:size.width lineBreakMode:_lineBreakMode];
     }
   } else {
-    if (_lineBreakMode == NSUIntegerMax) {
-      _sizeThatFits = [_text sizeWithFont:_font constrainedToSize:constrainedToSize];
+    if ((NSInteger)_lineBreakMode == -1) {
+      _sizeThatFits = [_text yk_sizeWithFont:_font constrainedToSize:constrainedToSize];
     } else {
-      _sizeThatFits = [_text sizeWithFont:_font constrainedToSize:constrainedToSize lineBreakMode:_lineBreakMode];
+      _sizeThatFits = [_text yk_sizeWithFont:_font constrainedToSize:constrainedToSize lineBreakMode:_lineBreakMode];
     }
   }
   
@@ -164,7 +163,7 @@
   if (_textAlignment != UITextAlignmentLeft) {
     // TODO: Single line with non-left alignment?
     [_text drawInRect:rect withFont:_font lineBreakMode:_lineBreakMode alignment:_textAlignment];
-  } else if (_lineBreakMode == NSUIntegerMax) {
+  } else if ((NSInteger)_lineBreakMode == -1) {
     if ([self isSingleLine]) {
       [_text drawAtPoint:rect.origin withFont:_font];
     } else {
