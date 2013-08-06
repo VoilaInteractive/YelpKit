@@ -7,25 +7,12 @@
 //
 
 #import "YKJSONRequest.h"
+#import "YKJSON.h"
 
 @implementation YKJSONRequest
 
 - (id)objectForData:(NSData *)data error:(YKError **)error {
-  Class JSONSerialization = NSClassFromString(@"NSJSONSerialization");
-  if (!JSONSerialization) {
-    [NSException raise:NSGenericException format:@"YKJSONRequest only supported for iOS SDK >= 5"];
-    return nil;
-  }
-
-  NSError *JSONError = nil;
-  id obj = [JSONSerialization JSONObjectWithData:data options:0 error:&JSONError];
-  if (!obj) {
-    if (error) {
-      *error = [YKError errorWithError:JSONError];
-    }
-    return nil;
-  }
-  return obj;
+  return [YKJSON objectForData:data error:error options:0];
 }
 
 - (YKHTTPError *)errorForHTTPStatus:(NSInteger)HTTPStatus data:(NSData *)data {
@@ -38,24 +25,9 @@
 
 @synthesize JSONDictionary=_JSONDictionary, errorId=_errorId;
 
-+ (NSDictionary *)JSONDictionaryForData:(NSData *)data {
-  Class JSONSerialization = NSClassFromString(@"NSJSONSerialization");
-  if (!JSONSerialization) {
-    [NSException raise:NSGenericException format:@"YKHTTPJSONError only supported for iOS SDK >= 5"];
-    return nil;
-  }
-  
-  id JSONDictionary = [JSONSerialization JSONObjectWithData:data options:0 error:nil];
-  if ([JSONDictionary isKindOfClass:[NSDictionary class]]) {
-    NSDictionary *errorDict = [JSONDictionary gh_objectMaybeNilForKey:@"error"];
-    if (errorDict) return errorDict;
-  }
-  return nil;
-}
-
 - (id)initWithHTTPStatus:(NSInteger)HTTPStatus data:(NSData *)data {
   
-  NSDictionary *JSONDictionary = [YKHTTPJSONError JSONDictionaryForData:data];
+  NSDictionary *JSONDictionary = [YKJSON dictionaryForData:data];
   NSString *localizedDescription = [JSONDictionary gh_objectMaybeNilForKey:@"description"];
   
   if ((self = [super initWithHTTPStatus:HTTPStatus data:data localizedDescription:localizedDescription])) {

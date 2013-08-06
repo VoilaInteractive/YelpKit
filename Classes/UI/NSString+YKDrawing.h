@@ -1,5 +1,5 @@
 //
-//  NSString+Drawing.h
+//  NSString+YKDrawing.h
 //  YelpKit
 //
 //  Created by Allen Cheung on 8/2/13.
@@ -30,13 +30,26 @@
 /*!
  NSString category wrapping deprecated (in iOS7) sizing methods.  Calls the 
  recommended method if the receiver responds to the selector, otherwise calls
- the old method.
+ the old method.  The recommended methods are only available in iOS7 which adds
+ some complications.
  
  In addition sizes are ceilf to fix the issue where fractional sizes cause UI
  glitches.
+ 
+ The logic needs to follow like this:
+ 
+    -  On iOS 6, call the old method, no matter which SDK we are building against.
+       Use respondsToSelector: to make this happen.
+ 
+    -  On iOS 7, call the new method
+ 
+    -  To build on Xcode4, declare the new methods in a category.
+ 
+ Needless to say, this should all be cleaned up once iOS7 and Xcode5 are released.
+ 
  */
 
-@interface NSString (Drawing)
+@interface NSString (YKDrawing)
 
 - (CGSize)yk_sizeWithFont:(UIFont *)font;
 

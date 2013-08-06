@@ -27,7 +27,7 @@
 #import "YKUIActivityLabel.h"
 #import "YKCGUtils.h"
 #import "YKLocalized.h"
-#import "NSString+Drawing.h"
+#import "NSString+YKDrawing.h"
 
 @implementation YKUIActivityLabel
 

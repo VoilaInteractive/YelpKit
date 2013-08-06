@@ -30,7 +30,7 @@
 #import "YKUIButton.h"
 #import "YKDefines.h"
 #import "YKUIImageView.h"
-#import "NSString+Drawing.h"
+#import "NSString+YKDrawing.h"
 
 @implementation YKUIButton
 
