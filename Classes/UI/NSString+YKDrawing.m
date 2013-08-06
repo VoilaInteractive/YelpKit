@@ -29,6 +29,7 @@
 
 #import "NSString+YKDrawing.h"
 #import "YKCGUtils.h"
+#import "NSObject+YKCompatibility.h"
 
 // Only need to declare if buildng agains iOS 6 SDK on Xcode4
 #if !(__IPHONE_OS_VERSION_MAX_ALLOWED >= 70000)
@@ -42,7 +43,7 @@
 
 - (CGSize)yk_sizeWithFont:(UIFont *)font {
   CGSize retSize;
-  if ([self respondsToSelector:@selector(sizeWithAttributes:)]) {
+  if ([self yk_respondsToOS7Selector:@selector(sizeWithAttributes:)]) {
     retSize = [self sizeWithAttributes:@{NSFontAttributeName: font}];
   } else {
     // If running on iOS 6, call the deprecated method
@@ -63,7 +64,7 @@
 
 - (CGSize)yk_sizeWithFont:(UIFont *)font constrainedToSize:(CGSize)size lineBreakMode:(NSLineBreakMode)lineBreakMode {
   CGSize retSize;
-  if ([self respondsToSelector:@selector(boundingRectWithSize:options:attributes:context:)]) {
+  if ([self yk_respondsToOS7Selector:@selector(boundingRectWithSize:options:attributes:context:)]) {
     // It should be sufficient to leave the rest of the paragraph style attributes uninitialized, text alignment for example doesn't matter, because we are only using the returned size, not the rect itself
     NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
     style.lineBreakMode = lineBreakMode;

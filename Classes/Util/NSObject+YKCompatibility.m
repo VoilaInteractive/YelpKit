@@ -1,9 +1,9 @@
 //
-//  YelpKit.h
+//  NSObject+YKCompatibility.m
 //  YelpKit
 //
-//  Created by Gabriel Handford on 5/1/12.
-//  Copyright (c) 2012 Yelp. All rights reserved.
+//  Created by Allen Cheung on 8/6/13.
+//  Copyright (c) 2013 Yelp. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -27,41 +27,17 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "YKLayout.h"
-#import "YKUILayoutView.h"
-
-#import "YKDefines.h"
-#import "YKError.h"
-
-#import "YKURL.h"
-#import "YKURLRequest.h"
-#import "YKJSONRequest.h"
-
-#import "YKUIActivityLabel.h"
-#import "YKUIButton.h"
-#import "YKUIButtons.h"
-#import "YKUILayoutView.h"
-#import "YKUIActivityView.h"
-#import "YKUIListView.h"
-#import "YKUIAlertView.h"
-#import "YKUIActionSheet.h"
-#import "YKUIImageView.h"
-#import "YKUINavigationBar.h"
-#import "YKUIRefreshScrollView.h"
-#import "YKUIScrollView.h"
-#import "YKUIBorder.h"
-#import "YKUISwitchButton.h"
-
-#import "YKTableIndexedView.h"
-#import "YKTableViewCell.h"
-#import "YKUIActivityCell.h"
-#import "YKUIButtonCell.h"
-
-#import "YKSUIView.h"
-#import "YKUIViewStack.h"
-
-#import "YKUtils.h"
-
-#import "NSString+YKDrawing.h"
 #import "NSObject+YKCompatibility.h"
 
+@implementation NSObject (YKCompatibility)
+
+- (id)yk_performIfRespondsToOS7Selector:(SEL)selector {
+  return [self gh_performIfRespondsToSelector:selector];
+}
+
+- (BOOL)yk_respondsToOS7Selector:(SEL)selector {
+  return [self respondsToSelector:selector];
+}
+
+
+@end
