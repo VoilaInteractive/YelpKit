@@ -31,11 +31,11 @@
 
 @implementation NSObject (YKCompatibility)
 
-- (id)yk_performIfRespondsToiOS7Selector:(SEL)selector {
+- (id)yk_performIfRespondsToOS7Selector:(SEL)selector {
   return [self gh_performIfRespondsToSelector:selector];
 }
 
-- (BOOL)yk_respondsToiOS7Selector:(SEL)selector {
+- (BOOL)yk_respondsToOS7Selector:(SEL)selector {
   return [self respondsToSelector:selector];
 }
 
