@@ -34,8 +34,6 @@
 
 @implementation YKLText
 
-@synthesize shadowColor=_shadowColor, shadowOffset=_shadowOffset, font=_font, textColor=_textColor, text=_text, lineBreakMode=_lineBreakMode, textAlignment=_textAlignment, constrainedToSize=_constrainedToSize;
-
 - (id)init {
   if ((self = [super init])) {
     _sizeThatFits = YKCGSizeNull;
@@ -45,7 +43,7 @@
   return self;
 }
 
-- (id)initWithText:(NSString *)text font:(UIFont *)font textColor:(UIColor *)textColor lineBreakMode:(UILineBreakMode)lineBreakMode textAligment:(UITextAlignment)textAlignment {
+- (id)initWithText:(NSString *)text font:(UIFont *)font textColor:(UIColor *)textColor lineBreakMode:(NSLineBreakMode)lineBreakMode textAligment:(NSTextAlignment)textAlignment {
   if ((self = [self init])) {
     _text = [text retain];
     _font = [font retain];
@@ -73,11 +71,11 @@
   return [self text:text font:font textColor:textColor lineBreakMode:-1];
 }
 
-+ (YKLText *)text:(NSString *)text font:(UIFont *)font textColor:(UIColor *)textColor lineBreakMode:(UILineBreakMode)lineBreakMode {
++ (YKLText *)text:(NSString *)text font:(UIFont *)font textColor:(UIColor *)textColor lineBreakMode:(NSLineBreakMode)lineBreakMode {
   return [[[YKLText alloc] initWithText:text font:font textColor:textColor lineBreakMode:lineBreakMode textAligment:UITextAlignmentLeft] autorelease];
 }
 
-+ (YKLText *)text:(NSString *)text font:(UIFont *)font textColor:(UIColor *)textColor lineBreakMode:(UILineBreakMode)lineBreakMode textAligment:(UITextAlignment)textAlignment {
++ (YKLText *)text:(NSString *)text font:(UIFont *)font textColor:(UIColor *)textColor lineBreakMode:(NSLineBreakMode)lineBreakMode textAligment:(NSTextAlignment)textAlignment {
   return [[[YKLText alloc] initWithText:text font:font textColor:textColor lineBreakMode:lineBreakMode textAligment:textAlignment] autorelease];
 }
 
@@ -165,7 +163,7 @@
   if (_textAlignment != UITextAlignmentLeft) {
     // TODO: Single line with non-left alignment?
     [_text drawInRect:rect withFont:_font lineBreakMode:_lineBreakMode alignment:_textAlignment];
-  } else if (_lineBreakMode == NSUIntegerMax) {
+  } else if ((NSInteger)_lineBreakMode == -1) {
     if ([self isSingleLine]) {
       [_text drawAtPoint:rect.origin withFont:_font];
     } else {
