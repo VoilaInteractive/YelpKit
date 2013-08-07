@@ -51,7 +51,7 @@
 
     _titles = [[NSMutableArray alloc] initWithCapacity:10];
     _actions = [[NSMutableArray alloc] initWithCapacity:10];
-    _contexts = YKCreateNonRetainingArray();
+    _contexts = [[NSMutableArray alloc] initWithCapacity:10];
   }
   return self;
 }
