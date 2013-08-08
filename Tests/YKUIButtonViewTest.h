@@ -28,7 +28,6 @@
 //
 
 #import "YKViewTestCase.h"
-#import <YelpKit/YelpKit.h>
 
 @interface YKUIButtonViewTest : YKViewTestCase {
   UIView *_superView;

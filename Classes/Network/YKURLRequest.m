@@ -29,8 +29,8 @@
 
 #import "YKURLRequest.h"
 
-#import "YKURLCache.h"
 #import "YKDefines.h"
+#import <YelpKit/YKUtils.h>
 
 NSString *const kYKURLRequestDefaultMultipartBoundary = @"----------------314159265358979323846";
 NSString *const kYKURLRequestDefaultContentType = @"application/octet-stream";
@@ -42,30 +42,30 @@ static NSTimeInterval gYKURLRequestDefaultTimeout = 90.0;
 #else
 static NSTimeInterval gYKURLRequestDefaultTimeout = 25.0;
 #endif
-static BOOL gYKURLRequestCacheEnabled = NO; // Defaults to ON
-static BOOL gYKURLRequestCacheAsyncEnabled = YES; // Defaults to ON
 
 
 @interface YKURLRequest ()
 @property (retain, nonatomic) NSData *responseData;
 @property (copy, nonatomic) YKURLRequestFinishBlock finishBlock; 
 @property (copy, nonatomic) YKURLRequestFailBlock failBlock;
-- (void)_start;
-- (void)_stop;
-- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error;
 @end
 
 @implementation YKURLRequest
 
-@synthesize connection=_connection, timeout=_timeout, request=_request, response=_response, delegate=__delegate, finishSelector=_finishSelector, failSelector=_failSelector, cancelSelector=_cancelSelector, expiresAge=_expiresAge, URL=_URL, cacheName=_cacheName, cachePolicy=_cachePolicy, mockResponse=_mockResponse, mockResponseDelayInterval=_mockResponseDelayInterval, dataInterval=_dataInterval, totalInterval=_totalInterval, start=_start, downloadedData=_downloadedData, cacheHit=_cacheHit, inCache=_inCache, stopped=_stopped, error=_error, started=_started, responseInterval=_responseInterval, runLoop=_runLoop, sentInterval=_sentInterval, bytesWritten=_bytesWritten;
+@synthesize connection=_connection, timeout=_timeout, request=_request, response=_response, delegate=__delegate, finishSelector=_finishSelector, failSelector=_failSelector, cancelSelector=_cancelSelector, URL=_URL, mockResponse=_mockResponse, mockResponseDelayInterval=_mockResponseDelayInterval, dataInterval=_dataInterval, totalInterval=_totalInterval, start=_start, downloadedData=_downloadedData, cacheHit=_cacheHit, inCache=_inCache, stopped=_stopped, error=_error, started=_started, runLoop=_runLoop, sentInterval=_sentInterval;
 @synthesize responseData=_responseData, finishBlock=_finishBlock, failBlock=_failBlock; // Private properties
 
+
++ (void)initialize {
+  if (self == [YKURLRequest class]) {
+    gCacheNamespaceInvalidationDates = [[NSMutableDictionary alloc] init];
+  }
+}
 
 - (id)init {
   if ((self = [super init])) {
     _timeout = gYKURLRequestDefaultTimeout;
-    _cachePolicy = YKURLRequestCachePolicyEnabled;
-    _totalInterval = -1; 
+    _totalInterval = -1;
     _dataInterval = -1;
     _responseInterval = -1;
     _sentInterval = -1;
@@ -90,6 +90,7 @@ static BOOL gYKURLRequestCacheAsyncEnabled = YES; // Defaults to ON
   [_responseData release];
   Block_release(_finishBlock);
   Block_release(_failBlock);
+  [_cachedResponse release];
   [super dealloc];
 }
 
@@ -104,26 +105,104 @@ static BOOL gYKURLRequestCacheAsyncEnabled = YES; // Defaults to ON
   return [NSString stringWithFormat:@"{\n\tURL = \"%@\";\n\tstatusCode: \"%d\";\n\theaderFields = \"%@\";\n}", _URL, statusCode, headerFields];
 }
 
-- (BOOL)shouldAttemptLoadFromCache {
-  YKDebug(@"Cache status: gYKURLRequestCacheEnabled=%d, _cachePolicy=%d, _expiresAge=%0f, GET=%d, YKURLRequestCacheDisabled=%d", 
-          gYKURLRequestCacheEnabled, _cachePolicy, _expiresAge, 
-          (_method == YKHTTPMethodGet),
-          [[NSUserDefaults standardUserDefaults] boolForKey:@"YKURLRequestCacheDisabled"]);
-  
-  return (gYKURLRequestCacheEnabled && 
-          _cachePolicy == YKURLRequestCachePolicyEnabled && 
-          _expiresAge > 0 && 
-          _method == YKHTTPMethodGet &&
-          ![[NSUserDefaults standardUserDefaults] boolForKey:@"YKURLRequestCacheDisabled"]);
+#pragma mark Caching
+
+- (void)setCacheEnabled:(BOOL)cacheEnabled expiresAfter:(NSTimeInterval)expiresAfter {
+  _cacheEnabled = cacheEnabled;
+  _secondsCacheExpiresAfter = expiresAfter;
 }
 
-- (BOOL)shouldStoreInCache {
-  if (!_request || _method != YKHTTPMethodGet) return NO;
-  return (gYKURLRequestCacheEnabled && 
-          !_cacheHit &&
-          (_cachePolicy == YKURLRequestCachePolicyEnabled || _cachePolicy == YKURLRequestCachePolicyIfModifiedSince) &&
-          ![[NSUserDefaults standardUserDefaults] boolForKey:@"YKURLRequestCacheDisabled"]);
+- (BOOL)shouldCacheData:(NSData *)data forKey:(id)key {
+  return _cacheEnabled;
 }
+
+- (BOOL)_shouldAttemptCacheLoad {
+  return _cacheEnabled;
+}
+
+- (void)addCachedResponseToCache:(NSCachedURLResponse *)cachedResponse {
+  NSURLRequest *request = [NSURLRequest requestWithURL:[self URLToCacheFromURL:cachedResponse.response.URL]];
+  NSCachedURLResponse *formattedResponse = [[NSCachedURLResponse alloc] initWithResponse:cachedResponse.response data:cachedResponse.data userInfo:@{@"YPAPICacheExpiry": [NSDate dateWithTimeIntervalSinceNow:_secondsCacheExpiresAfter], @"YKURLCacheTimestamp": [NSDate date]} storagePolicy:NSURLCacheStorageAllowed];
+  [[NSURLCache sharedURLCache] storeCachedResponse:formattedResponse forRequest:request];
+  _inCache = YES;
+}
+
+- (void)requestWithURL:(YKURL *)URL cachedData:(NSData *)data response:(NSURLResponse *)response {
+  _URL = [URL retain];
+  _cacheHit = YES;
+  YKDispatch(^{
+    [self didLoadData:data withResponse:response cacheKey:nil];
+  });
+}
+
+- (NSURL *)URLToCacheFromURL:(NSURL *)URL {
+  return URL;
+}
+
+- (BOOL)_cachedResponseDidExpire:(NSCachedURLResponse *)cachedResponse {
+  // Either of these conditions are true:
+  //  (1) current date is after the expiration date
+  //  (2) the expiration date itself is stale (logical conflict with current expiration interval)
+  NSDate *expirationDate = [cachedResponse.userInfo objectForKey:@"YPAPICacheExpiry"];
+  return (expirationDate && ([expirationDate laterDate:[NSDate date]] != expirationDate ||
+                             [expirationDate timeIntervalSinceNow] > _secondsCacheExpiresAfter));
+}
+
+/*!
+ Returns whether the receiver should load a URL from NSURLCache or make a fresh request.
+ 
+ @param URL URL to load, either from the cache or by making a fresh request
+ @param data Pointer to NSData returned by reference if there is a cache hit (regardless of expiration), nil otherwise
+ @param response Pointer to NSURLResponse returned by reference if there is a cache hit (regardless of expiration), nil otherwise
+ 
+ @result Returns YES if the receiver should load the URL from the cache.  The following conditions must be met:
+ 
+ 1.  There is a cached response for the URL
+ 2.  The expiration date of the cached response is later than the current date
+ 3.  The expiration date of the cached response is not later than the current date + the expiration limit (this is in case the exipration limit is modified)
+ */
+- (BOOL)_shouldLoadURL:(YKURL *)URL fromCacheWithData:(NSData **)data response:(NSURLResponse **)response {
+  BOOL loadFromCache = NO;
+  if (_cacheEnabled) {
+    NSURLRequest *request = [NSURLRequest requestWithURL:[self URLToCacheFromURL:[NSURL URLWithString:[URL URLString]]]];
+    NSCachedURLResponse *cachedResponse = [[NSURLCache sharedURLCache] cachedResponseForRequest:request];
+    if (cachedResponse) {
+      // Cache hit
+      *data = cachedResponse.data;
+      *response = cachedResponse.response;
+      BOOL didExpire = [self _cachedResponseDidExpire:cachedResponse];
+      BOOL isInvalid = [self _cachedResponseNamespaceIsInvalid:cachedResponse];
+      if (didExpire || isInvalid) {
+          // Clear the expired or invalid entry
+          [[NSURLCache sharedURLCache] removeCachedResponseForRequest:request];
+      } else {
+        loadFromCache = YES;
+      }
+    } else {
+      // Cache miss
+      *data = nil;
+      *response = nil;
+    }
+  }
+  
+  return loadFromCache;
+}
+
+#pragma mark Class invalidation by namespace
+
+static NSMutableDictionary *gCacheNamespaceInvalidationDates = nil;
+
++ (void)invalidateCacheNamespaceWithDate:(NSDate *)date {
+  [gCacheNamespaceInvalidationDates setObject:date forKey:NSStringFromClass([self class])];
+}
+
+- (BOOL)_cachedResponseNamespaceIsInvalid:(NSCachedURLResponse *)cachedResponse {
+  NSDate *timestamp = [cachedResponse.userInfo objectForKey:@"YKURLCacheTimestamp"];
+  NSDate *invalidationDate = [gCacheNamespaceInvalidationDates objectForKey:NSStringFromClass([self class])];
+  return (invalidationDate && [timestamp earlierDate:invalidationDate] == timestamp);
+}
+
+#pragma mark -
 
 - (BOOL)requestWithURL:(YKURL *)URL headers:(NSDictionary *)headers delegate:(id)delegate finishSelector:(SEL)finishSelector failSelector:(SEL)failSelector cancelSelector:(SEL)cancelSelector {
   return [self requestWithURL:URL method:YPHTTPMethodGet headers:headers postParams:nil keyEnumerator:nil delegate:delegate finishSelector:finishSelector failSelector:failSelector cancelSelector:cancelSelector];
@@ -165,10 +244,6 @@ static BOOL gYKURLRequestCacheAsyncEnabled = YES; // Defaults to ON
 
 
 - (BOOL)requestWithURL:(YKURL *)URL method:(YPHTTPMethod)method headers:(NSDictionary *)headers postParams:(NSDictionary *)postParams keyEnumerator:(NSEnumerator *)keyEnumerator delegate:(id)delegate finishSelector:(SEL)finishSelector failSelector:(SEL)failSelector cancelSelector:(SEL)cancelSelector {
-  
-  //YKAssertSelectorNilOrImplementedWithArguments(delegate, finishSelector, @encode(YKURLRequest *), 0);
-  //YKAssertSelectorNilOrImplementedWithArguments(delegate, failSelector, @encode(YKURLRequest *), @encode(YKError *), 0);
-  //YKAssertSelectorNilOrImplementedWithArguments(delegate, cancelSelector, @encode(YKURLRequest *), 0);
     
   self.delegate = delegate; // Retained only for life of connection
   _finishSelector = finishSelector;
@@ -191,6 +266,11 @@ static BOOL gYKURLRequestCacheAsyncEnabled = YES; // Defaults to ON
   // Check mock
   if (_mockResponse) {
     YKDebug(@"Mock response for: %@", _URL);
+    // Manually create a cached response for the mock here
+    NSURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:[NSURL URLWithString:_URL.URLString] statusCode:200 HTTPVersion:nil headerFields:nil];
+    [_cachedResponse release];
+    _cachedResponse = [[NSCachedURLResponse alloc] initWithResponse:response data:_mockResponse];
+    [response release];
     if (_mockResponseDelayInterval > 0) {
       [[self gh_proxyAfterDelay:_mockResponseDelayInterval] didLoadData:_mockResponse withResponse:nil cacheKey:nil];    
     } else {
@@ -201,32 +281,13 @@ static BOOL gYKURLRequestCacheAsyncEnabled = YES; // Defaults to ON
 #endif
   
   // Check cache
-  if ([self shouldAttemptLoadFromCache] && _URL.cacheableURLString) {
-    // Because this is asynchronous, there is a small chance that data might be removed after the hasData check,
-    // in which case the request will respond as if it errored.
-    YKURLCache *cache = [self cache];
-    if ([cache hasDataForURLString:_URL.cacheableURLString expires:_expiresAge]) {
-      YKDebug(@"\n\nCache hit: %@\n\n", _URL.cacheableURLString);
-      if (!gYKURLRequestCacheAsyncEnabled) {
-        NSData *data = [cache dataForURLString:_URL.cacheableURLString];
-        _cacheHit = YES;
-        [[self gh_proxyAfterDelay:0] didLoadData:data withResponse:nil cacheKey:nil];
-      } else {
-        [cache dataForURLString:_URL.cacheableURLString dataBlock:^(NSData *data) {
-          if (data) {
-            _cacheHit = YES;
-            [self didLoadData:data withResponse:nil cacheKey:nil];
-          } else {
-            [self didError:[YKError errorWithKey:YKErrorRequest]];
-          }
-        }];
-      }
+  if ([self _shouldAttemptCacheLoad]) {
+    NSData *cachedData = nil;
+    NSURLResponse *cachedResponse = nil;
+    if ([self _shouldLoadURL:URL fromCacheWithData:&cachedData response:&cachedResponse]) {
+      [self requestWithURL:(YKURL *)URL cachedData:cachedData response:cachedResponse];
       return YES;
-    } else {
-      YKDebug(@"Cache miss: %@, expiresAge=%.0f", _URL.cacheableURLString, _expiresAge);
     }
-  } else {
-    YKDebug(@"Cache load not attempted");
   }
   
   // Notify that we will request
@@ -235,7 +296,6 @@ static BOOL gYKURLRequestCacheAsyncEnabled = YES; // Defaults to ON
   YKDebug(@"Using timeout: %0.3f", _timeout);
   [_request release];
   _request = [[NSMutableURLRequest requestWithURL:[NSURL URLWithString:[_URL URLString]] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:_timeout] retain];
-  _request.HTTPShouldHandleCookies = YES;
   
   // TODO(gabe): Investigate If-Modified-Since header
 //  NSDate *lastModifiedDate = [[self cache] lastModifiedDateForURLString:_URL.cacheableURLString];
@@ -280,11 +340,6 @@ static BOOL gYKURLRequestCacheAsyncEnabled = YES; // Defaults to ON
   _connection = [[connectionClass alloc] initWithRequest:_request delegate:self startImmediately:NO];   
   [self _start];
   return YES;
-}
-
-- (YKURLCache *)cache {
-  if (_cacheName) return [YKURLCache cacheWithName:_cacheName];
-  return [YKURLCache sharedCache];
 }
 
 - (void)_timeout {
@@ -368,16 +423,6 @@ static BOOL gYKURLRequestCacheAsyncEnabled = YES; // Defaults to ON
   }
 }
 
-- (void)cacheDataIfEnabled:(NSData *)data cacheKey:(NSString *)cacheKey {
-  if (cacheKey && [self shouldStoreInCache] && [self shouldCacheData:data forKey:cacheKey]) {
-    YKDebug(@"Storing in cache with key: %@", cacheKey);
-    [[self cache] storeData:data forURLString:cacheKey asynchronous:gYKURLRequestCacheAsyncEnabled];
-    _inCache = YES;
-  } else {
-    YKDebug(@"Response was not cached");
-  }
-} 
-
 - (NSDictionary *)responseHeaderFields {
   if ([_response isKindOfClass:[NSHTTPURLResponse class]])
     return [(NSHTTPURLResponse *)_response allHeaderFields];
@@ -394,12 +439,9 @@ static BOOL gYKURLRequestCacheAsyncEnabled = YES; // Defaults to ON
 - (void)willRequestURL:(YKURL *)URL { }
 
 - (void)didLoadData:(NSData *)data withResponse:(NSURLResponse *)response cacheKey:(NSString *)cacheKey {   
-  YKDebug(@"Did load data: %d", [data length]);
   // Subclasses may do processing here
   [self didFinishWithData:data cacheKey:cacheKey];
 }
-
-- (BOOL)shouldCacheData:(NSData *)data forKey:(id)key { return YES; }
 
 - (void)didError:(YKHTTPError *)error { 
   YKErr(@"Error in response: %@", error);
@@ -420,7 +462,12 @@ static BOOL gYKURLRequestCacheAsyncEnabled = YES; // Defaults to ON
 - (void)didFinishWithData:(NSData *)data cacheKey:(NSString *)cacheKey {   
   self.responseData = data;
   // TODO(gabe): In experimental threaded request, caching isn't thread safe (so this call isn't completely safe)
-  [self cacheDataIfEnabled:data cacheKey:cacheKey];
+  // NOTE(acheung): Switching over to NSURLCache which is also not thread safe
+  if (_cachedResponse && [self shouldCacheData:data forKey:cacheKey]) {
+    [self addCachedResponseToCache:_cachedResponse];
+  }
+  [_cachedResponse release];
+  _cachedResponse = nil;
   
   if (_stopped) return;
 
@@ -538,13 +585,6 @@ static id<YKCompressor> gCompressor = NULL;
 
 #pragma mark -
 
-+ (void)setCacheEnabled:(BOOL)cacheEnabled {
-}
-
-+ (void)setCacheAsyncEnabled:(BOOL)cacheAsyncEnabled {
-  gYKURLRequestCacheAsyncEnabled = cacheAsyncEnabled;
-}
-
 - (NSInteger)responseStatusCode {
   NSInteger status = -1;
   if ([_response respondsToSelector:@selector(statusCode)])
@@ -584,8 +624,29 @@ static id<YKCompressor> gCompressor = NULL;
   [_downloadedData appendData:data];
 }
 
+/*!
+ If this method is unimplemented it is equivalent of just returning cachedResponse, which allows UIKit to handle caching the response.
+ Overriding this method and returning nil causes UIKit to not cache the response, allowing the delegate to implement custom cache behavior.
+ 
+ Custom behavior is used for the following:
+ 
+ 1.  NSURLCache will by default overwrite cached responses with the same URL but different query parameters.  This method stores the
+ cached response with a custom URL key to work around this issue.
+ 
+ 2.  The time and signature query parameters are unique over time, causing a cache miss for using the default cache implementation.
+ These params are stripped before returning the custom cache key.
+ 
+ 3.  Currently the server is not using Cache-Control headers in the response other than 'private'.  The custom cache implementation allows
+ setting the cache expiration in the user info dictionary.
+ 
+ Note: this method is called before connectionDidFinishLoading:  which is where the API response code is set.  The cached resopnse is
+ stored as an ivar and caching can be handled later in didFinishWithData:cacheKey:
+ */
 - (NSCachedURLResponse *)connection:(NSURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse {
-  return cachedResponse;
+  [cachedResponse retain];
+  [_cachedResponse release];
+  _cachedResponse = cachedResponse;
+  return nil;
 }
 
 static BOOL gAuthProtectionDisabled = NO;
@@ -634,7 +695,7 @@ static BOOL gAuthProtectionDisabled = NO;
     }
     [self didError:[self errorForHTTPStatus:status data:_downloadedData]];
   } else {
-    [self didLoadData:_downloadedData withResponse:_response cacheKey:_URL.cacheableURLString];
+    [self didLoadData:_downloadedData withResponse:_response cacheKey:nil];
   }
 }
 
@@ -658,8 +719,6 @@ static BOOL gAuthProtectionDisabled = NO;
 
 
 @implementation YKURLRequestDataPart
-
-@synthesize data=_data, contentType=_contentType;
 
 - (id)init {
   if ((self = [super init])) {

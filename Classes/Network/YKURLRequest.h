@@ -30,8 +30,6 @@
 #import "YKError.h"
 #import "YKURL.h"
 #import "YKCompressor.h"
-#import "YKURLCache.h"
-
 
 // Supported HTTP methods
 typedef enum {
@@ -108,9 +106,9 @@ typedef void (^YKURLRequestFailBlock)(YKHTTPError *error);
   NSRunLoop *_runLoop;
   
   // For caching
-  NSTimeInterval _expiresAge; // Max age for cached item; Defaults to 0 (expires immediately)
-  YKURLRequestCachePolicy _cachePolicy; // Defaults to YKURLRequestCachePolicyEnabled (but expiresAge must be set > 0)
-  NSString *_cacheName; // Namespace for cache  
+  NSCachedURLResponse *_cachedResponse;
+  BOOL _cacheEnabled;
+  NSTimeInterval _secondsCacheExpiresAfter;
 
   // For mocking
   NSData *_mockResponse;
@@ -120,28 +118,17 @@ typedef void (^YKURLRequestFailBlock)(YKHTTPError *error);
   YKError *_error;  
 
   // For metrics (intervals from reference date)
-  NSTimeInterval _start;
   NSTimeInterval _startData;
-  
-  NSTimeInterval _responseInterval; // Time to receive the response (header)
-  NSTimeInterval _dataInterval; // Time for receiving data  
-  NSTimeInterval _totalInterval; // Total time for request
-  NSTimeInterval _sentInterval; // From start to end of sent data
   
   NSUInteger _bytesWritten;
   
   NSTimer *_timer;
-  
-  // Response data
-  NSData *_responseData;
-  
 }
 
 @property (readonly, nonatomic) NSURLConnection *connection;
 @property (readonly, nonatomic) NSMutableURLRequest *request;
 @property (readonly, nonatomic) NSURLResponse *response;
 @property (retain, nonatomic) id delegate;
-@property (assign, nonatomic) NSTimeInterval expiresAge;
 @property (assign, nonatomic) NSTimeInterval timeout;
 @property (readonly, nonatomic) NSMutableData *downloadedData;
 @property (readonly, nonatomic, getter=isCacheHit) BOOL cacheHit; // YES if there was a cache hit for request
@@ -157,23 +144,41 @@ typedef void (^YKURLRequestFailBlock)(YKHTTPError *error);
 
 @property (readonly, nonatomic) YKURL *URL;
 
-//! For request to be cacheable it must have expiresAge > 0
-@property (assign, nonatomic) YKURLRequestCachePolicy cachePolicy;
-@property (assign, nonatomic) NSString *cacheName;
-
 @property (retain, nonatomic) NSData *mockResponse;
 @property (assign, nonatomic) NSTimeInterval mockResponseDelayInterval;
 
 @property (readonly, nonatomic) NSTimeInterval start; // When request started
-@property (readonly, nonatomic) NSTimeInterval dataInterval;
-@property (readonly, nonatomic) NSTimeInterval totalInterval;
-@property (readonly, nonatomic) NSTimeInterval sentInterval;
-@property (readonly, nonatomic) NSTimeInterval responseInterval;
+@property (readonly, nonatomic) NSTimeInterval dataInterval; // Time for receiving data  
+@property (readonly, nonatomic) NSTimeInterval totalInterval; // Total time for request
+@property (readonly, nonatomic) NSTimeInterval sentInterval; // From start to end of sent data
+@property (readonly, nonatomic) NSTimeInterval responseInterval; // Time to receive the response (header)
 @property (readonly, nonatomic) NSUInteger bytesWritten;
 
+// Response data
 @property (readonly, retain, nonatomic) NSData *responseData;
 
 @property (retain, nonatomic) NSRunLoop *runLoop;
+
+/*!
+ Enable caching for the API request with expiration interval from current time.  Typically called by subclasses in init.
+ @param cacheEnabled Caching will be enabled for this API request if passed YES
+ @param expiresAfter Time interval from current time at which to expire the cache
+ */
+- (void)setCacheEnabled:(BOOL)cacheEnabled expiresAfter:(NSTimeInterval)expiresAfter;
+
+- (BOOL)shouldCacheData:(NSData *)data forKey:(id)key;
+
+- (NSURL *)URLToCacheFromURL:(NSURL *)URL;
+
++ (void)invalidateCacheNamespaceWithDate:(NSDate *)date;
+
+/*!
+ Request using already loaded cached data.
+ @param URL URL
+ @param cachedData Cached data for URL request
+ @param response Response to URL request
+ */
+- (void)requestWithURL:(YKURL *)URL cachedData:(NSData *)data response:(NSURLResponse *)response;
 
 /*!
  GET request. 
@@ -412,16 +417,6 @@ typedef void (^YKURLRequestFailBlock)(YKHTTPError *error);
 + (void)setConnectionTimeout:(NSTimeInterval)connectionTimeout;
 
 /*!
- To disable the cache globally. (For testing.)
- */
-+ (void)setCacheEnabled:(BOOL)cacheEnabled;
-
-/*!
- To disable the cache asynchronous loading globally. (For testing.)
- */
-+ (void)setCacheAsyncEnabled:(BOOL)cacheAsyncEnabled;
-
-/*!
  Response status code (If HTTP response, the HTTP response code.)
  */
 - (NSInteger)responseStatusCode;
@@ -440,18 +435,6 @@ typedef void (^YKURLRequestFailBlock)(YKHTTPError *error);
  Get downloaded data as string (UTF-8).
  */
 - (NSString *)downloadedDataAsString;
-
-/*!
- Should load from cache.
- */
-- (BOOL)shouldAttemptLoadFromCache;
-
-/*!
- Should store in cache.
-
- @result YES if cache policy enabled 
- */
-- (BOOL)shouldStoreInCache;
 
 /*!
  Object for data. 
@@ -475,11 +458,6 @@ typedef void (^YKURLRequestFailBlock)(YKHTTPError *error);
 - (YKHTTPError *)errorForHTTPStatus:(NSInteger)HTTPStatus data:(NSData *)data;
 
 /*!
- The shared cache used by this request.
- */
-- (YKURLCache *)cache;
-
-/*!
  Description of request metrics.
  */
 - (NSString *)metricsDescription;
@@ -487,7 +465,6 @@ typedef void (^YKURLRequestFailBlock)(YKHTTPError *error);
 
 - (void)willRequestURL:(YKURL *)URL;
 - (void)didLoadData:(NSData *)data withResponse:(NSURLResponse *)response cacheKey:(NSString *)cacheKey;
-- (BOOL)shouldCacheData:(NSData *)data forKey:(id)key;
 
 // Notifies of didError OR didFinish OR didCancel
 - (void)didError:(YKError *)error;
@@ -518,10 +495,7 @@ __REQUEST__.delegate = nil; \
 /*!
  YKURLRequest data part.
  */
-@interface YKURLRequestDataPart : NSObject {
-  NSString *_contentType;
-  NSData *_data;
-}
+@interface YKURLRequestDataPart : NSObject
 
 @property (retain, nonatomic) NSString *contentType;
 @property (retain, nonatomic) NSData *data;

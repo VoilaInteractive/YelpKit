@@ -7,8 +7,6 @@
 //
 
 #import "YKJSONTest.h"
-#import "YKJSON.h"
-#import "NSObject+YKJSON.h"
 
 @interface YKJSONTestSerializeable : NSObject <YKJSONSerializableObject> {
   NSString *_identifier;

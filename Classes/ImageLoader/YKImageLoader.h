@@ -27,9 +27,10 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "YKURLRequest.h"
 #import "YKError.h"
 
+@class YKURLRequest;
+@class YKURL;
 @class YKImageLoader;
 @class YKImageLoaderQueue;
 

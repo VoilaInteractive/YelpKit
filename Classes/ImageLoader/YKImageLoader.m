@@ -33,6 +33,7 @@
 #import "YKResource.h"
 #import "YKDefines.h"
 #import "YKImageLoaderQueue.h"
+#import "YKURLRequest.h"
 
 @interface YKImageLoader ()
 @property (retain, nonatomic) YKURL *URL;
@@ -163,36 +164,6 @@ static dispatch_queue_t gYKImageLoaderDiskCacheQueue = NULL;
     return;
   }
 
-  // Check for cached image on disk, load asynchronously if available
-  // NOTE(johnb): Checking if the URL is in the disk cache takes around 0.4 ms
-  //NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
-  BOOL inDiskCache = [[YKURLCache sharedCache] hasDataForURLString:URL.cacheableURLString];
-  //YKDebug(@"Checking if URL is in disk cache took: %0.5f", ([NSDate timeIntervalSinceReferenceDate] - start));
-  if (inDiskCache) {
-    // Notify the delegate that we're loading the image
-    if ([_delegate respondsToSelector:@selector(imageLoaderDidStart:)])
-      [_delegate imageLoaderDidStart:self];
-    dispatch_async([YKImageLoader diskCacheQueue], ^{
-      UIImage *cachedImage = [[YKURLCache sharedCache] diskCachedImageForURLString:URL.cacheableURLString expires:kExpiresAge];
-      if (cachedImage) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-          // Cache the image. Cache it real good.
-          YKImageMemoryCache *imageCache = [YKImageMemoryCache sharedCache];
-          [imageCache cacheImage:cachedImage forKey:URL.URLString];
-
-          [self setImage:cachedImage status:YKImageLoaderStatusLoaded];
-        });
-      } else {
-        // Load from the URL
-        YKErr(@"We thought we had cached image data but it was invalid!");
-        dispatch_async(dispatch_get_main_queue(), ^{
-          [self _loadImageForURL:URL];
-        });
-      }
-    });
-    return;
-  }
-
   [self _loadImageForURL:URL];
 }
 
@@ -211,8 +182,8 @@ static dispatch_queue_t gYKImageLoaderDiskCacheQueue = NULL;
   YKURLRequestRelease(_request);
   
   _request = [[YKURLRequest alloc] init];
-  _request.expiresAge = kExpiresAge;
-
+  [_request setCacheEnabled:YES expiresAfter:kExpiresAge];
+  
   static NSDictionary *headers = nil;
   if (!headers) {
     // Set the x-screen-scale header
@@ -234,7 +205,6 @@ static dispatch_queue_t gYKImageLoaderDiskCacheQueue = NULL;
   [image retain];
   [_image release];
   _image = image;  
-  //YKDebug(@"Update image for %@", _URL);
   YKAssertMainThread();
   [_delegate imageLoader:self didUpdateStatus:status image:image];
 }

@@ -34,6 +34,7 @@
 #import "UIImage+YKUtils.h"
 #import "YKImageMemoryCache.h"
 #import <GHKit/GH_MAZeroingWeakRef.h>
+#import "YKURL.h"
 
 static BOOL gYKUIImageViewDisableRenderInBackground = NO;
 
