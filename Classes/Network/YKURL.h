@@ -103,4 +103,6 @@
 // Deprecated
 + (YKURL *)URLString:(NSString *)URLString cacheEnabled:(BOOL)cacheEnabled;
 
+- (NSURL *)NSURL;
+
 @end

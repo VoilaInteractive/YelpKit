@@ -70,4 +70,8 @@
   return _URLString;
 }
 
+- (NSURL *)NSURL {
+  return [NSURL URLWithString:self.URLString];
+}
+
 @end
