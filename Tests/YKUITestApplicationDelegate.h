@@ -27,7 +27,6 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import <GHUnitIOS/GHUnit.h>
 
 @interface YKUITestApplicationDelegate : GHUnitIOSAppDelegate
 

@@ -161,6 +161,9 @@
 		849CA83117B44BB400D46D5C /* libYelpKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 005592E8140B0085001E9C43 /* libYelpKit.a */; };
 		849CA83217B4505200D46D5C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00D5757A1457C65200DE6487 /* QuartzCore.framework */; };
 		849CA83317B4506E00D46D5C /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00DB569015BE54CB00E247FA /* MapKit.framework */; };
+		849CA86D17B5895700D46D5C /* YKNSURLCache.h in Headers */ = {isa = PBXBuildFile; fileRef = 849CA86B17B5895600D46D5C /* YKNSURLCache.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		849CA86E17B5895700D46D5C /* YKNSURLCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 849CA86C17B5895600D46D5C /* YKNSURLCache.m */; };
+		849CA87B17B5A36300D46D5C /* YKNSURLCacheTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 849CA87A17B5A36300D46D5C /* YKNSURLCacheTest.m */; };
 		84CCB7E41778C229004B8FD2 /* button_accessory_image.png in Resources */ = {isa = PBXBuildFile; fileRef = 00A4D93215CB27BE0035E64B /* button_accessory_image.png */; };
 		84CCB7E51778C229004B8FD2 /* button_accessory_image@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 00A4D93315CB27BE0035E64B /* button_accessory_image@2x.png */; };
 		84CCB7E61778C229004B8FD2 /* button_accessory_image_selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 00A4D93415CB27BE0035E64B /* button_accessory_image_selected.png */; };
@@ -430,6 +433,9 @@
 		849B802717B16D56007E07B8 /* NSObject+YKCompatibility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+YKCompatibility.h"; sourceTree = "<group>"; };
 		849B802817B16D56007E07B8 /* NSObject+YKCompatibility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+YKCompatibility.m"; sourceTree = "<group>"; };
 		849CA82D17B445CD00D46D5C /* YKJSON.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YKJSON.h; sourceTree = "<group>"; };
+		849CA86B17B5895600D46D5C /* YKNSURLCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YKNSURLCache.h; sourceTree = "<group>"; };
+		849CA86C17B5895600D46D5C /* YKNSURLCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YKNSURLCache.m; sourceTree = "<group>"; };
+		849CA87A17B5A36300D46D5C /* YKNSURLCacheTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YKNSURLCacheTest.m; sourceTree = "<group>"; };
 		84CCB7FA1778EFDD004B8FD2 /* YKUIButtonViewTest_CategoryButtons.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YKUIButtonViewTest_CategoryButtons.m; sourceTree = "<group>"; };
 		84CCB7FE1778F04B004B8FD2 /* YKUIButtonViewTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YKUIButtonViewTest.m; sourceTree = "<group>"; };
 		84CCB8001778F094004B8FD2 /* YKUIButtonViewTest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YKUIButtonViewTest.h; sourceTree = "<group>"; };
@@ -622,6 +628,8 @@
 				42DF281E1540F53300EA955F /* NSArray+YKValidation.m */,
 				6E6DC672156450F400D95455 /* YKImageMemoryCache.h */,
 				6E6DC673156450F400D95455 /* YKImageMemoryCache.m */,
+				849CA86B17B5895600D46D5C /* YKNSURLCache.h */,
+				849CA86C17B5895600D46D5C /* YKNSURLCache.m */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -896,6 +904,7 @@
 				84CCB8031778F9B6004B8FD2 /* YKUIButtonViewTest_Borders.m */,
 				8476D58F17B42E9400C67E82 /* YKURLRequestTest.h */,
 				8476D59017B42E9400C67E82 /* YKURLRequestTest.m */,
+				849CA87A17B5A36300D46D5C /* YKNSURLCacheTest.m */,
 				84EB1E80177133FE00479F80 /* Supporting Files */,
 			);
 			path = Tests;
@@ -999,6 +1008,7 @@
 				21BF77781794D47C00A46427 /* NSObject+YKJSON.h in Headers */,
 				21BF777E1795BE6600A46427 /* YKError.h in Headers */,
 				849CA82E17B445D400D46D5C /* YKJSON.h in Headers */,
+				849CA86D17B5895700D46D5C /* YKNSURLCache.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1270,6 +1280,7 @@
 				477B982B16E683F60010BEE6 /* NSDate+YKUtils.m in Sources */,
 				21BF776E1794C06000A46427 /* NSObject+YKJSON.m in Sources */,
 				21BF77711794C38E00A46427 /* YKJSON.m in Sources */,
+				849CA86E17B5895700D46D5C /* YKNSURLCache.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1299,6 +1310,7 @@
 				84CCB8041778F9B6004B8FD2 /* YKUIButtonViewTest_Borders.m in Sources */,
 				21E4473E17B17E5000FCE3D8 /* YKJSONTest.m in Sources */,
 				8476D59117B42E9400C67E82 /* YKURLRequestTest.m in Sources */,
+				849CA87B17B5A36300D46D5C /* YKNSURLCacheTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
