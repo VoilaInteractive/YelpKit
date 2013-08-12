@@ -168,7 +168,9 @@ typedef void (^YKURLRequestFailBlock)(YKHTTPError *error);
 
 - (BOOL)shouldCacheData:(NSData *)data forKey:(id)key;
 
-- (NSURL *)URLToCacheFromURL:(NSURL *)URL;
+- (NSURLRequest *)URLRequestForCacheLookup;
+
++ (NSURL *)URLToCacheFromURL:(NSURL *)URL;
 
 + (void)invalidateCacheNamespaceWithDate:(NSDate *)date;
 

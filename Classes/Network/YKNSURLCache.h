@@ -48,6 +48,6 @@
 
 - (NSCachedURLResponse *)cachedResponseForRequest:(NSURLRequest *)request expirationInterval:(NSTimeInterval)expirationInterval stale:(BOOL *)stale;
 
-- (void)invalidateCacheNameSpace:(NSString *)nameSpace WithDate:(NSDate *)date;
+- (void)invalidateCacheNameSpace:(NSString *)nameSpace withDate:(NSDate *)date;
 
 @end

@@ -31,6 +31,7 @@
 
 #import "YKDefines.h"
 #import <YelpKit/YKUtils.h>
+#import "YKNSURLCache.h"
 
 NSString *const kYKURLRequestDefaultMultipartBoundary = @"----------------314159265358979323846";
 NSString *const kYKURLRequestDefaultContentType = @"application/octet-stream";
@@ -55,12 +56,6 @@ static NSTimeInterval gYKURLRequestDefaultTimeout = 25.0;
 @synthesize connection=_connection, timeout=_timeout, request=_request, response=_response, delegate=__delegate, finishSelector=_finishSelector, failSelector=_failSelector, cancelSelector=_cancelSelector, URL=_URL, mockResponse=_mockResponse, mockResponseDelayInterval=_mockResponseDelayInterval, dataInterval=_dataInterval, totalInterval=_totalInterval, start=_start, downloadedData=_downloadedData, cacheHit=_cacheHit, inCache=_inCache, stopped=_stopped, error=_error, started=_started, runLoop=_runLoop, sentInterval=_sentInterval;
 @synthesize responseData=_responseData, finishBlock=_finishBlock, failBlock=_failBlock; // Private properties
 
-
-+ (void)initialize {
-  if (self == [YKURLRequest class]) {
-    gCacheNamespaceInvalidationDates = [[NSMutableDictionary alloc] init];
-  }
-}
 
 - (id)init {
   if ((self = [super init])) {
@@ -120,86 +115,26 @@ static NSTimeInterval gYKURLRequestDefaultTimeout = 25.0;
   return _cacheEnabled;
 }
 
-- (void)addCachedResponseToCache:(NSCachedURLResponse *)cachedResponse {
-  NSURLRequest *request = [NSURLRequest requestWithURL:[self URLToCacheFromURL:cachedResponse.response.URL]];
-  NSCachedURLResponse *formattedResponse = [[NSCachedURLResponse alloc] initWithResponse:cachedResponse.response data:cachedResponse.data userInfo:@{@"YPAPICacheExpiry": [NSDate dateWithTimeIntervalSinceNow:_secondsCacheExpiresAfter], @"YKURLCacheTimestamp": [NSDate date]} storagePolicy:NSURLCacheStorageAllowed];
-  [[NSURLCache sharedURLCache] storeCachedResponse:formattedResponse forRequest:request];
-  _inCache = YES;
-}
-
 - (void)requestWithURL:(YKURL *)URL cachedData:(NSData *)data response:(NSURLResponse *)response {
   _URL = [URL retain];
   _cacheHit = YES;
-  YKDispatch(^{
-    [self didLoadData:data withResponse:response cacheKey:nil];
-  });
+  [[self gh_proxyAfterDelay:0] didLoadData:data withResponse:response cacheKey:nil];
 }
 
-- (NSURL *)URLToCacheFromURL:(NSURL *)URL {
+- (NSURLRequest *)URLRequestForCacheLookup {
+  return [[[NSURLRequest alloc] initWithURL:[[self class] URLToCacheFromURL:[_URL NSURL]]] autorelease];
+}
+
++ (NSURL *)URLToCacheFromURL:(NSURL *)URL {
   return URL;
 }
 
-- (BOOL)_cachedResponseDidExpire:(NSCachedURLResponse *)cachedResponse {
-  // Either of these conditions are true:
-  //  (1) current date is after the expiration date
-  //  (2) the expiration date itself is stale (logical conflict with current expiration interval)
-  NSDate *expirationDate = [cachedResponse.userInfo objectForKey:@"YPAPICacheExpiry"];
-  return (expirationDate && ([expirationDate laterDate:[NSDate date]] != expirationDate ||
-                             [expirationDate timeIntervalSinceNow] > _secondsCacheExpiresAfter));
++ (NSString *)cacheNameSpace {
+  return NSStringFromClass([self class]);
 }
-
-/*!
- Returns whether the receiver should load a URL from NSURLCache or make a fresh request.
- 
- @param URL URL to load, either from the cache or by making a fresh request
- @param data Pointer to NSData returned by reference if there is a cache hit (regardless of expiration), nil otherwise
- @param response Pointer to NSURLResponse returned by reference if there is a cache hit (regardless of expiration), nil otherwise
- 
- @result Returns YES if the receiver should load the URL from the cache.  The following conditions must be met:
- 
- 1.  There is a cached response for the URL
- 2.  The expiration date of the cached response is later than the current date
- 3.  The expiration date of the cached response is not later than the current date + the expiration limit (this is in case the exipration limit is modified)
- */
-- (BOOL)_shouldLoadURL:(YKURL *)URL fromCacheWithData:(NSData **)data response:(NSURLResponse **)response {
-  BOOL loadFromCache = NO;
-  if (_cacheEnabled) {
-    NSURLRequest *request = [NSURLRequest requestWithURL:[self URLToCacheFromURL:[NSURL URLWithString:[URL URLString]]]];
-    NSCachedURLResponse *cachedResponse = [[NSURLCache sharedURLCache] cachedResponseForRequest:request];
-    if (cachedResponse) {
-      // Cache hit
-      *data = cachedResponse.data;
-      *response = cachedResponse.response;
-      BOOL didExpire = [self _cachedResponseDidExpire:cachedResponse];
-      BOOL isInvalid = [self _cachedResponseNamespaceIsInvalid:cachedResponse];
-      if (didExpire || isInvalid) {
-          // Clear the expired or invalid entry
-          [[NSURLCache sharedURLCache] removeCachedResponseForRequest:request];
-      } else {
-        loadFromCache = YES;
-      }
-    } else {
-      // Cache miss
-      *data = nil;
-      *response = nil;
-    }
-  }
-  
-  return loadFromCache;
-}
-
-#pragma mark Class invalidation by namespace
-
-static NSMutableDictionary *gCacheNamespaceInvalidationDates = nil;
 
 + (void)invalidateCacheNamespaceWithDate:(NSDate *)date {
-  [gCacheNamespaceInvalidationDates setObject:date forKey:NSStringFromClass([self class])];
-}
-
-- (BOOL)_cachedResponseNamespaceIsInvalid:(NSCachedURLResponse *)cachedResponse {
-  NSDate *timestamp = [cachedResponse.userInfo objectForKey:@"YKURLCacheTimestamp"];
-  NSDate *invalidationDate = [gCacheNamespaceInvalidationDates objectForKey:NSStringFromClass([self class])];
-  return (invalidationDate && [timestamp earlierDate:invalidationDate] == timestamp);
+  [[YKNSURLCache sharedURLCache] invalidateCacheNameSpace:[YKURLRequest cacheNameSpace] withDate:date];
 }
 
 #pragma mark -
@@ -282,10 +217,11 @@ static NSMutableDictionary *gCacheNamespaceInvalidationDates = nil;
   
   // Check cache
   if ([self _shouldAttemptCacheLoad]) {
-    NSData *cachedData = nil;
-    NSURLResponse *cachedResponse = nil;
-    if ([self _shouldLoadURL:URL fromCacheWithData:&cachedData response:&cachedResponse]) {
-      [self requestWithURL:(YKURL *)URL cachedData:cachedData response:cachedResponse];
+    BOOL stale = NO;
+    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:[[self class] URLToCacheFromURL:[_URL NSURL]]];
+    NSCachedURLResponse *cachedResponse = [[YKNSURLCache sharedURLCache] cachedResponseForRequest:request expirationInterval:_secondsCacheExpiresAfter stale:&stale];
+    if (cachedResponse && !stale) {
+      [self requestWithURL:(YKURL *)URL cachedData:cachedResponse.data response:cachedResponse.response];
       return YES;
     }
   }
@@ -293,7 +229,6 @@ static NSMutableDictionary *gCacheNamespaceInvalidationDates = nil;
   // Notify that we will request
   [self willRequestURL:_URL];
   
-  YKDebug(@"Using timeout: %0.3f", _timeout);
   [_request release];
   _request = [[NSMutableURLRequest requestWithURL:[NSURL URLWithString:[_URL URLString]] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:_timeout] retain];
   
@@ -315,7 +250,6 @@ static NSMutableDictionary *gCacheNamespaceInvalidationDates = nil;
   _downloadedData = [[NSMutableData alloc] init];
   
   Class connectionClass = [[self class] connectionClass];
-  YKDebug(@"\n\nConnecting to: %@ <%@>\n", URL, NSStringFromClass(connectionClass));
   
   BOOL useCustomTimer = NO;
   if (method == YPHTTPMethodPostMultipart) {
@@ -350,7 +284,6 @@ static NSMutableDictionary *gCacheNamespaceInvalidationDates = nil;
 }
 
 - (void)_start {
-  YKDebug(@"Starting...");
   [_connection scheduleInRunLoop:(self.runLoop ? self.runLoop : [NSRunLoop mainRunLoop]) forMode:NSDefaultRunLoopMode];
   [_connection start];
 }
@@ -360,15 +293,12 @@ static NSMutableDictionary *gCacheNamespaceInvalidationDates = nil;
 }
 
 - (void)cancel:(BOOL)notify {
-  YKDebug(@"Cancel");
   _cancelled = YES;
   if (_stopped) {
-    YKDebug(@"Ignoring cancel; Request stopped");
     return;
   } 
   [self didCancel];
   if (notify) {
-    YKDebug(@"Cancel (%@/%@)", self.delegate, NSStringFromSelector(_cancelSelector));
     if (_cancelSelector != NULL) {
       [[__delegate gh_proxyOnMainThread:YES] performSelector:_cancelSelector withObject:self];
     }
@@ -382,7 +312,6 @@ static NSMutableDictionary *gCacheNamespaceInvalidationDates = nil;
 }
 
 - (void)_stop {
-  if (!_stopped) YKDebug(@"Stopping");
   _stopped = YES;
   [_timer invalidate];
   _timer = nil;
@@ -464,7 +393,8 @@ static NSMutableDictionary *gCacheNamespaceInvalidationDates = nil;
   // TODO(gabe): In experimental threaded request, caching isn't thread safe (so this call isn't completely safe)
   // NOTE(acheung): Switching over to NSURLCache which is also not thread safe
   if (_cachedResponse && [self shouldCacheData:data forKey:cacheKey]) {
-    [self addCachedResponseToCache:_cachedResponse];
+    [[YKNSURLCache sharedURLCache] storeCachedResponse:_cachedResponse forRequest:[self URLRequestForCacheLookup] timestamp:[NSDate date] expirationInterval:_secondsCacheExpiresAfter nameSpace:[YKURLRequest cacheNameSpace]];
+    _inCache = YES;
   }
   [_cachedResponse release];
   _cachedResponse = nil;
@@ -613,7 +543,6 @@ static id<YKCompressor> gCompressor = NULL;
   if (_startData == 0)
     _startData = [NSDate timeIntervalSinceReferenceDate];
   
-  YKDebug(@"Got response: %@", response);
   [response retain];
   [_response release];
   _response = response;
@@ -680,7 +609,6 @@ static BOOL gAuthProtectionDisabled = NO;
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
   if (_stopped) {
-    YKDebug(@"Ignoring connectionDidFinishLoading:, stopped");
     return;
   }
   
@@ -688,7 +616,6 @@ static BOOL gAuthProtectionDisabled = NO;
   _totalInterval = [NSDate timeIntervalSinceReferenceDate] - _start;
 
   NSInteger status = [self responseStatusCode];
-  YKDebug(@"Did finish loading; status=%d", status);
   if (status >= 300) {
     if (_downloadedData) {
       YKDebug(@"Error: %@", [self downloadedDataAsString]);

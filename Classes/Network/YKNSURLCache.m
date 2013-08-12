@@ -10,6 +10,11 @@
 
 static NSMutableDictionary *gCacheNamespaceInvalidationDates = nil;
 
+static NSString *const YKNSCacheExpirationInterval = @"YKNSCacheExpirationInterval";
+static NSString *const YKNSCacheNameSpace = @"YKNSCacheNameSpace";
+static NSString *const YKNSCacheTimestamp = @"YKNSCacheTimestamp";
+
+
 @implementation YKNSURLCache
 
 + (void)initialize {
@@ -32,8 +37,9 @@ static NSMutableDictionary *gCacheNamespaceInvalidationDates = nil;
      */
     NSArray *cachePathComponents = @[NSHomeDirectory(), @"Library", @"Caches", [[NSProcessInfo processInfo] processName]
                                      ];
-    YKNSURLCache *customCache = [[YKNSURLCache alloc] initWithMemoryCapacity:[NSURLCache sharedURLCache].memoryCapacity diskCapacity:[NSURLCache sharedURLCache].diskCapacity diskPath:[NSString pathWithComponents:cachePathComponents]];
+    YKNSURLCache *customCache = [[YKNSURLCache alloc] initWithMemoryCapacity:1000 diskCapacity:[NSURLCache sharedURLCache].diskCapacity diskPath:[NSString pathWithComponents:cachePathComponents]];
     [NSURLCache setSharedURLCache:customCache];
+    [customCache release];
   });
   
   NSAssert([[NSURLCache sharedURLCache] isKindOfClass:self], @"Using YKNSURLCache but the shared cache is the wrong class!");
@@ -44,7 +50,7 @@ static NSMutableDictionary *gCacheNamespaceInvalidationDates = nil;
   if (!nameSpace) {
     nameSpace = (id)[NSNull null];
   }
-  NSCachedURLResponse *formattedResponse = [[NSCachedURLResponse alloc] initWithResponse:cachedResponse.response data:cachedResponse.data userInfo:@{@"YKNSCacheExpirationInterval": [NSNumber numberWithDouble:expirationInterval], @"YKNSCacheTimestamp": timestamp, @"YKNSCacheNamespace": nameSpace} storagePolicy:NSURLCacheStorageAllowed];
+  NSCachedURLResponse *formattedResponse = [[NSCachedURLResponse alloc] initWithResponse:cachedResponse.response data:cachedResponse.data userInfo:@{YKNSCacheExpirationInterval: [NSNumber numberWithDouble:expirationInterval], YKNSCacheTimestamp: timestamp, YKNSCacheNameSpace: nameSpace} storagePolicy:NSURLCacheStorageAllowed];
   [self storeCachedResponse:formattedResponse forRequest:request];
   [formattedResponse release];
 }
@@ -56,15 +62,15 @@ static NSMutableDictionary *gCacheNamespaceInvalidationDates = nil;
   
   if (cachedResponse) {
     // Determine if response expired - the expiration interval is different than the cached value or current date is after expiration date
-    NSTimeInterval cachedExpirationInterval = [cachedResponse.userInfo[@"YKNSCacheExpirationInterval"] doubleValue];
-    NSDate *expirationDate = [cachedResponse.userInfo[@"YKNSCacheTimestamp"] dateByAddingTimeInterval:cachedExpirationInterval];
+    NSTimeInterval cachedExpirationInterval = [cachedResponse.userInfo[YKNSCacheExpirationInterval] doubleValue];
+    NSDate *expirationDate = [cachedResponse.userInfo[YKNSCacheTimestamp] dateByAddingTimeInterval:cachedExpirationInterval];
     *expired = (cachedExpirationInterval != expirationInterval ||
                 [expirationDate earlierDate:[NSDate date]] == expirationDate);
     
     // Determine if response namespace is invalid - if the namespace was invalidated after the response timestamp
-    NSDate *nameSpaceInvalidationDate = gCacheNamespaceInvalidationDates[cachedResponse.userInfo[@"YKNSCacheNamespace"]];
+    NSDate *nameSpaceInvalidationDate = gCacheNamespaceInvalidationDates[cachedResponse.userInfo[YKNSCacheNameSpace]];
     *invalidNameSpace = (nameSpaceInvalidationDate &&
-                         [nameSpaceInvalidationDate laterDate:cachedResponse.userInfo[@"YKNSCacheTimestamp"]] == nameSpaceInvalidationDate);
+                         [nameSpaceInvalidationDate laterDate:cachedResponse.userInfo[YKNSCacheTimestamp]] == nameSpaceInvalidationDate);
     
     if (purge && (*expired || *invalidNameSpace)) {
       [self removeCachedResponseForRequest:request];
@@ -86,7 +92,7 @@ static NSMutableDictionary *gCacheNamespaceInvalidationDates = nil;
   return response;
 }
 
-- (void)invalidateCacheNameSpace:(NSString *)nameSpace WithDate:(NSDate *)date {
+- (void)invalidateCacheNameSpace:(NSString *)nameSpace withDate:(NSDate *)date {
   gCacheNamespaceInvalidationDates[nameSpace] = date;
 }
 

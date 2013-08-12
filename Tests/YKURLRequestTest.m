@@ -29,28 +29,35 @@
 
 #import "YKURLRequestTest.h"
 #import <GHUnitIOS/GHMockNSURLConnection.h>
+#import <YelpKit/YKNSURLCache.h>
 
 @implementation YKURLRequestTest
 
-static uint8_t bytes[300];
+static const NSInteger length = 1;
+static uint8_t bytes[length];
 
 - (void)setUp {
   [super setUp];
+  // Force YKNSURLCache to load its singleton - doing this lazily causes some weird insert behavior on the first usage - console log: ADDRESPONSE - ADDING TO MEMORY ONLY
+  [YKNSURLCache sharedURLCache];
+  // Keep a unique default URL for each test to avoid test pollution - there is some time delay for NSURLCache removing its contents for the remove all method
+  static NSInteger uniquifier = 0;
   [YKURLRequest setConnectionClass:[GHMockNSURLConnection class]];
-  _defaultURL = [[YKURL alloc] initWithURLString:@"http://fake.yelp.test"];
-  _defaultDataResponse = [[NSData alloc] initWithBytes:bytes length:300];
-  [[NSURLCache sharedURLCache] removeAllCachedResponses];
+  _defaultURL = [[YKURL alloc] initWithURLString:[NSString stringWithFormat:@"http://fake.yelp.test/ykurlrequesttest/%d", uniquifier++]];
+  _defaultDataResponse = [[NSData alloc] initWithBytes:bytes length:length];
+  _defaultCacheKeyRequest = [[NSURLRequest alloc] initWithURL:[YKURLRequest URLToCacheFromURL:[_defaultURL NSURL]]];
 }
 
 - (void)tearDown {
-  [[NSURLCache sharedURLCache] removeAllCachedResponses];
   [_defaultURL release];
   [_defaultDataResponse release];
+  [_defaultCacheKeyRequest release];
   [YKURLRequest setConnectionClass:[NSURLConnection class]]; // Reset connection class
+  [[YKNSURLCache sharedURLCache] removeAllCachedResponses];
   [super tearDown];
 }
 
-- (void)testCacheInCache {
+- (void)testInCache {
   [self prepare];
   YKURLRequest *request = [[YKURLRequest alloc] init];
   [request setCacheEnabled:YES expiresAfter:10000];
@@ -61,7 +68,34 @@ static uint8_t bytes[300];
   [(GHMockNSURLConnection *)request.connection receiveData:_defaultDataResponse statusCode:200 MIMEType:@"text/json" afterDelay:0.1];
   [self waitForStatus:kGHUnitWaitStatusSuccess timeout:1];
   
-  GHAssertTrue(request.inCache, @"The request is not marked as being in the cache");
+  GHAssertFalse(request.cacheHit, @"Sanity check - there should not be a cache hit here, request URL: %@", request.URL.URLString);
+  GHAssertTrue(request.inCache, @"The request is not marked as being in the cache, request URL: %@", request.URL.URLString);
+  
+  [request release];
+}
+
+- (void)testCacheHit {
+  NSURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:[_defaultURL NSURL] statusCode:200 HTTPVersion:nil headerFields:nil];
+  NSCachedURLResponse *cachedResponse = [[NSCachedURLResponse alloc] initWithResponse:response data:_defaultDataResponse];
+  [[YKNSURLCache sharedURLCache] storeCachedResponse:cachedResponse forRequest:_defaultCacheKeyRequest timestamp:[NSDate date] expirationInterval:10000 nameSpace:nil];
+  [cachedResponse release];
+  
+  [self prepare];
+  YKURLRequest *request = [[YKURLRequest alloc] init];
+  [request setCacheEnabled:YES expiresAfter:10000];
+  [request requestWithURL:_defaultURL headers:nil delegate:self
+           finishSelector:@selector(requestDidFinish:)
+             failSelector:@selector(request:failedWithError:)
+           cancelSelector:@selector(requestDidCancel:)];
+  // Since this is a cache hit there shouldn't be any need to pass data along the mock connection
+  [self waitForStatus:kGHUnitWaitStatusSuccess timeout:0.1];
+  BOOL stale = NO;
+  cachedResponse = [[YKNSURLCache sharedURLCache] cachedResponseForRequest:_defaultCacheKeyRequest expirationInterval:10000 stale:&stale];
+  
+  GHAssertTrue(request.cacheHit, @"The request is not marked as hitting the cache");
+  
+  [response release];
+  [request release];
 }
 
 #pragma mark YKURLRequestDelegate

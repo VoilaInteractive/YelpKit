@@ -31,6 +31,7 @@
 @interface YKURLRequestTest : GHAsyncTestCase {
   YKURL *_defaultURL;
   NSData *_defaultDataResponse;
+  NSURLRequest *_defaultCacheKeyRequest;
 }
 
 @end
