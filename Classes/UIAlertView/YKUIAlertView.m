@@ -42,6 +42,7 @@
 
 - (id)initWithTarget:(id)target action:(SEL)action context:(id)context {
   if ((self = [super init])) {
+    YKAssertSelectorImplemented(target, action);
     __block YKUIAlertView *blockSelf = self;
     _block = Block_copy(^(NSInteger index) {
       [[target gh_argumentProxy:action] alertView:(id)blockSelf clickedButtonAtIndex:index context:context];
@@ -125,6 +126,7 @@
 
 - (id)initWithTarget:(id)target action:(SEL)action {
   if ((self = [super init])) {
+    YKAssertSelectorImplemented(target, action);
     _target = [target retain];
     _action = action;
   }

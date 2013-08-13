@@ -29,6 +29,7 @@
 
 #import "YKUIActionSheet.h"
 
+#import "YKDefines.h"
 #import "YKUtils.h"
 
 @implementation YKUIActionSheet
@@ -86,6 +87,7 @@
 }
 
 - (void)addButtonWithTitle:(NSString *)title action:(SEL)action context:(id)context {
+  YKAssertSelectorImplemented(_target, action);
   [_titles addObject:title];
   [_actions addObject:[NSValue valueWithPointer:action]];
   [_contexts addObject:(context ? context : [NSNull null])];
