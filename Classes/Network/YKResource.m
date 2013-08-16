@@ -38,6 +38,13 @@
     if (DocumentsDirectory == NULL) {
       NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
       DocumentsDirectory = [[paths objectAtIndex:0] copy];
+#if DEBUG
+      // When running GHUnit tests from the command line, the documents directory is the
+      // User's documents directory, so allow it to be overriden through an environment variable.
+      if (getenv("GHUNIT_CLI") && getenv("GHUNIT_DOCS_DIR")) {
+        DocumentsDirectory = [@(getenv("GHUNIT_DOCS_DIR")) copy];
+      }
+#endif
     }   
   }
   return DocumentsDirectory;
