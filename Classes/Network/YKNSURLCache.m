@@ -5,8 +5,30 @@
 //  Created by Allen Cheung on 8/9/13.
 //  Copyright (c) 2013 Yelp. All rights reserved.
 //
+//  Permission is hereby granted, free of charge, to any person
+//  obtaining a copy of this software and associated documentation
+//  files (the "Software"), to deal in the Software without
+//  restriction, including without limitation the rights to use,
+//  copy, modify, merge, publish, distribute, sublicense, and/or sell
+//  copies of the Software, and to permit persons to whom the
+//  Software is furnished to do so, subject to the following
+//  conditions:
+//
+//  The above copyright notice and this permission notice shall be
+//  included in all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+//  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+//  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+//  NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+//  HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+//  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+//  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+//  OTHER DEALINGS IN THE SOFTWARE.
+//
 
 #import "YKNSURLCache.h"
+#import "YKDefines.h"
 
 static NSMutableDictionary *gCacheNamespaceInvalidationDates = nil;
 
@@ -27,6 +49,9 @@ static NSString *const YKNSCacheTimestamp = @"YKNSCacheTimestamp";
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
     /*
+     From the Apple docs the disk path for the default cache is as follows:  It's stupid that
+     this isn't a read-only property on the cache, but we need to construct it here.
+     
     <li>Disk path: <nobr>(user home directory)/Library/Caches/(current application name)</nobr>
     <br>where:
     <br>user home directory is determined by calling
@@ -35,14 +60,13 @@ static NSString *const YKNSCacheTimestamp = @"YKNSCacheTimestamp";
     <tt>[[NSProcessInfo processInfo] processName]</tt>
     </ul>
      */
-    NSArray *cachePathComponents = @[NSHomeDirectory(), @"Library", @"Caches", [[NSProcessInfo processInfo] processName]
-                                     ];
+    NSArray *cachePathComponents = @[NSHomeDirectory(), @"Library", @"Caches", [[NSProcessInfo processInfo] processName]];
     YKNSURLCache *customCache = [[YKNSURLCache alloc] initWithMemoryCapacity:1000 diskCapacity:[NSURLCache sharedURLCache].diskCapacity diskPath:[NSString pathWithComponents:cachePathComponents]];
     [NSURLCache setSharedURLCache:customCache];
     [customCache release];
   });
   
-  NSAssert([[NSURLCache sharedURLCache] isKindOfClass:self], @"Using YKNSURLCache but the shared cache is the wrong class!");
+  YKAssert([[NSURLCache sharedURLCache] isKindOfClass:self], @"Using YKNSURLCache but the shared cache is the wrong class!");
   return (YKNSURLCache *)[NSURLCache sharedURLCache];
 }
 
@@ -50,7 +74,7 @@ static NSString *const YKNSCacheTimestamp = @"YKNSCacheTimestamp";
   if (!nameSpace) {
     nameSpace = (id)[NSNull null];
   }
-  NSCachedURLResponse *formattedResponse = [[NSCachedURLResponse alloc] initWithResponse:cachedResponse.response data:cachedResponse.data userInfo:@{YKNSCacheExpirationInterval: [NSNumber numberWithDouble:expirationInterval], YKNSCacheTimestamp: timestamp, YKNSCacheNameSpace: nameSpace} storagePolicy:NSURLCacheStorageAllowed];
+  NSCachedURLResponse *formattedResponse = [[NSCachedURLResponse alloc] initWithResponse:cachedResponse.response data:cachedResponse.data userInfo:@{YKNSCacheExpirationInterval: @(expirationInterval), YKNSCacheTimestamp: timestamp, YKNSCacheNameSpace: nameSpace} storagePolicy:NSURLCacheStorageAllowed];
   [self storeCachedResponse:formattedResponse forRequest:request];
   [formattedResponse release];
 }

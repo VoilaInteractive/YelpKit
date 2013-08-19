@@ -96,13 +96,15 @@
  */
 - (NSString *)URLString;
 
+/*!
+ Convert to an equivalent NSURL object.  (Why isn't YKURL an NSURL subclass?)
+ */
+- (NSURL *)NSURL;
 
 // Deprecated
 + (YKURL *)URLString:(NSString *)URLString;
 
 // Deprecated
 + (YKURL *)URLString:(NSString *)URLString cacheEnabled:(BOOL)cacheEnabled;
-
-- (NSURL *)NSURL;
 
 @end

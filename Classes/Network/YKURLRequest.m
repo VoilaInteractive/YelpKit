@@ -202,7 +202,7 @@ static NSTimeInterval gYKURLRequestDefaultTimeout = 25.0;
   if (_mockResponse) {
     YKDebug(@"Mock response for: %@", _URL);
     // Manually create a cached response for the mock here
-    NSURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:[NSURL URLWithString:_URL.URLString] statusCode:200 HTTPVersion:nil headerFields:nil];
+    NSURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:[_URL NSURL] statusCode:200 HTTPVersion:nil headerFields:nil];
     [_cachedResponse release];
     _cachedResponse = [[NSCachedURLResponse alloc] initWithResponse:response data:_mockResponse];
     [response release];
@@ -554,7 +554,7 @@ static id<YKCompressor> gCompressor = NULL;
 }
 
 /*!
- If this method is unimplemented it is equivalent of just returning cachedResponse, which allows UIKit to handle caching the response.
+ If this method is unimplemented it is equivalent of just returning cachedResponse, which allows Foundation to handle caching the response.
  Overriding this method and returning nil causes UIKit to not cache the response, allowing the delegate to implement custom cache behavior.
  
  Custom behavior is used for the following:
@@ -562,14 +562,14 @@ static id<YKCompressor> gCompressor = NULL;
  1.  NSURLCache will by default overwrite cached responses with the same URL but different query parameters.  This method stores the
  cached response with a custom URL key to work around this issue.
  
- 2.  The time and signature query parameters are unique over time, causing a cache miss for using the default cache implementation.
- These params are stripped before returning the custom cache key.
+ 2.  Query parameters may be unique over time (e.g. a time param), causing a cache miss for using the default cache implementation.
+ These params can be stripped in a subclass implementation.
  
- 3.  Currently the server is not using Cache-Control headers in the response other than 'private'.  The custom cache implementation allows
- setting the cache expiration in the user info dictionary.
+ 3.  Custom cache implementation allows setting the cache expiration in the user info dictionary, if the Cache Control headers are not
+ being used.
  
- Note: this method is called before connectionDidFinishLoading:  which is where the API response code is set.  The cached resopnse is
- stored as an ivar and caching can be handled later in didFinishWithData:cacheKey:
+ Note: this method is called before connectionDidFinishLoading:  which is where the success / failure codes may be set.  The cached 
+ resopnse is stored as an ivar and caching can be handled later in didFinishWithData:cacheKey:
  */
 - (NSCachedURLResponse *)connection:(NSURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse {
   [cachedResponse retain];
