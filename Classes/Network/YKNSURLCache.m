@@ -60,8 +60,8 @@ static NSString *const YKNSCacheTimestamp = @"YKNSCacheTimestamp";
     <tt>[[NSProcessInfo processInfo] processName]</tt>
     </ul>
      */
-    NSArray *cachePathComponents = @[NSHomeDirectory(), @"Library", @"Caches", [[NSProcessInfo processInfo] processName]];
-    YKNSURLCache *customCache = [[YKNSURLCache alloc] initWithMemoryCapacity:1000 diskCapacity:[NSURLCache sharedURLCache].diskCapacity diskPath:[NSString pathWithComponents:cachePathComponents]];
+    NSString *cacheDirectory = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES)[0];
+    YKNSURLCache *customCache = [[YKNSURLCache alloc] initWithMemoryCapacity:1000 diskCapacity:[NSURLCache sharedURLCache].diskCapacity diskPath:[cacheDirectory stringByAppendingPathComponent:[[NSProcessInfo processInfo] processName]]];
     [NSURLCache setSharedURLCache:customCache];
     [customCache release];
   });
