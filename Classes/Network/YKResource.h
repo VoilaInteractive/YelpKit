@@ -60,6 +60,8 @@
  */
 + (NSString *)pathToResourceCopiedInDocumentsFrom:(NSString *)source to:(NSString *)dest overwrite:(BOOL)overwrite;
 
++ (NSString *)pathToResourceCopiedInDocumentsFrom:(NSString *)source to:(NSString *)dest overwrite:(BOOL)overwrite error:(NSError **)error;
+
 /*!
  Full path to file in documents.
  */

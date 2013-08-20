@@ -38,6 +38,13 @@
     if (DocumentsDirectory == NULL) {
       NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
       DocumentsDirectory = [[paths objectAtIndex:0] copy];
+#if DEBUG
+      // When running GHUnit tests from the command line, the documents directory is the
+      // User's documents directory, so allow it to be overriden through an environment variable.
+      if (getenv("GHUNIT_CLI") && getenv("GHUNIT_DOCS_DIR")) {
+        DocumentsDirectory = [@(getenv("GHUNIT_DOCS_DIR")) copy];
+      }
+#endif
     }   
   }
   return DocumentsDirectory;
@@ -86,30 +93,45 @@
 }
 
 + (NSString *)pathToResourceCopiedInDocumentsFrom:(NSString *)source to:(NSString *)dest overwrite:(BOOL)overwrite {
+  return [self pathToResourceCopiedInDocumentsFrom:source to:dest overwrite:overwrite error:NULL];
+}
+
++ (NSString *)pathToResourceCopiedInDocumentsFrom:(NSString *)source to:(NSString *)dest overwrite:(BOOL)overwrite error:(NSError **)error {
   NSFileManager *fileManager = [NSFileManager defaultManager];
-  NSString *fullDocsPath = [self pathInDocuments:dest];
-  if (![fileManager fileExistsAtPath:fullDocsPath] || overwrite) {
-    YKDebug(@"File does not exist at: %@", fullDocsPath);
+  NSString *destinationDocumentsPath = [self pathInDocuments:dest];
+  if (![fileManager fileExistsAtPath:destinationDocumentsPath] || overwrite) {
+    YKDebug(@"File does not exist at: %@", destinationDocumentsPath);
     NSString *resourcePath = [self pathToResource:source];
-    NSError *error = nil;
+    NSError *localError = nil;
     BOOL success;
-    NSString *directory = [fullDocsPath stringByDeletingLastPathComponent];
+    NSString *directory = [destinationDocumentsPath stringByDeletingLastPathComponent];
     if (![fileManager fileExistsAtPath:directory]) {
-      success = [fileManager createDirectoryAtPath:directory withIntermediateDirectories:YES attributes:nil error:&error];
+      success = [fileManager createDirectoryAtPath:directory withIntermediateDirectories:YES attributes:nil error:&localError];
       if (!success) {
-        YKErr(@"Failed to create intermediate directories: %@ (%@)", fullDocsPath, error);
+        YKErr(@"Failed to create intermediate directories: %@ (%@)", destinationDocumentsPath, localError);
+        if (error) *error = localError;
         return nil;
       }   
     }
-    success = [fileManager copyItemAtPath:resourcePath toPath:fullDocsPath error:&error];
+    // The destination file can only exist in this logical flow if overwrite is YES - if it exists it needs to be removed to be recopied
+    if ([fileManager fileExistsAtPath:destinationDocumentsPath]) {
+      if (![fileManager removeItemAtPath:destinationDocumentsPath error:&localError]) {
+        YKErr(@"Failed to delete the file to be overwritten: %@", destinationDocumentsPath);
+        if (error) *error = localError;
+        return nil;
+      }
+    }
+    success = [fileManager copyItemAtPath:resourcePath toPath:destinationDocumentsPath error:&localError];
     if (!success) {
-      YKErr(@"Failed to copy the file: %@ to %@ (%@)", resourcePath, fullDocsPath, error);
+      YKErr(@"Failed to copy the file: %@ to %@ (%@)", resourcePath, destinationDocumentsPath, localError);
+      if (error) *error = localError;
       return nil;
     } else {
-      YKDebug(@"Copied file %@ to %@", resourcePath, fullDocsPath);
+      YKDebug(@"Copied file %@ to %@", resourcePath, destinationDocumentsPath);
     }
   }
-  return fullDocsPath;
+
+  return destinationDocumentsPath;
 }
 
 + (id)loadObjectFromPath:(NSString *)path defaultValue:(id)defaultValue error:(NSError **)error {

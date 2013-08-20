@@ -95,6 +95,8 @@
 
 #define YKConstrain(value, min, max) (value) < (min) ? (min) : ((value) > (max) ? (max) : (value)); YKAssert(min <= max, @"min must be <= max in YKConstrain")
 
+#define YKAssertSelectorImplemented(obj, sel) YKAssert(!obj || [obj respondsToSelector:sel], @"%@ must implement %@", NSStringFromClass([obj class]), NSStringFromSelector(sel))
+
 #ifndef __has_feature      // Optional.
 #define __has_feature(x) 0 // Compatibility with non-clang compilers.
 #endif

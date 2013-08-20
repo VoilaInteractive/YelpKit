@@ -8,6 +8,8 @@
 
 #import "YKUIControl.h"
 
+#import "YKDefines.h"
+
 @implementation YKUIControl 
 
 @synthesize target=_target, action=_action, highlightedEnabled=_highlightedEnabled, selectedEnabled=_selectedEnabled, delayActionEnabled=_delayActionEnabled, layout=_layout, context=_context, targetBlock=_targetBlock, valueForCopy=_valueForCopy, targetDisabled=_targetDisabled;
@@ -73,6 +75,7 @@
 }
 
 - (void)setTarget:(id)target action:(SEL)action context:(id)context {
+  YKAssertSelectorImplemented(target, action);
   _target = target;
   _action = action;
   [context retain];
@@ -85,6 +88,13 @@
   [self removeTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
   [self addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
 }
+
+#if DEBUG
+- (void)addTarget:(id)target action:(SEL)action forControlEvents:(UIControlEvents)controlEvents {
+  YKAssertSelectorImplemented(target, action);
+  [super addTarget:target action:action forControlEvents:controlEvents];
+}
+#endif
 
 - (void)callTarget {
   [_target performSelector:_action withObject:(_context ? _context : self)];
