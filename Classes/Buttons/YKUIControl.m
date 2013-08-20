@@ -89,6 +89,13 @@
   [self addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
 }
 
+#if DEBUG
+- (void)addTarget:(id)target action:(SEL)action forControlEvents:(UIControlEvents)controlEvents {
+  YKAssertSelectorImplemented(target, action);
+  [super addTarget:target action:action forControlEvents:controlEvents];
+}
+#endif
+
 - (void)callTarget {
   [_target performSelector:_action withObject:(_context ? _context : self)];
   if (_targetBlock != NULL) _targetBlock(self, _context);
