@@ -75,7 +75,6 @@
   button.disabledColor = [UIColor colorWithWhite:239.0f/255.0f alpha:1.0f];
   button.disabledTitleColor = [UIColor colorWithWhite:0.5f alpha:1.0f];
   button.disabledBorderColor = [UIColor colorWithWhite:216.0f/255.0f alpha:1.0f];
-  [button setTarget:self action:@selector(_buttonSelected:)];
   return [button autorelease];
 }
 
