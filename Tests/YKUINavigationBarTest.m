@@ -6,6 +6,7 @@
 //  Copyright (c) 2013 Yelp. All rights reserved.
 //
 
+#import <QuartzCore/CoreAnimation.h>
 #import "YKUINavigationBarTest.h"
 #import "YKUINavigationBar.h"
 #import "YKUIButton.h"
@@ -49,4 +50,22 @@
   }
   [superView release];
 }
+
+- (void)testAnimatedNavBar {
+  UIView *superView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 44 * 4)];
+  
+  YKUINavigationBar *navBar1 = [[YKUINavigationBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+  YKUINavigationBar *navBar2 = [[YKUINavigationBar alloc] initWithFrame:CGRectMake(0, 44, 320, 44)];
+  [superView addSubview:navBar1];
+  [superView addSubview:navBar2];
+  [navBar1 release];
+  [navBar2 release];
+  [navBar1 setTitle:@"SomeTitle" animated:NO];
+  [navBar2 setTitle:@"SomeTitle" animated:NO];
+  [navBar2 setTitle:@"SomeNewTitlte" animated:YES];
+  GHRunWhile(navBar2.layer.animationKeys != nil);
+  GHVerifyView(superView);
+  [superView release];
+}
+
 @end

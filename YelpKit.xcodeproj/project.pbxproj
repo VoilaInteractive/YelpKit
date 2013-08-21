@@ -133,9 +133,9 @@
 		00E928B81524DEEC00E90AF1 /* YKUIActivityView.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E928B61524DEEC00E90AF1 /* YKUIActivityView.m */; };
 		00F882E61527C92A000FF1AB /* YKUIActionSheet.h in Headers */ = {isa = PBXBuildFile; fileRef = 00F882E41527C92A000FF1AB /* YKUIActionSheet.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		00F882E71527C92A000FF1AB /* YKUIActionSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = 00F882E51527C92A000FF1AB /* YKUIActionSheet.m */; };
+		21017AE017C436230007B8EE /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00D5757A1457C65200DE6487 /* QuartzCore.framework */; };
+		215B435B17C43BC5009F1042 /* UILabel+YKUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 423C14B615C9EB3F0080E08D /* UILabel+YKUtils.m */; };
 		217A2B8D17A8698D007C6D28 /* YKUINavigationBarTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 217A2B8517A86979007C6D28 /* YKUINavigationBarTest.m */; };
-		21F5B49D17A9B9860004B396 /* UIColor+YKUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 4227623D150FFDC1002E177D /* UIColor+YKUtils.m */; };
-		21F5B4A417A9B9890004B396 /* UIColor+YKUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 4227623D150FFDC1002E177D /* UIColor+YKUtils.m */; };
 		21BF77611794B91600A46427 /* YKJSON.h in Resources */ = {isa = PBXBuildFile; fileRef = 21BF775F1794B91600A46427 /* YKJSON.h */; };
 		21BF77621794B91600A46427 /* YKJSON.h in Resources */ = {isa = PBXBuildFile; fileRef = 21BF775F1794B91600A46427 /* YKJSON.h */; };
 		21BF77631794B91600A46427 /* YKJSON.m in Resources */ = {isa = PBXBuildFile; fileRef = 21BF77601794B91600A46427 /* YKJSON.m */; };
@@ -151,13 +151,14 @@
 		21BF77801795BED900A46427 /* YKError.m in Sources */ = {isa = PBXBuildFile; fileRef = 00559326140B00F6001E9C43 /* YKError.m */; };
 		21BF77811795BF5700A46427 /* YKLocalized.m in Sources */ = {isa = PBXBuildFile; fileRef = 00559328140B00F6001E9C43 /* YKLocalized.m */; };
 		21E4473E17B17E5000FCE3D8 /* YKJSONTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 21E4473D17B17E5000FCE3D8 /* YKJSONTest.m */; };
+		21F5B49D17A9B9860004B396 /* UIColor+YKUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 4227623D150FFDC1002E177D /* UIColor+YKUtils.m */; };
+		21F5B4A417A9B9890004B396 /* UIColor+YKUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 4227623D150FFDC1002E177D /* UIColor+YKUtils.m */; };
 		420E62B7153F44FF00F114DC /* NSDictionary+YKValidation.h in Headers */ = {isa = PBXBuildFile; fileRef = 420E62B5153F44FF00F114DC /* NSDictionary+YKValidation.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		420E62B8153F44FF00F114DC /* NSDictionary+YKValidation.m in Sources */ = {isa = PBXBuildFile; fileRef = 420E62B6153F44FF00F114DC /* NSDictionary+YKValidation.m */; };
 		4227623E150FFDC1002E177D /* UIColor+YKUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 4227623C150FFDC1002E177D /* UIColor+YKUtils.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4227623F150FFDC1002E177D /* UIColor+YKUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 4227623D150FFDC1002E177D /* UIColor+YKUtils.m */; };
 		423C14B715C9EB3F0080E08D /* UILabel+YKUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 423C14B515C9EB3F0080E08D /* UILabel+YKUtils.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		423C14B815C9EB3F0080E08D /* UILabel+YKUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 423C14B615C9EB3F0080E08D /* UILabel+YKUtils.m */; };
-		423C14B915C9EB3F0080E08D /* UILabel+YKUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 423C14B615C9EB3F0080E08D /* UILabel+YKUtils.m */; };
 		428B755F155B4A1B0010864A /* UIImage+YKUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 428B755D155B4A1B0010864A /* UIImage+YKUtils.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		428B7560155B4A1B0010864A /* UIImage+YKUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 428B755E155B4A1B0010864A /* UIImage+YKUtils.m */; };
 		42DF281F1540F53300EA955F /* NSArray+YKValidation.h in Headers */ = {isa = PBXBuildFile; fileRef = 42DF281D1540F53300EA955F /* NSArray+YKValidation.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -509,6 +510,7 @@
 				84EB1EAE1771373600479F80 /* libGHKit.a in Frameworks */,
 				84EB1E7C177133FE00479F80 /* UIKit.framework in Frameworks */,
 				84EB1E7D177133FE00479F80 /* Foundation.framework in Frameworks */,
+				21017AE017C436230007B8EE /* QuartzCore.framework in Frameworks */,
 				84EB1E7E177133FE00479F80 /* CoreGraphics.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1020,7 +1022,6 @@
 				21BF77781794D47C00A46427 /* NSObject+YKJSON.h in Headers */,
 				21BF77791794D52500A46427 /* YKJSON.h in Headers */,
 				21BF777E1795BE6600A46427 /* YKError.h in Headers */,
-				8456FC9117AC749600DFDAA5 /* NSString+Drawing.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1296,7 +1297,6 @@
 				477B982B16E683F60010BEE6 /* NSDate+YKUtils.m in Sources */,
 				21BF776E1794C06000A46427 /* NSObject+YKJSON.m in Sources */,
 				21BF77711794C38E00A46427 /* YKJSON.m in Sources */,
-				8456FC9217AC749600DFDAA5 /* NSString+Drawing.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1306,7 +1306,6 @@
 			files = (
 				00DB564615BE198600E247FA /* main.m in Sources */,
 				00DB564A15BE198600E247FA /* YKCatalogAppDelegate.m in Sources */,
-				423C14B915C9EB3F0080E08D /* UILabel+YKUtils.m in Sources */,
 				84EBFC2E17B050FD00B2C093 /* NSString+YKDrawing.m in Sources */,
 				00B1B13A15CB11F60021140B /* YKCatalogViewStack.m in Sources */,
 				00B1B13D15CB13430021140B /* YKCatalogTestView.m in Sources */,
@@ -1315,7 +1314,6 @@
 				21F5B49D17A9B9860004B396 /* UIColor+YKUtils.m in Sources */,
 				21BF776F1794C06000A46427 /* NSObject+YKJSON.m in Sources */,
 				21BF77801795BED900A46427 /* YKError.m in Sources */,
-				8456FC9317AC749600DFDAA5 /* NSString+Drawing.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1339,8 +1337,8 @@
 				21BF77721794C38F00A46427 /* YKJSON.m in Sources */,
 				21BF777F1795BECF00A46427 /* YKError.m in Sources */,
 				21BF77811795BF5700A46427 /* YKLocalized.m in Sources */,
-				8456FC9417AC749600DFDAA5 /* NSString+Drawing.m in Sources */,
 				21E4473E17B17E5000FCE3D8 /* YKJSONTest.m in Sources */,
+				215B435B17C43BC5009F1042 /* UILabel+YKUtils.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
