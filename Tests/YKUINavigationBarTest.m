@@ -63,7 +63,7 @@
   [navBar1 setTitle:@"SomeTitle" animated:NO];
   [navBar2 setTitle:@"SomeTitle" animated:NO];
   [navBar2 setTitle:@"SomeNewTitlte" animated:YES];
-  GHRunWhile(navBar2.layer.animationKeys != nil);
+  GHRunForInterval(0.32);
   GHVerifyView(superView);
   [superView release];
 }
