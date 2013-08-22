@@ -180,7 +180,12 @@
     CGFloat y = _insets.top;
 
     // TODO: UILabel sizeToFit with 0 height will not work? Special case it?
-    CGRect contentViewFrame = [layout setFrame:CGRectMake(_insets.left, y, size.width - _insets.left - _insets.right, 0) view:_contentView options:YKLayoutOptionsSizeToFit|YKLayoutOptionsVariableWidth];
+    CGFloat contentViewWidth = size.width - _insets.left - _insets.right;
+    if (self.accessoryImage) {
+      // If there is an accessory image, it is better for the content view not to overlap with the accessory image.  There should also be a buffer in between, so we'll just use the right inset again.
+      contentViewWidth -= _insets.right + self.accessoryImage.size.width;
+    }
+    CGRect contentViewFrame = [layout setFrame:CGRectMake(_insets.left, y, contentViewWidth, 0) view:_contentView options:YKLayoutOptionsSizeToFit|YKLayoutOptionsVariableWidth];
     y += contentViewFrame.size.height;
     return CGSizeMake(size.width, y + _insets.bottom);
   }
