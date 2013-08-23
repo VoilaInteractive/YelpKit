@@ -41,15 +41,7 @@ typedef void (^YKUISwipeViewDidChangeBlock)(YKUISwipeView *swipeView, BOOL swipe
  Swipe view.
  */
 @interface YKUISwipeView : UIView <UIScrollViewDelegate> {
-  UIScrollView *_scrollView;
-  
-  NSArray *_views;
-
-  NSUInteger _currentViewIndex;
   YKUISwipeViewDidChangeBlock _changeBlock;
-  
-  CGFloat _peekWidth;
-  UIEdgeInsets _insets;
 }
 
 @property (readonly, nonatomic) UIScrollView *scrollView;
