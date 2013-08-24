@@ -27,6 +27,8 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
+extern CGFloat const kYKUINavigationBarTitleAnimationDuration;
+
 typedef enum {
   YKUINavigationButtonStyleDefault = 0,
   YKUINavigationButtonStyleClose,
@@ -41,8 +43,12 @@ typedef enum {
   YKUINavigationPositionRight = 1,
 } YKUINavigationPosition;
 
-@interface YKUINavigationBar : UIView {
+extern CGFloat const kYKUINavigationBarTitelAnimationDuration;
+
+@interface YKUINavigationBar : UINavigationBar {
   UILabel *_titleLabel;
+  
+  UINavigationItem *_navigationItem;
   
   CGSize _defaultContentViewSize;
 }
@@ -50,6 +56,7 @@ typedef enum {
 @property (retain, nonatomic) UIView *leftButton;
 @property (retain, nonatomic) UIView *rightButton;
 @property (retain, nonatomic) UIView *contentView;
+@property (retain, nonatomic) UINavigationItem *navigationItem;
 
 @property (retain, nonatomic) UIColor *backgroundColor1;
 @property (retain, nonatomic) UIColor *backgroundColor2;

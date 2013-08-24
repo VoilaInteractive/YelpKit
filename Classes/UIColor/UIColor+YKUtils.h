@@ -27,10 +27,23 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
+typedef struct {
+  uint8_t red;
+  uint8_t green;
+  uint8_t blue;
+  CGFloat alpha;
+} YKRGBAColor;
+
+YKRGBAColor YKRGBAColorMake(uint8_t red, uint8_t green, uint8_t blue, CGFloat alpha);
+
+YKRGBAColor YKRGBAColorMakeWithWhite(uint8_t white, CGFloat alpha);
+
 @interface UIColor (YKUtils)
 
-- (UIColor *)colorByAddingRed:(CGFloat)red green:(CGFloat)green blue:(CGFloat)blue alpha:(CGFloat)alpha;
+- (UIColor *)yk_colorByAddingRed:(CGFloat)red green:(CGFloat)green blue:(CGFloat)blue alpha:(CGFloat)alpha;
 
-- (UIColor *)colorByMultiplyingRed:(CGFloat)red green:(CGFloat)green blue:(CGFloat)blue alpha:(CGFloat)alpha;
+- (UIColor *)yk_colorByMultiplyingRed:(CGFloat)red green:(CGFloat)green blue:(CGFloat)blue alpha:(CGFloat)alpha;
+
++ (UIColor *)yk_colorWithRGBA:(YKRGBAColor)rgbaColor;
 
 @end
