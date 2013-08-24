@@ -24,12 +24,12 @@
     [superView addSubview:navBar];
   }
 
-  YKUIButton *leftButton1 = [[YKUIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 32) title:@"Left" target:self action:@selector(_leftPressed)];
-  YKUIButton *rightButton1 = [[YKUIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 32) title:@"Right" target:self action:@selector(_rightPressed)];
-  YKUIButton *leftButton2 = [[YKUIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 32) title:@"Left" target:self action:@selector(_leftPressed)];
-  YKUIButton *rightButton2 = [[YKUIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 32) title:@"Right" target:self action:@selector(_rightPressed)];
-  YKUIButton *leftButton3 = [[YKUIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 32) title:@"Left" target:self action:@selector(_leftPressed)];
-  YKUIButton *rightButton3 = [[YKUIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 32) title:@"Right" target:self action:@selector(_rightPressed)];
+  YKUIButton *leftButton1 = [[YKUIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 32) title:@"Left" target:nil action:nil];
+  YKUIButton *rightButton1 = [[YKUIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 32) title:@"Right" target:nil action:nil];
+  YKUIButton *leftButton2 = [[YKUIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 32) title:@"Left" target:nil action:nil];
+  YKUIButton *rightButton2 = [[YKUIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 32) title:@"Right" target:nil action:nil];
+  YKUIButton *leftButton3 = [[YKUIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 32) title:@"Left" target:nil action:nil];
+  YKUIButton *rightButton3 = [[YKUIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 32) title:@"Right" target:nil action:nil];
 
   [navBar1 setLeftButton:leftButton1 style:YKUINavigationButtonStyleBack animated:NO];
   [navBar2 setRightButton:rightButton1 style:YKUINavigationButtonStyleDone animated:NO];
@@ -63,7 +63,7 @@
   [navBar1 setTitle:@"SomeTitle" animated:NO];
   [navBar2 setTitle:@"SomeTitle" animated:NO];
   [navBar2 setTitle:@"SomeNewTitlte" animated:YES];
-  GHRunForInterval(0.32);
+  GHRunForInterval(kYKUINavigationBarTitelAnimationDuration + 0.02);
   GHVerifyView(superView);
   [superView release];
 }

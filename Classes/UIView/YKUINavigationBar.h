@@ -43,6 +43,8 @@ typedef enum {
   YKUINavigationPositionRight = 1,
 } YKUINavigationPosition;
 
+extern CGFloat const kYKUINavigationBarTitelAnimationDuration;
+
 @interface YKUINavigationBar : UINavigationBar {
   UILabel *_titleLabel;
   
