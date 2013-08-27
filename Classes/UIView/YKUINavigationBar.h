@@ -28,6 +28,7 @@
 //
 
 extern CGFloat const kYKUINavigationBarTitleAnimationDuration;
+@class YKUIButtons;
 
 typedef enum {
   YKUINavigationButtonStyleDefault = 0,
@@ -53,8 +54,8 @@ extern CGFloat const kYKUINavigationBarTitelAnimationDuration;
   CGSize _defaultContentViewSize;
 }
 
-@property (retain, nonatomic) UIView *leftButton;
-@property (retain, nonatomic) UIView *rightButton;
+@property (retain, nonatomic) YKUIButtons *leftButton;
+@property (retain, nonatomic) YKUIButtons *rightButton;
 @property (retain, nonatomic) UIView *contentView;
 @property (retain, nonatomic) UINavigationItem *navigationItem;
 
@@ -96,13 +97,13 @@ extern CGFloat const kYKUINavigationBarTitelAnimationDuration;
  @param rightButton
  @param animated
  */
-- (void)setRightButton:(UIView *)rightButton style:(YKUINavigationButtonStyle)style animated:(BOOL)animated;
+- (void)setRightButton:(YKUIButtons *)rightButton style:(YKUINavigationButtonStyle)style animated:(BOOL)animated;
 
 /*!
  Set left button.
  @param leftButton
  @param animated
  */
-- (void)setLeftButton:(UIView *)leftButton style:(YKUINavigationButtonStyle)style animated:(BOOL)animated;
+- (void)setLeftButton:(YKUIButtons *)leftButton style:(YKUINavigationButtonStyle)style animated:(BOOL)animated;
 
 @end

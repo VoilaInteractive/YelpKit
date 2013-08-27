@@ -136,6 +136,8 @@
 		21017AE017C436230007B8EE /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00D5757A1457C65200DE6487 /* QuartzCore.framework */; };
 		215B435B17C43BC5009F1042 /* UILabel+YKUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 423C14B615C9EB3F0080E08D /* UILabel+YKUtils.m */; };
 		217A2B8D17A8698D007C6D28 /* YKUINavigationBarTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 217A2B8517A86979007C6D28 /* YKUINavigationBarTest.m */; };
+		217C6A5B17B99DFC00A3D87B /* UINavigationBar+ShadowButtons.h in Headers */ = {isa = PBXBuildFile; fileRef = 217C6A5917B99DFC00A3D87B /* UINavigationBar+ShadowButtons.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		217C6A5C17B99DFC00A3D87B /* UINavigationBar+ShadowButtons.m in Sources */ = {isa = PBXBuildFile; fileRef = 217C6A5A17B99DFC00A3D87B /* UINavigationBar+ShadowButtons.m */; };
 		21BF77611794B91600A46427 /* YKJSON.h in Resources */ = {isa = PBXBuildFile; fileRef = 21BF775F1794B91600A46427 /* YKJSON.h */; };
 		21BF77621794B91600A46427 /* YKJSON.h in Resources */ = {isa = PBXBuildFile; fileRef = 21BF775F1794B91600A46427 /* YKJSON.h */; };
 		21BF77631794B91600A46427 /* YKJSON.m in Resources */ = {isa = PBXBuildFile; fileRef = 21BF77601794B91600A46427 /* YKJSON.m */; };
@@ -429,6 +431,8 @@
 		00F882E51527C92A000FF1AB /* YKUIActionSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YKUIActionSheet.m; sourceTree = "<group>"; };
 		217A2B8417A86979007C6D28 /* YKUINavigationBarTest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YKUINavigationBarTest.h; sourceTree = "<group>"; };
 		217A2B8517A86979007C6D28 /* YKUINavigationBarTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YKUINavigationBarTest.m; sourceTree = "<group>"; };
+		217C6A5917B99DFC00A3D87B /* UINavigationBar+ShadowButtons.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UINavigationBar+ShadowButtons.h"; sourceTree = "<group>"; };
+		217C6A5A17B99DFC00A3D87B /* UINavigationBar+ShadowButtons.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UINavigationBar+ShadowButtons.m"; sourceTree = "<group>"; };
 		21BF775F1794B91600A46427 /* YKJSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = YKJSON.h; path = Classes/Network/YKJSON.h; sourceTree = SOURCE_ROOT; };
 		21BF77601794B91600A46427 /* YKJSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = YKJSON.m; path = Classes/Network/YKJSON.m; sourceTree = SOURCE_ROOT; };
 		21BF776B1794C06000A46427 /* NSObject+YKJSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+YKJSON.h"; sourceTree = "<group>"; };
@@ -818,6 +822,8 @@
 		00D575651457C35C00DE6487 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				217C6A5917B99DFC00A3D87B /* UINavigationBar+ShadowButtons.h */,
+				217C6A5A17B99DFC00A3D87B /* UINavigationBar+ShadowButtons.m */,
 				00D575661457C35C00DE6487 /* YKCGUtils.h */,
 				00D575671457C35C00DE6487 /* YKCGUtils.m */,
 				84EBFC2A17B050FD00B2C093 /* NSString+YKDrawing.h */,
@@ -1022,6 +1028,7 @@
 				21BF77781794D47C00A46427 /* NSObject+YKJSON.h in Headers */,
 				21BF77791794D52500A46427 /* YKJSON.h in Headers */,
 				21BF777E1795BE6600A46427 /* YKError.h in Headers */,
+				217C6A5B17B99DFC00A3D87B /* UINavigationBar+ShadowButtons.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1297,6 +1304,7 @@
 				477B982B16E683F60010BEE6 /* NSDate+YKUtils.m in Sources */,
 				21BF776E1794C06000A46427 /* NSObject+YKJSON.m in Sources */,
 				21BF77711794C38E00A46427 /* YKJSON.m in Sources */,
+				217C6A5C17B99DFC00A3D87B /* UINavigationBar+ShadowButtons.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -142,22 +142,22 @@ CGFloat const kYKUINavigationBarTitelAnimationDuration = 0.3;
   }
 }
 
-- (void)setLeftButton:(UIView *)leftButton {
+- (void)setLeftButton:(YKUIButtons *)leftButton {
   [self setLeftButton:leftButton style:YKUINavigationButtonStyleDefault animated:NO];
 }
 
-- (void)setLeftButton:(UIView *)leftButton style:(YKUINavigationButtonStyle)style animated:(BOOL)animated {
+- (void)setLeftButton:(YKUIButtons *)leftButton style:(YKUINavigationButtonStyle)style animated:(BOOL)animated {
   _leftButton = leftButton;
-  [_navigationItem setLeftBarButtonItem:[[[UIBarButtonItem alloc] initWithCustomView:_leftButton] autorelease] animated:animated];
+  [_navigationItem setLeftBarButtonItem:[[[UIBarButtonItem alloc] initWithCustomView:(UIView *)_leftButton] autorelease] animated:animated];
 }
 
-- (void)setRightButton:(UIView *)rightButton {
+- (void)setRightButton:(YKUIButtons *)rightButton {
   [self setRightButton:rightButton style:YKUINavigationButtonStyleDefault animated:NO];
 }
 
-- (void)setRightButton:(UIView *)rightButton style:(YKUINavigationButtonStyle)style animated:(BOOL)animated {
+- (void)setRightButton:(YKUIButtons *)rightButton style:(YKUINavigationButtonStyle)style animated:(BOOL)animated {
   _rightButton = rightButton;
-  [_navigationItem setRightBarButtonItem:[[[UIBarButtonItem alloc] initWithCustomView:_rightButton] autorelease] animated:animated];
+  [_navigationItem setRightBarButtonItem:[[[UIBarButtonItem alloc] initWithCustomView:(UIView *)_rightButton] autorelease] animated:animated];
 }
 
 @end
