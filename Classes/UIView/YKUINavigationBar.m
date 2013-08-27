@@ -68,7 +68,7 @@ CGFloat const kYKUINavigationBarTitelAnimationDuration = 0.3;
 
 - (void)setTopInset:(CGFloat)topInset {
   _topInset = topInset;
-  self.frame = YKCGRectSetHeight(self.frame, 44 + (2 * _topInset));
+  self.frame = YKCGRectSetHeight(self.frame, 44 + _topInset);
 }
 
 - (CGSize)sizeThatFits:(CGSize)size {
