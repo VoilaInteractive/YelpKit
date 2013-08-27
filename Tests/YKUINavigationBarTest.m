@@ -24,20 +24,20 @@
     [superView addSubview:navBar];
   }
 
-  YKUIButton *leftButton1 = [[YKUIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 32) title:@"Left" target:nil action:nil];
-  YKUIButton *rightButton1 = [[YKUIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 32) title:@"Right" target:nil action:nil];
-  YKUIButton *leftButton2 = [[YKUIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 32) title:@"Left" target:nil action:nil];
-  YKUIButton *rightButton2 = [[YKUIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 32) title:@"Right" target:nil action:nil];
-  YKUIButton *leftButton3 = [[YKUIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 32) title:@"Left" target:nil action:nil];
-  YKUIButton *rightButton3 = [[YKUIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 32) title:@"Right" target:nil action:nil];
+  UIBarButtonItem *leftButton1 = [[UIBarButtonItem alloc] initWithTitle:@"Left" style:UIBarButtonItemStylePlain target:nil action:nil];
+  UIBarButtonItem *leftButton2 = [[UIBarButtonItem alloc] initWithTitle:@"Left" style:UIBarButtonItemStylePlain target:nil action:nil];
+  UIBarButtonItem *leftButton3 = [[UIBarButtonItem alloc] initWithTitle:@"Left" style:UIBarButtonItemStylePlain target:nil action:nil];
+  UIBarButtonItem *rightButton1 = [[UIBarButtonItem alloc] initWithTitle:@"Right" style:UIBarButtonItemStylePlain target:nil action:nil];
+  UIBarButtonItem *rightButton2 = [[UIBarButtonItem alloc] initWithTitle:@"Right" style:UIBarButtonItemStylePlain target:nil action:nil];
+  UIBarButtonItem *rightButton3 = [[UIBarButtonItem alloc] initWithTitle:@"Right" style:UIBarButtonItemStylePlain target:nil action:nil];
 
-  [navBar1 setLeftButton:leftButton1 style:YKUINavigationButtonStyleBack animated:NO];
-  [navBar2 setRightButton:rightButton1 style:YKUINavigationButtonStyleDone animated:NO];
-  [navBar3 setRightButton:rightButton2];
-  [navBar3 setLeftButton:leftButton2];
+  navBar1.navigationItem.leftBarButtonItem = leftButton1;
+  navBar2.navigationItem.rightBarButtonItem = rightButton1;
+  navBar3.navigationItem.rightBarButtonItem = rightButton2;
+  navBar3.navigationItem.leftBarButtonItem = leftButton2;
   [navBar3 setTitle:@"TestNavBar" animated:NO];
-  [navBar4 setLeftButton:leftButton3];
-  [navBar4 setRightButton:rightButton3];
+  navBar4.navigationItem.leftBarButtonItem = leftButton3;
+  navBar4.navigationItem.rightBarButtonItem = rightButton3;
   [navBar4 setTitle:@"SuperLongTitle That will overflow and be wrapped" animated:NO];
   GHVerifyView(superView);
   
