@@ -179,7 +179,7 @@ typedef NSUInteger YKSUIViewAnimationOptions;
  @param style
  @param animated
  */
-- (YKUIButton *)setNavigationButtonWithTitle:(NSString *)title iconImage:(UIImage *)iconImage position:(YKUINavigationPosition)position style:(YKUINavigationButtonStyle)style animated:(BOOL)animated target:(id)target action:(SEL)action;
+- (UIBarButtonItem *)setNavigationButtonWithTitle:(NSString *)title iconImage:(UIImage *)iconImage position:(YKUINavigationPosition)position style:(YKUINavigationButtonStyle)style animated:(BOOL)animated target:(id)target action:(SEL)action;
 
 /*!
  Apply style for navigation button.

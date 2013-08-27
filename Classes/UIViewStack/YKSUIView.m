@@ -125,18 +125,19 @@
   [self.navigationBar setTitle:title animated:animated];
 }
 
-- (YKUIButton *)setNavigationButtonWithTitle:(NSString *)title iconImage:(UIImage *)iconImage position:(YKUINavigationPosition)position style:(YKUINavigationButtonStyle)style animated:(BOOL)animated target:(id)target action:(SEL)action {
-  YKUIButton *button = [[YKUIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 30)];
-  button.title = title;
-  button.iconImage = iconImage;
-  [button setTarget:target action:action];
-  [self applyStyleForNavigationButton:button style:style];
+- (UIBarButtonItem *)setNavigationButtonWithTitle:(NSString *)title iconImage:(UIImage *)iconImage position:(YKUINavigationPosition)position style:(YKUINavigationButtonStyle)style animated:(BOOL)animated target:(id)target action:(SEL)action {
+  UIBarButtonItem *button;
+  if (title) {
+    button = [[UIBarButtonItem alloc] initWithTitle:title style:UIBarButtonItemStyleBordered target:target action:action];
+  } else {
+    button = [[UIBarButtonItem alloc] initWithImage:iconImage style:UIBarButtonItemStyleBordered target:target action:action];
+  }
   switch (position) {
     case YKUINavigationPositionLeft:
-      [self.navigationBar setLeftButton:button style:YKUINavigationButtonStyleDefault animated:animated];
+      [self.navigationBar.navigationItem setLeftBarButtonItem:button animated:animated];
       break;
     case YKUINavigationPositionRight:
-      [self.navigationBar setRightButton:button style:YKUINavigationButtonStyleDefault animated:animated];
+      [self.navigationBar.navigationItem setRightBarButtonItem:button animated:animated];
       break;
   }
   
