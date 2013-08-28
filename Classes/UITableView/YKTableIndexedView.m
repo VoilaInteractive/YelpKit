@@ -35,7 +35,7 @@
   [super sharedInit];
   
   // Default header titles
-  [self setSectionIndexTitles:[NSArray arrayWithObjects:UITableViewIndexSearch, @"A", @"B", @"C", @"D", @"E", @"F", @"G", @"H", @"I", @"J", @"K", @"L", @"M", @"N", @"O", @"P", @"Q", @"R", @"S", @"T", @"U", @"V", @"W", @"X", @"Y", @"Z", @"#", nil] sectionHeadersEnabled:YES];
+  [self setSectionIndexTitles:@[UITableViewIndexSearch, @"A", @"B", @"C", @"D", @"E", @"F", @"G", @"H", @"I", @"J", @"K", @"L", @"M", @"N", @"O", @"P", @"Q", @"R", @"S", @"T", @"U", @"V", @"W", @"X", @"Y", @"Z", @"#"] sectionHeadersEnabled:YES];
 
   self.sectionIndexMinimumDisplayRowCount = 10;
   self.decelerationRate = UIScrollViewDecelerationRateNormal * 10;

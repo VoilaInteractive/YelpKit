@@ -80,7 +80,7 @@
   // TODO: Animated
   [_activityCell.view setAnimating:YES];
   _activitySection = section;
-  [dataSource_ setCellDataSources:[NSArray arrayWithObject:_activityCell] section:_activitySection];
+  [dataSource_ setCellDataSources:@[_activityCell] section:_activitySection];
   [self reloadData];
 }
 

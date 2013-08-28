@@ -118,7 +118,7 @@
 
 - (void)_applyButton {
   for (NSInteger i = 0, count = [_buttons count]; i < count; i++) {
-    YKUIButton *button = [_buttons objectAtIndex:i];
+    YKUIButton *button = _buttons[i];
     [button removeTarget:self action:@selector(_didSelect:) forControlEvents:UIControlEventTouchUpInside];
     [button addTarget:self action:@selector(_didSelect:) forControlEvents:UIControlEventTouchUpInside];
     
@@ -207,7 +207,7 @@
   if (index == [_buttons count]) {
     [_buttons addObject:button];
   } else {
-    [_buttons replaceObjectAtIndex:index withObject:button];
+    _buttons[index] = button;
   }
   [self addSubview:button];
   [self _applyButton];
@@ -320,7 +320,7 @@
   NSMutableArray *selectedIndices = [NSMutableArray array];
   NSInteger index = 0;
   for (YKUIButton *button in _buttons) {
-    if (button.isSelected) [selectedIndices addObject:[NSNumber numberWithInteger:index]];
+    if (button.isSelected) [selectedIndices addObject:@(index)];
     index++;
   }
   return selectedIndices;
@@ -335,7 +335,7 @@
 - (void)setTitles:(NSArray *)titles {
   NSInteger index = 0;
   for (NSString *title in titles) {
-    YKUIButton *button = [_buttons objectAtIndex:index++];
+    YKUIButton *button = _buttons[index++];
     button.title = title;
   }
 }

@@ -89,9 +89,8 @@ MKCoordinateSpan YKMKCoordinateSpanDecode(id dict) {
 }
 
 id YKMKCoordinateSpanEncode(MKCoordinateSpan span) {
-  return [NSDictionary dictionaryWithObjectsAndKeys:
-          [NSNumber numberWithDouble:span.latitudeDelta], @"latitudeDelta", 
-          [NSNumber numberWithDouble:span.longitudeDelta], @"longitudeDelta", nil]; 
+  return @{@"latitudeDelta": @(span.latitudeDelta), 
+          @"longitudeDelta": @(span.longitudeDelta)}; 
 }
 
 MKCoordinateRegion YKMKCoordinateRegionDecode(id dict) {
@@ -103,10 +102,8 @@ MKCoordinateRegion YKMKCoordinateRegionDecode(id dict) {
 }
 
 id YKMKCoordinateRegionEncode(MKCoordinateRegion region) {
-  NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
-          YKCLLocationCoordinate2DEncode(region.center), @"center", 
-          YKMKCoordinateSpanEncode(region.span), @"span",
-          nil];
+  NSDictionary *dict = @{@"center": YKCLLocationCoordinate2DEncode(region.center), 
+          @"span": YKMKCoordinateSpanEncode(region.span)};
   return dict;
 }
 
@@ -287,7 +284,7 @@ BOOL YKCLLocationCoordinate2DIsInsideRegion(CLLocationCoordinate2D coordinate, M
     if (YKCLLocationCoordinate2DIsNull(location.coordinate) || (YKCLLocationCoordinateDistance(annotation.coordinate, location.coordinate, YES) > maxDistance)) {
       return MKCoordinateRegionMake(annotation.coordinate, coordinateSpan);
     } else {
-      return [self regionThatFits:[NSArray arrayWithObjects:annotation, [self annotationFromCLLocation:location title:NSLocalizedString(@"Current Location", nil)], nil] center:annotation.coordinate minCoordinateSpan:minCoordinateSpan maxCoordinateSpan:YKMKCoordinateSpanNull];
+      return [self regionThatFits:@[annotation, [self annotationFromCLLocation:location title:NSLocalizedString(@"Current Location", nil)]] center:annotation.coordinate minCoordinateSpan:minCoordinateSpan maxCoordinateSpan:YKMKCoordinateSpanNull];
     }
   } else {
     return MKCoordinateRegionMake(annotation.coordinate, coordinateSpan);

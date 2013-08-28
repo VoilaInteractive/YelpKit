@@ -82,8 +82,8 @@
 
 - (void)_expireImagesFromMemory {
   while (_imageSortedList.count) {
-    NSString *key = [_imageSortedList objectAtIndex:0];
-    UIImage *image = [_imageCache objectForKey:key];
+    NSString *key = _imageSortedList[0];
+    UIImage *image = _imageCache[key];
     
     YKDebug(@"Expiring image, key=%@, pixels=%.0f", key, (image.size.width * image.size.height));
     _totalPixelCount -= image.size.width * image.size.height;
@@ -103,7 +103,7 @@
   if (!image || !key) return NO;
   
   // Already in cache (We don't bump it forward)
-  if ([_imageCache objectForKey:key]) return NO;
+  if (_imageCache[key]) return NO;
 
   int pixelCount = image.size.width * image.size.height;
   
@@ -129,13 +129,13 @@
   }
   
   [_imageSortedList addObject:key];
-  [_imageCache setObject:image forKey:key];
+  _imageCache[key] = image;
   return YES;
 }
 
 - (UIImage *)memoryCachedImageForKey:(NSString *)key {
   if (!key) return nil;
-  UIImage *image = [_imageCache objectForKey:key];
+  UIImage *image = _imageCache[key];
   return image;
 }
 

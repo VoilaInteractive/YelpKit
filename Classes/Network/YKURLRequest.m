@@ -246,7 +246,7 @@ static BOOL gYKURLRequestCacheAsyncEnabled = YES; // Defaults to ON
   
   if (headers) {
     for(NSString *key in headers) {      
-      [_request setValue:[headers objectForKey:key] forHTTPHeaderField:key];
+      [_request setValue:headers[key] forHTTPHeaderField:key];
     }
   }
   
@@ -385,7 +385,7 @@ static BOOL gYKURLRequestCacheAsyncEnabled = YES; // Defaults to ON
 }
 
 - (NSDate *)responseDate {
-  NSString *dateString = [[self responseHeaderFields] objectForKey:@"Date"];
+  NSString *dateString = [self responseHeaderFields][@"Date"];
   return [NSDate gh_parseHTTP:dateString];
 }
 
@@ -472,7 +472,7 @@ static BOOL gYKURLRequestCacheAsyncEnabled = YES; // Defaults to ON
   NSData *newLineData = [@"\r\n" dataUsingEncoding:NSUTF8StringEncoding];
   if (!keyEnumerator) keyEnumerator = [multipart keyEnumerator];
   for (NSString *key in keyEnumerator) {
-    id value = [multipart objectForKey:key];
+    id value = multipart[key];
     if (!value || value == [NSNull null]) continue;
     if ([value isKindOfClass:[NSNumber class]])
       value = [(NSNumber *)value stringValue];

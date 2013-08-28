@@ -168,10 +168,10 @@
   
   if (_lineSeparatorColor) {
     for (NSInteger i = 0; i < [_views count]; i++) {
-      UIView *view = [_views objectAtIndex:i];
+      UIView *view = _views[i];
       y += view.frame.size.height;
       UIView *nextView = nil;
-      if (i < ([_views count] - 1)) nextView = [_views objectAtIndex:i + 1];
+      if (i < ([_views count] - 1)) nextView = _views[i + 1];
       
       BOOL viewHasCustomListViewAppearance = NO;
       if ([view respondsToSelector:@selector(hasCustomListViewAppearance)]) {

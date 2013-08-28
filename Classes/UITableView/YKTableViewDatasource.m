@@ -79,16 +79,16 @@
 - (NSMutableArray *)dataSourceForSection:(NSInteger)section create:(BOOL)create {
   if (!_cellDataSourceSections && create) _cellDataSourceSections = [[NSMutableDictionary alloc] init];
   
-  NSMutableArray *dataSource = [_cellDataSourceSections objectForKey:[NSNumber numberWithInteger:section]];
+  NSMutableArray *dataSource = _cellDataSourceSections[@(section)];
   if (create && !dataSource) {
     dataSource = [NSMutableArray array];
-    [_cellDataSourceSections setObject:dataSource forKey:[NSNumber numberWithInteger:section]];
+    _cellDataSourceSections[@(section)] = dataSource;
   }
   return dataSource;
 }
 
 - (NSMutableArray *)cellDataSourcesForSection:(NSInteger)section {
-  return [_cellDataSourceSections objectForKey:[NSNumber numberWithInteger:section]];
+  return _cellDataSourceSections[@(section)];
 }
 
 - (NSMutableArray *)dataSourceForSection:(NSInteger)section {
@@ -102,7 +102,7 @@
 - (id<YKTableViewCellDataSource>)cellDataSourceAtIndexPath:(NSIndexPath *)indexPath {
   NSMutableArray *dataSource = [self dataSourceForSection:indexPath.section];
   if (dataSource && indexPath.row < [dataSource count])
-    return [dataSource objectAtIndex:indexPath.row];
+    return dataSource[indexPath.row];
   return nil;
 }
 
@@ -226,7 +226,7 @@
 - (void)replaceCellDataSource:(id<YKTableViewCellDataSource>)cellDataSource indexPath:(NSIndexPath *)indexPath {
   NSMutableArray *dataSource = [self dataSourceForSection:indexPath.section];
   if (indexPath.row < [dataSource count]) {
-    [dataSource replaceObjectAtIndex:indexPath.row withObject:cellDataSource];
+    dataSource[indexPath.row] = cellDataSource;
   }
 }
 
@@ -250,22 +250,22 @@
 
 - (void)setSectionHeaderTitle:(NSString *)title section:(NSInteger)section {
   if (title) {
-    [[self _sectionHeaderTitles] setObject:title forKey:[NSNumber numberWithInteger:section]];
+    [self _sectionHeaderTitles][@(section)] = title;
   } else {
-    [_sectionHeaderTitles removeObjectForKey:[NSNumber numberWithInteger:section]];
+    [_sectionHeaderTitles removeObjectForKey:@(section)];
   }
 }
 
 - (void)setSectionHeaderTitles:(NSArray *)titles {
   NSInteger i = 0;
   for (NSString *title in titles) {
-    [[self _sectionHeaderTitles] setObject:title forKey:[NSNumber numberWithInteger:i++]];
+    [self _sectionHeaderTitles][@(i++)] = title;
   }
 }
 
 - (BOOL)hasSectionHeaderTitleForSection:(NSInteger)section {
   if ([self countForSection:section] > 0) 
-    return ([_sectionHeaderTitles objectForKey:[NSNumber numberWithInteger:section]] != nil);
+    return (_sectionHeaderTitles[@(section)] != nil);
   return NO;  
 }
 
@@ -327,7 +327,7 @@
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-  return [_sectionHeaderTitles objectForKey:[NSNumber numberWithInteger:section]];
+  return _sectionHeaderTitles[@(section)];
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
@@ -431,7 +431,7 @@
     _section++;
     return [self nextObject];
   }
-  return [cellDataSources objectAtIndex:_index++];
+  return cellDataSources[_index++];
 }
 
 - (NSIndexPath *)indexPath {

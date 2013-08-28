@@ -49,9 +49,8 @@ CLLocationCoordinate2D YKCLLocationCoordinate2DDecode(id obj) {
 }
 
 id YKCLLocationCoordinate2DEncode(CLLocationCoordinate2D coordinate) {
-  return [NSDictionary dictionaryWithObjectsAndKeys:
-          [NSNumber numberWithDouble:coordinate.latitude], @"latitude", 
-          [NSNumber numberWithDouble:coordinate.longitude], @"longitude", nil];
+  return @{@"latitude": @(coordinate.latitude), 
+          @"longitude": @(coordinate.longitude)};
 }
   
 BOOL YKCLLocationCoordinate2DIsValid(CLLocationCoordinate2D coordinate) {

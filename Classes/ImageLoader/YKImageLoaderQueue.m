@@ -67,7 +67,7 @@
 
 - (void)check {
   if ([_loadingQueue count] < _maxLoadingCount && [_waitingQueue count] > 0) {    
-    YKImageLoader *imageLoader = [_waitingQueue objectAtIndex:0];
+    YKImageLoader *imageLoader = _waitingQueue[0];
     [_loadingQueue addObject:imageLoader];
     [_waitingQueue removeObjectAtIndex:0];
     imageLoader.queue = self;

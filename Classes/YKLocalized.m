@@ -64,7 +64,7 @@ static NSString *gDefaultTableName = kDefaultTableName;
 - (NSString *)yelp_pathForResource:(NSString *)tableName localization:(NSString *)localization {
   if ([localization isEqual:@"en_US"]) localization = @"en";
   NSString *key = [[NSString alloc] initWithFormat:@"%@%@", tableName, localization];
-  id resource = [[NSBundle yelp_pathForResourceCache] objectForKey:key];
+  id resource = [NSBundle yelp_pathForResourceCache][key];
   if ([resource isEqual:[NSNull null]]) {
     [key release];
     return nil;
@@ -72,7 +72,7 @@ static NSString *gDefaultTableName = kDefaultTableName;
   
   if (!resource) {
     resource = [self pathForResource:tableName ofType:@"strings" inDirectory:nil forLocalization:localization];
-    [[NSBundle yelp_pathForResourceCache] setObject:(resource ? resource : [NSNull null]) forKey:key];
+    [NSBundle yelp_pathForResourceCache][key] = (resource ? resource : [NSNull null]);
   }
   
   [key release];
@@ -83,7 +83,7 @@ static NSString *gDefaultTableName = kDefaultTableName;
   NSDictionary *dict = nil;
   if ([localization isEqual:@"en_US"]) localization = @"en";
   NSString *key = [[NSString alloc] initWithFormat:@"%@%@", tableName, localization];  
-  dict = [[NSBundle yelp_localizationResourceCache] objectForKey:key];
+  dict = [NSBundle yelp_localizationResourceCache][key];
   if (!dict) {
     NSString *resource = [self yelp_pathForResource:tableName localization:localization];
     if (!resource) {
@@ -91,7 +91,7 @@ static NSString *gDefaultTableName = kDefaultTableName;
       return nil;
     }
     dict = [[NSDictionary alloc] initWithContentsOfFile:resource];
-    [[NSBundle yelp_localizationResourceCache] setObject:dict forKey:key];
+    [NSBundle yelp_localizationResourceCache][key] = dict;
     [dict release];
   }
   [key release];
@@ -104,7 +104,7 @@ static NSString *gDefaultTableName = kDefaultTableName;
 
   
   NSDictionary *dict = [self yelp_loadResourceForTableName:tableName localization:localization];
-  return [dict objectForKey:key];
+  return dict[key];
 }
 
 - (NSString *)yelp_preferredLanguageForTableName:(NSString *)tableName {
@@ -129,7 +129,7 @@ static NSString *gDefaultTableName = kDefaultTableName;
     return nil;
   }
 
-  NSString *localizedString = [[YKLocalized localizationCache] objectForKey:key];
+  NSString *localizedString = [YKLocalized localizationCache][key];
   if (localizedString) return localizedString;
   
   if (!tableName) tableName = gDefaultTableName; // Default file is Localizable.strings
@@ -145,7 +145,7 @@ static NSString *gDefaultTableName = kDefaultTableName;
   }
    
   if (localizedString) {
-    [[YKLocalized localizationCache] setObject:localizedString forKey:key];
+    [YKLocalized localizationCache][key] = localizedString;
   }
   
   return localizedString;
@@ -232,7 +232,7 @@ static NSSet *gSupportedCountries = nil;
   // Override metric for GB (use miles)
   if ([[self countryCode] isEqualToString:@"GB"]) return NO;
   
-  return [[locale objectForKey:NSLocaleUsesMetricSystem] boolValue];
+  return [locale[NSLocaleUsesMetricSystem] boolValue];
 }
 
 + (NSString *)currencySymbol {
@@ -328,15 +328,15 @@ static NSSet *gSupportedCountries = nil;
 
 + (NSString *)localizedListFromStrings:(NSArray */*of NSString*/)strings {
   if (!strings || ([strings count] <= 0)) return nil;
-  if ([strings count] == 1) return [strings objectAtIndex:0];
+  if ([strings count] == 1) return strings[0];
   if ([strings count] == 2) {
-    return [NSString stringWithFormat:@"%@ %@ %@", [strings objectAtIndex:0], YKLocalizedString(@"and"), [strings objectAtIndex:1], nil];
+    return [NSString stringWithFormat:@"%@ %@ %@", strings[0], YKLocalizedString(@"and"), strings[1], nil];
   }
-  NSMutableString *localizedList = [[[NSMutableString alloc] initWithString:[strings objectAtIndex:0]] autorelease];
+  NSMutableString *localizedList = [[[NSMutableString alloc] initWithString:strings[0]] autorelease];
   for (NSInteger i = 1; i < [strings count]; i++) {
     if (i == ([strings count] - 1)) [localizedList appendFormat:@" %@ ", YKLocalizedString(@"and"), nil];
     else [localizedList appendString:@", "];
-    [localizedList appendString:[strings objectAtIndex:i]];
+    [localizedList appendString:strings[i]];
   }
   return localizedList;
 }

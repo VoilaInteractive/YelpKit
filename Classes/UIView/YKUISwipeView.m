@@ -79,7 +79,7 @@
   // Disable swipe when we only have 1 view.
   // Otherwise setup the peek.
   if ([_views count] == 1) {
-    UIView *view = [_views objectAtIndex:0];
+    UIView *view = _views[0];
     view.frame = CGRectMake(_insets.left, _insets.top, self.frame.size.width - _insets.left - _insets.right, self.frame.size.height - _insets.top - _insets.bottom);
     [view setNeedsLayout];
     _scrollView.alwaysBounceHorizontal = NO;    

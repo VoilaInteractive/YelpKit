@@ -242,7 +242,7 @@
 
 - (NSInteger)indexOfView:(YKSUIView *)view {
   for (NSInteger i = 0, count = [_stack count]; i < count; i++) {
-    YKSUIInternalView *internalView = [_stack objectAtIndex:i];
+    YKSUIInternalView *internalView = _stack[i];
     if ([internalView.view isEqual:view]) return i;
   }
   return NSNotFound;

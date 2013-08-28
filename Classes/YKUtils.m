@@ -39,7 +39,7 @@ id YKRandomChoice(id object, ...) {
 id YKRandomChoiceFromArray(NSArray *array) {
   srand(time(0));
   int index = arc4random() % [array count];
-  return [array objectAtIndex:index];
+  return array[index];
 }
 
 static const void *YKRetainNoOp(CFAllocatorRef allocator, const void *value) { return value; }
@@ -96,7 +96,7 @@ NSString *YKNSStringFromCurrencyAmountInCentsAndCode(NSInteger cents, NSString *
     [CurrencyFormatter setMaximumFractionDigits:0];
   }
 
-  return [CurrencyFormatter stringForObjectValue:[NSNumber numberWithDouble:(double)cents/100.0]];
+  return [CurrencyFormatter stringForObjectValue:@((double)cents/100.0)];
 }
 
 typedef void (^YKEmptyBlock)();

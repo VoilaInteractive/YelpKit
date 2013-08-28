@@ -63,7 +63,7 @@
     newJSONSerializableParent = [[NSMutableDictionary alloc] initWithCapacity:[obj count]];
     for (NSString* key in obj) {
       // Loop through key/values and try and serialize all objects using YKJSON, because something could  not be serialized by NSJSON
-      id value = [obj objectForKey:key];
+      id value = obj[key];
       if ([NSJSONSerialization isValidJSONObject:@[value]]) {
         [newJSONSerializableParent setValue:value forKey:key];
       } else {

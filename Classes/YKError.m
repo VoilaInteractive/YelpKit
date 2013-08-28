@@ -84,7 +84,7 @@ NSString *const YKErrorServerUnauthorized = @"YPErrorServerUnauthorized";
   //  * _unknownDescription
   //  * Localized string for YKErrorUnknown
   if (_description) return _description;
-  NSString *description = [self.userInfo objectForKey:NSLocalizedDescriptionKey];
+  NSString *description = (self.userInfo)[NSLocalizedDescriptionKey];
   if (!description) {
     if (_key) description = [self localizedDescriptionForKey];
     YKDebug(@"Description for error key=%@: %@", _key, description);
@@ -107,7 +107,7 @@ NSString *const YKErrorServerUnauthorized = @"YPErrorServerUnauthorized";
                                 } retain];
       });
       
-      NSString *keyBuiltIn = [DescriptionsBuiltIn objectForKey:_key];
+      NSString *keyBuiltIn = DescriptionsBuiltIn[_key];
       if (keyBuiltIn) return YKLocalizedString(keyBuiltIn);      
       
       // Needed for backwards compatibility
@@ -135,7 +135,7 @@ NSString *const YKErrorServerUnauthorized = @"YPErrorServerUnauthorized";
 }
 
 + (id)errorWithKey:(NSString *const)key localizedDescription:(NSString *)localizedDescription {
-  NSDictionary *userInfo = (localizedDescription ? [NSDictionary dictionaryWithObject:localizedDescription forKey:NSLocalizedDescriptionKey] : nil);
+  NSDictionary *userInfo = (localizedDescription ? @{NSLocalizedDescriptionKey: localizedDescription} : nil);
   return [self errorWithKey:key userInfo:userInfo];
 }
 
@@ -144,13 +144,13 @@ NSString *const YKErrorServerUnauthorized = @"YPErrorServerUnauthorized";
 }
 
 - (id)userInfoForKey:(NSString *const)key {
-  return [self.userInfo objectForKey:key];
+  return (self.userInfo)[key];
 }
 
 - (id)userInfoForKey:(NSString *const)key subKey:(NSString *)subKey {
-  id dict = [self.userInfo objectForKey:key];
+  id dict = (self.userInfo)[key];
   if ([dict isKindOfClass:[NSDictionary class]]) {
-    return [dict objectForKey:subKey];
+    return dict[subKey];
   }
   return nil;
 }
@@ -201,7 +201,7 @@ NSString *const YKErrorServerUnauthorized = @"YPErrorServerUnauthorized";
 }
 
 - (id)initWithHTTPStatus:(NSInteger)HTTPStatus data:(NSData *)data localizedDescription:(NSString *)localizedDescription {
-  NSDictionary *userInfo = (localizedDescription ? [NSDictionary dictionaryWithObject:localizedDescription forKey:NSLocalizedDescriptionKey] : nil);
+  NSDictionary *userInfo = (localizedDescription ? @{NSLocalizedDescriptionKey: localizedDescription} : nil);
   if ((self = [self initWithKey:[[self class] keyForHTTPStatus:HTTPStatus] userInfo:userInfo])) {
     _HTTPStatus = HTTPStatus;
     _data = [data retain];

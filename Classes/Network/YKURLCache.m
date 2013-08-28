@@ -119,10 +119,10 @@ static NSMutableDictionary *gNamedCaches = NULL;
     if (gNamedCaches == NULL)
       gNamedCaches = [[NSMutableDictionary alloc] init];
 
-    cache = [gNamedCaches objectForKey:name];
+    cache = gNamedCaches[name];
     if (!cache) {
       cache = [[[YKURLCache alloc] initWithName:name] autorelease];
-      [gNamedCaches setObject:cache forKey:name];
+      gNamedCaches[name] = cache;
     }
   }
   return cache;
@@ -193,7 +193,7 @@ static NSMutableDictionary *gNamedCaches = NULL;
   NSFileManager *fm = [NSFileManager defaultManager];
   if ([fm fileExistsAtPath:filePath]) {
     NSDictionary *attrs = [fm attributesOfItemAtPath:filePath error:nil];
-    NSDate *modified = [attrs objectForKey:NSFileModificationDate];
+    NSDate *modified = attrs[NSFileModificationDate];
     if ([modified timeIntervalSinceNow] < -expires) {
       return NO;
     }
@@ -207,7 +207,7 @@ static NSMutableDictionary *gNamedCaches = NULL;
   NSFileManager *fm = [NSFileManager defaultManager];
   if ([fm fileExistsAtPath:filePath]) {
     NSDictionary *attrs = [fm attributesOfItemAtPath:filePath error:nil];
-    NSDate *modified = [attrs objectForKey:NSFileModificationDate];
+    NSDate *modified = attrs[NSFileModificationDate];
     if ([modified timeIntervalSinceNow] < -expires) {
       return nil;
     }
@@ -323,7 +323,7 @@ static NSMutableDictionary *gNamedCaches = NULL;
   NSFileManager *fm = [NSFileManager defaultManager];
   if (filePath && [fm fileExistsAtPath:filePath]) {
     NSDate *invalidDate = [NSDate dateWithTimeIntervalSinceNow:-_invalidationAge];
-    NSDictionary *attrs = [NSDictionary dictionaryWithObject:invalidDate forKey:NSFileModificationDate];
+    NSDictionary *attrs = @{NSFileModificationDate: invalidDate};
 
 #if __IPHONE_4_0 <= __IPHONE_OS_VERSION_MAX_ALLOWED
     [fm setAttributes:attrs ofItemAtPath:filePath error:nil];
@@ -335,7 +335,7 @@ static NSMutableDictionary *gNamedCaches = NULL;
 
 - (void)invalidateAll {
   NSDate *invalidDate = [NSDate dateWithTimeIntervalSinceNow:-_invalidationAge];
-  NSDictionary *attrs = [NSDictionary dictionaryWithObject:invalidDate forKey:NSFileModificationDate];
+  NSDictionary *attrs = @{NSFileModificationDate: invalidDate};
 
   NSFileManager *fm = [NSFileManager defaultManager];
   NSDirectoryEnumerator *enumerator = [fm enumeratorAtPath:_cachePath];

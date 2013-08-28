@@ -37,7 +37,7 @@
   @synchronized([YKResource class]) {
     if (DocumentsDirectory == NULL) {
       NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-      DocumentsDirectory = [[paths objectAtIndex:0] copy];
+      DocumentsDirectory = [paths[0] copy];
 #if DEBUG
       // When running GHUnit tests from the command line, the documents directory is the
       // User's documents directory, so allow it to be overriden through an environment variable.
@@ -55,7 +55,7 @@
   @synchronized([YKResource class]) {
     if (CacheDirectory == NULL) {
       NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-      CacheDirectory = [[paths objectAtIndex:0] copy];
+      CacheDirectory = [paths[0] copy];
     }   
   }
   return CacheDirectory;

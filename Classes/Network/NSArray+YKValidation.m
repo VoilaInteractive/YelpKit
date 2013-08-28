@@ -35,10 +35,10 @@
 - (id)yk_objectAtIndex:(NSInteger)index {
   if (index >= [self count]) {
     NSString *reason = [NSString stringWithFormat:@"Object out of range at index %d (%d elements in array).", index, [self count]];
-    NSDictionary *userInfo = [NSDictionary dictionaryWithObject:self forKey:@"array"];
+    NSDictionary *userInfo = @{@"array": self};
     @throw [[[YKValidationException alloc] initWithName:@"YKValidationException" reason:reason userInfo:userInfo] autorelease];
   }
-  id object = [self objectAtIndex:index];
+  id object = self[index];
   if (object == [NSNull null] || [object isEqual:[NSNull null]])
     return nil;
   return object;
@@ -48,7 +48,7 @@
   id object = [self yk_objectAtIndex:index];
   if (object && ![object isKindOfClass:expectedClass]) {
     NSString *reason = [NSString stringWithFormat:@"Object at index '%d' should have been %@ but was %@.", index, NSStringFromClass(expectedClass), NSStringFromClass([object class])];
-    NSDictionary *userInfo = [NSDictionary dictionaryWithObject:self forKey:@"array"];
+    NSDictionary *userInfo = @{@"array": self};
     @throw [[[YKValidationException alloc] initWithName:@"YKValidationException" reason:reason userInfo:userInfo] autorelease];
   }
   return object;

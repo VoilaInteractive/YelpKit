@@ -321,10 +321,10 @@ void YKLayoutAssert(UIView *view, YKLayout *layout) {
 + (YKLayoutStats *)statsForView:(UIView *)view {
   NSString *name = NSStringFromClass([view class]);
   if (gDebugStats == NULL) gDebugStats = [[NSMutableDictionary alloc] init];
-  YKLayoutStats *stats = [gDebugStats objectForKey:name];
+  YKLayoutStats *stats = gDebugStats[name];
   if (!stats) {
     stats = [[YKLayoutStats alloc] init];
-    [gDebugStats setObject:stats forKey:name];
+    gDebugStats[name] = stats;
     [stats release];
   }
   return stats;

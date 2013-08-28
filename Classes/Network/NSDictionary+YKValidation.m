@@ -34,7 +34,7 @@
 @implementation NSDictionary (YKUtils)
 
 - (id)yk_objectMaybeNilForKey:(id)key {
-  id object = [self objectForKey:key];
+  id object = self[key];
   if (object == [NSNull null] || [object isEqual:[NSNull null]])
     return nil;
   return object;
@@ -56,7 +56,7 @@
   id object = [self yk_objectMaybeNilForKey:key];
   if (object && ![object isKindOfClass:expectedClass]) {
     NSString *reason = [NSString stringWithFormat:@"Object for key '%@' should have been %@ but was %@.", key, NSStringFromClass(expectedClass), NSStringFromClass([object class])];
-    NSDictionary *userInfo = [NSDictionary dictionaryWithObject:self forKey:@"dictionary"];
+    NSDictionary *userInfo = @{@"dictionary": self};
     @throw [[[YKValidationException alloc] initWithName:@"YKValidationException" reason:reason userInfo:userInfo] autorelease];
   }
   return object;
@@ -70,7 +70,7 @@
   id object = [self yk_objectMaybeNilForKey:key];
   if (object && ![object isKindOfClass:[NSString class]] && ![object isKindOfClass:[NSNumber class]]) {
     NSString *reason = [NSString stringWithFormat:@"Object was supposed to be NSString or NSNumber but was %@", NSStringFromClass([object class])];
-    NSDictionary *userInfo = [NSDictionary dictionaryWithObject:self forKey:@"dictionary"];
+    NSDictionary *userInfo = @{@"dictionary": self};
     @throw [[[YKValidationException alloc] initWithName:@"YKValidationException" reason:reason userInfo:userInfo] autorelease];
   }
   return object;
@@ -120,13 +120,13 @@
 
 - (NSNumber *)yk_numberForKey:(id)key withDefaultInteger:(NSInteger)defaultValue {
   NSNumber *value = [self yk_validatedObjectMaybeNilForKey:key expectedClass:[NSNumber class]];
-  if (!value) return [NSNumber numberWithInteger:defaultValue];
+  if (!value) return @(defaultValue);
   return value;
 }
 
 - (NSNumber *)yk_numberForKey:(id)key withDefaultDouble:(double)defaultValue {
   NSNumber *value = [self yk_validatedObjectMaybeNilForKey:key expectedClass:[NSNumber class]];
-  if (!value) return [NSNumber numberWithDouble:defaultValue];
+  if (!value) return @(defaultValue);
   return value;
 }
 
@@ -142,8 +142,8 @@
 
 - (NSNumber *)yk_boolValueForKey:(id)key withDefault:(BOOL)defaultValue {
   id value = [self yk_NSStringOrNSNumberMaybeNilForKey:key];
-  if (!value) return [NSNumber numberWithBool:defaultValue];
-  return [NSNumber numberWithBool:[value boolValue]];
+  if (!value) return @(defaultValue);
+  return @([value boolValue]);
 }
 
 - (NSNumber *)yk_boolValueForKey:(id)key {

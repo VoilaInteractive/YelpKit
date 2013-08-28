@@ -130,7 +130,7 @@
 #pragma mark UIActionSheetDelegate
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-  id obj = [_actions objectAtIndex:buttonIndex];
+  id obj = _actions[buttonIndex];
   if (obj != [NSNull null]) {
     NSValue *actionValue = (NSValue *)obj;
     SEL selector = [actionValue pointerValue];
