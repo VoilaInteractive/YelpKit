@@ -1430,7 +1430,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "YelpKit-Prefix.pch";
 				GCC_THUMB_SUPPORT = NO;
-				HEADER_SEARCH_PATHS = "\"$(BUILT_PRODUCTS_DIR)/../../Headers\"";
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/Libraries/GHKit/Build/Headers/**";
 				OBJROOT = "$(SRCROOT)/Build";
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -1453,7 +1453,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "YelpKit-Prefix.pch";
 				GCC_THUMB_SUPPORT = NO;
-				HEADER_SEARCH_PATHS = "\"$(BUILT_PRODUCTS_DIR)/../../Headers\"";
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/Libraries/GHKit/Build/Headers/**";
 				OBJROOT = "$(SRCROOT)/Build";
 				OTHER_LDFLAGS = (
 					"-ObjC",
