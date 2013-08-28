@@ -61,7 +61,10 @@
   frame.origin.y *= scale;
   frame.size.height *= scale;
   frame.size.width *= scale;
-  return [UIImage imageWithCGImage:CGImageCreateWithImageInRect(self.CGImage, frame) scale:scale orientation:[self imageOrientation]];
+  CGImageRef imageRef = CGImageCreateWithImageInRect(self.CGImage, frame);
+  UIImage *newImage = [UIImage imageWithCGImage:imageRef scale:scale orientation:[self imageOrientation]];
+  CGImageRelease(imageRef);
+  return newImage;
 }
 
 - (UIImage *)resizedImageInSize:(CGSize)size contentMode:(UIViewContentMode)contentMode opaque:(BOOL)opaque {
