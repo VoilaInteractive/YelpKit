@@ -212,7 +212,7 @@ static NSMutableDictionary *gDebugStats = NULL;
   }
   
   if ((options & YKLayoutOptionsCenterVertical) == YKLayoutOptionsCenterVertical) {
-    frame = YKCGRectToCenterYInRect(frame, originalFrame);
+    frame = YKCGRectToCenterYInRect(frame, rect);
   }
 
   if ((options & YKLayoutOptionsRightAlign) == YKLayoutOptionsRightAlign) {
